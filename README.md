@@ -22,7 +22,7 @@ In `kb.json`:
  "en":{"n":"name","a":"non-chemical action","v":"thing to avoid"},
  "te":{"n":"","a":"","v":""},"hi":{"n":"","a":"","v":""}}
 ```
-`tags` are symptom keys from `lex`; `rc` is recheck days; `q` is the clarifying question. Only add chemical advice if it comes from a verified source.
+`tags` are symptom keys from `lex`; `rc` is recheck days, used both for the “look again in N days” line and the reminder question; `q` is the clarifying question. Only add chemical advice if it comes from a verified source.
 
 ## Add a synonym (local pest or symptom name)
 - Pest name: append to that entry's `names` (e.g. "pachcha purugu" → thrips).
@@ -30,7 +30,7 @@ In `kb.json`:
 
 ## Add a language
 1. `index.html`: add a key to `LANGS` (`bcp` speech code, `i`, `li` index) and a full set of strings in `STR`.
-2. `kb.json`: add a third/fourth value to each `labels` array, a field to every entry and every `q`, and the language to `crop`, `yes`, `no`, `cmd`.
+2. `kb.json`: add a third/fourth value to each `labels` array and each `heard` phrase, a field to every entry and every `q`, and the language to `crop`, `yes`, `no`, `cmd`.
 3. Add a language button in the `#langs` div. Check the language is detected in `detect()` if it uses a new script.
 
 ## Limits

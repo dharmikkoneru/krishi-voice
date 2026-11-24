@@ -45,15 +45,15 @@ const LANGS={te:{bcp:'te-IN',i:0,li:1},hi:{bcp:'hi-IN',i:1,li:2},en:{bcp:'en-IN'
 const STR={
 en:{st:['Tap to speak','Listening...','Thinking...','Speaking...'],greet:'Tell me what is wrong with your crop. Tap the button and speak.',heard:'I heard:',ok:'Is that correct?',sorry:'Sorry. Please say it again.',
  clear:'I could not hear you clearly. Please move to a quieter place and try again.',silence:'I did not hear anything. Tap the button and speak.',slow:'The network is slow. Please wait.',fail:'I could not connect. Please try again.',
- unk:'I do not have reliable advice for this. Please show the plant to your local agriculture officer.',follow:"Say 'repeat' to hear it again, or ask another question.",remind:'Shall I remind you in 3 days?',saved:'Okay, I will remind you.',
+ unk:'I do not have reliable advice for this. Please show the plant to your local agriculture officer.',follow:"Say 'repeat' to hear it again, or ask another question.",remind:'Shall I remind you in {n} days?',saved:'Okay, I will remind you.',
  s1:'Let us try simply. Say only the crop name.',s2:'Now say one problem word, like curling, yellow or spots.',sure:'This looks like {p}. I am fairly sure.',unsure:'This may be {p}. I am not fully sure.',act:'Do this today:',av:'Avoid:',chk:'Look at the plants in {n} days.',rem:'Check plants',unsup:'Speech recognition needs Chrome.'},
 te:{st:['మాట్లాడటానికి నొక్కండి','వింటున్నాను...','ఆలోచిస్తున్నాను...','చెబుతున్నాను...'],greet:'మీ పంటకు ఏమైంది చెప్పండి. బటన్ నొక్కి మాట్లాడండి.',heard:'నేను విన్నది:',ok:'ఇది సరైనదేనా?',sorry:'క్షమించండి. దయచేసి మళ్లీ చెప్పండి.',
  clear:'నాకు స్పష్టంగా వినపడలేదు. దయచేసి నిశ్శబ్ద ప్రదేశానికి వెళ్లి మళ్లీ ప్రయత్నించండి.',silence:'నాకు ఏమీ వినపడలేదు. బటన్ నొక్కి మాట్లాడండి.',slow:'నెట్‌వర్క్ నెమ్మదిగా ఉంది. దయచేసి వేచి ఉండండి.',fail:'కనెక్ట్ కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి.',
- unk:'దీనికి నా దగ్గర నమ్మదగిన సలహా లేదు. దయచేసి మీ స్థానిక వ్యవసాయ అధికారికి మొక్కను చూపించండి.',follow:"మళ్లీ వినాలంటే 'రిపీట్' అనండి, లేదా మరో ప్రశ్న అడగండి.",remind:'3 రోజుల్లో గుర్తు చేయమంటారా?',saved:'సరే, గుర్తు చేస్తాను.',
+ unk:'దీనికి నా దగ్గర నమ్మదగిన సలహా లేదు. దయచేసి మీ స్థానిక వ్యవసాయ అధికారికి మొక్కను చూపించండి.',follow:"మళ్లీ వినాలంటే 'రిపీట్' అనండి, లేదా మరో ప్రశ్న అడగండి.",remind:'{n} రోజుల్లో గుర్తు చేయమంటారా?',saved:'సరే, గుర్తు చేస్తాను.',
  s1:'సులభంగా చెబుదాం. పంట పేరు మాత్రమే చెప్పండి.',s2:'ఇప్పుడు ఒక సమస్య పదం చెప్పండి: ముడత, పసుపు, మచ్చలు.',sure:'ఇది {p} లాగా ఉంది. నాకు బాగా నమ్మకం ఉంది.',unsure:'ఇది {p} కావచ్చు. నాకు పూర్తిగా నమ్మకం లేదు.',act:'ఈరోజు చేయవలసింది:',av:'చేయకూడనిది:',chk:'{n} రోజుల్లో మొక్కలను చూడండి.',rem:'మొక్కలు చూడండి',unsup:'Chrome అవసరం.'},
 hi:{st:['बोलने के लिए दबाएँ','सुन रहा हूँ...','सोच रहा हूँ...','बोल रहा हूँ...'],greet:'बताइए आपकी फसल में क्या दिक्कत है। बटन दबाकर बोलिए।',heard:'मैंने सुना:',ok:'क्या यह सही है?',sorry:'माफ़ कीजिए। कृपया फिर से बताइए।',
  clear:'मुझे साफ़ सुनाई नहीं दिया। कृपया शांत जगह जाकर फिर कोशिश करें।',silence:'मुझे कुछ सुनाई नहीं दिया। बटन दबाकर बोलिए।',slow:'नेटवर्क धीमा है। कृपया रुकिए।',fail:'कनेक्ट नहीं हो सका। कृपया फिर कोशिश करें।',
- unk:'इसके लिए मेरे पास भरोसेमंद सलाह नहीं है। कृपया पौधा अपने कृषि अधिकारी को दिखाइए।',follow:"दोबारा सुनने के लिए 'रिपीट' कहें, या दूसरा सवाल पूछें।",remind:'क्या 3 दिन बाद याद दिलाऊँ?',saved:'ठीक है, मैं याद दिलाऊँगा।',
+ unk:'इसके लिए मेरे पास भरोसेमंद सलाह नहीं है। कृपया पौधा अपने कृषि अधिकारी को दिखाइए।',follow:"दोबारा सुनने के लिए 'रिपीट' कहें, या दूसरा सवाल पूछें।",remind:'क्या {n} दिन बाद याद दिलाऊँ?',saved:'ठीक है, मैं याद दिलाऊँगा।',
  s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'Chrome चाहिए।'}};
 const $=id=>document.getElementById(id);
 const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,rate:1,rec:null,last:'',greeted:false};
@@ -110,7 +110,12 @@ function score(x){return KB.entries.map(e=>({e,n:e.tags.filter(t=>x.tags.has(t))
 const lab=(t)=>KB.labels[t][LANGS[S.rl].li];
 function showTags(x){const c=$('tags');c.innerHTML='';const a=[KB.crop[S.rl]+(x.crop?'':' ?')];if(x.stage)a.push('🌱 '+x.stage);[...x.tags].forEach(t=>t!='rain'&&a.push(lab(t)));
  if(x.tags.has('rain'))a.push('🌧 '+lab('rain'));if(x.district)a.push('📍 '+x.district);a.forEach(t=>{const d=document.createElement('span');d.className='tag';d.textContent=t;c.appendChild(d)})}
-function heardLine(x){const sy=[...x.tags].map(lab);return T('heard')+' '+(sy.length?KB.crop[S.rl]+', '+sy.join(', '):x.text)+'. '+T('ok')}
+function heardLine(x){const li=LANGS[S.rl].li,used=new Set(),parts=[];
+ const tagged=t=>x.tags.has(t);
+ if(tagged('curl')){used.add('curl');if(tagged('up')){used.add('up');parts.push(KB.heard.curlUp[li])}else if(tagged('down')){used.add('down');parts.push(KB.heard.curlDown[li])}else parts.push(KB.heard.curl[li])}
+ if(tagged('insect')){used.add('insect');if(tagged('white')){used.add('white');parts.push(KB.heard.whiteInsects[li])}else parts.push(KB.heard.insects[li])}
+ [...x.tags].forEach(t=>{if(!used.has(t))parts.push(lab(t))});
+ return T('heard')+' '+(parts.length?KB.crop[S.rl]+', '+parts.join(', '):x.text)+'. '+T('ok')}
 
 async function session(text0){
  const my=S.cur=++S.tok;$('badge').style.display='none';
@@ -135,7 +140,7 @@ async function answer(x){stat(2);let asked=0;const done=new Set();let sc;
  const[a,b]=sc,e=a.e,L=e[S.rl],sure=a.n>=3&&a.n-b.n>=2;
  const sp=[T(sure?'sure':'unsure',{p:L.n}),T('act'),L.a,T('av'),L.v,T('chk',{n:e.rc})].join(' ');
  S.last=sp;await say(sp);
- await say(T('remind'));const r=await capture(1);
+ await say(T('remind',{n:e.rc}));const r=await capture(1);
  if(r&&yn(r)===1){saveRem(e.rc);await say(T('saved'))}
  await followUp()}
 

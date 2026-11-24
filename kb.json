@@ -346,6 +346,33 @@
    "बारिश"
   ]
  },
+ "heard": {
+  "curlUp": [
+   "leaves curling upward",
+   "ఆకులు పైకి ముడుచుకుంటున్నాయి",
+   "पत्ते ऊपर की ओर मुड़ रहे हैं"
+  ],
+  "curlDown": [
+   "leaves curling downward",
+   "ఆకులు కిందికి ముడుచుకుంటున్నాయి",
+   "पत्ते नीचे की ओर मुड़ रहे हैं"
+  ],
+  "curl": [
+   "leaves curling",
+   "ఆకులు ముడుచుకోవడం",
+   "पत्ते मुड़ना"
+  ],
+  "whiteInsects": [
+   "small white insects under the leaves",
+   "ఆకుల కింద చిన్న తెల్ల పురుగులు",
+   "पत्तियों के नीचे छोटे सफेद कीड़े"
+  ],
+  "insects": [
+   "small insects",
+   "చిన్న పురుగులు",
+   "छोटे कीड़े"
+  ]
+ },
  "stages": {
   "seedling": [
    "seedling",
