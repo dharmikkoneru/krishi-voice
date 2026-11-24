@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="te"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Krishi Voice – Chilli Advisor</title>
+<style>
+:root{--bg:#fbfaf5;--fg:#14210f;--card:#fff;--ac:#1b6b2f;--ac2:#c62828;--mut:#4a5a44;--bd:#c9d2bf;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10170d;--fg:#f1f5ea;--card:#1b2617;--ac:#59c46f;--ac2:#ff7b72;--mut:#b6c4ad;--bd:#34452e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#10170d;--fg:#f1f5ea;--card:#1b2617;--ac:#59c46f;--ac2:#ff7b72;--mut:#b6c4ad;--bd:#34452e;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,"Noto Sans Telugu","Noto Sans Devanagari",sans-serif}
+main{max-width:520px;margin:0 auto;padding:12px 14px 40px;display:flex;flex-direction:column;gap:12px}
+h1{font-size:20px;margin:4px 0 0;text-align:center}
+.langs{display:flex;gap:8px}.langs button{flex:1;min-height:52px;font-size:20px;border:2px solid var(--bd);background:var(--card);color:var(--fg);border-radius:12px}
+.langs button.on{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:700}
+#mic{align-self:center;width:140px;height:140px;border-radius:50%;border:0;background:var(--ac);color:#fff;font-size:56px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#mic.listen{background:var(--ac2);animation:p 1.1s infinite}#mic.busy{opacity:.75}
+@keyframes p{50%{transform:scale(1.07)}}
+#status{text-align:center;font-size:22px;font-weight:700}
+.badge{display:none;align-self:center;background:var(--ac2);color:#fff;padding:8px 14px;border-radius:20px;font-size:18px;font-weight:700}
+#tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.tag{background:var(--card);border:2px solid var(--ac);border-radius:16px;padding:4px 10px;font-size:17px}
+#log{display:flex;flex-direction:column;gap:8px;max-height:42vh;overflow-y:auto;overflow-x:hidden}
+.m{font-size:21px;line-height:1.4;padding:10px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--card)}
+.m.you{border-color:var(--ac);font-weight:600}.m.sys{font-size:16px;color:var(--mut)}
+.m b{display:block;font-size:14px;color:var(--mut);font-weight:600}
+#rem .card{background:var(--card);border:2px solid var(--ac);border-radius:12px;padding:10px 12px;font-size:20px;margin-top:6px}
+#dev{font-size:14px;text-align:center;opacity:.35}#dev a{color:var(--mut)}
+#devp{display:none;border:1px dashed var(--bd);border-radius:10px;padding:10px;gap:8px;flex-direction:column}
+#devp button{min-height:44px;font-size:16px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--fg)}
+</style></head><body><main>
+<h1>🌶️ Krishi Voice</h1>
+<div class="langs" id="langs"><button data-l="te" class="on">తెలుగు</button><button data-l="hi">हिन्दी</button><button data-l="en">English</button></div>
+<button id="mic" aria-label="Speak">🎤</button>
+<div id="status">…</div>
+<div class="badge" id="badge">⚠ Needs human review</div>
+<div id="tags"></div>
+<div id="log" aria-live="polite"></div>
+<div id="rem"></div>
+<div id="dev"><a href="#dev" id="devlink">·</a></div>
+<div id="devp"><b>Developer test</b>
+<button data-i="0">1 · Clear Telugu</button><button data-i="1">2 · Noisy mixed Telugu-English</button><button data-i="2">3 · Unknown problem</button></div>
+</main>
+<script>
+let KB;
+const LANGS={te:{bcp:'te-IN',i:0,li:1},hi:{bcp:'hi-IN',i:1,li:2},en:{bcp:'en-IN',i:2,li:0}};
+// UI strings: add a language = add a key here + LANGS + KB fields
+const STR={
+en:{st:['Tap to speak','Listening...','Thinking...','Speaking...'],greet:'Tell me what is wrong with your crop. Tap the button and speak.',heard:'I heard:',ok:'Is that correct?',sorry:'Sorry. Please say it again.',
+ clear:'I could not hear you clearly. Please move to a quieter place and try again.',silence:'I did not hear anything. Tap the button and speak.',slow:'The network is slow. Please wait.',fail:'I could not connect. Please try again.',
+ unk:'I do not have reliable advice for this. Please show the plant to your local agriculture officer.',follow:"Say 'repeat' to hear it again, or ask another question.",remind:'Shall I remind you in 3 days?',saved:'Okay, I will remind you.',
+ s1:'Let us try simply. Say only the crop name.',s2:'Now say one problem word, like curling, yellow or spots.',sure:'This looks like {p}. I am fairly sure.',unsure:'This may be {p}. I am not fully sure.',act:'Do this today:',av:'Avoid:',chk:'Look at the plants in {n} days.',rem:'Check plants',unsup:'Speech recognition needs Chrome.'},
+te:{st:['మాట్లాడటానికి నొక్కండి','వింటున్నాను...','ఆలోచిస్తున్నాను...','చెబుతున్నాను...'],greet:'మీ పంటకు ఏమైంది చెప్పండి. బటన్ నొక్కి మాట్లాడండి.',heard:'నేను విన్నది:',ok:'ఇది సరైనదేనా?',sorry:'క్షమించండి. దయచేసి మళ్లీ చెప్పండి.',
+ clear:'నాకు స్పష్టంగా వినపడలేదు. దయచేసి నిశ్శబ్ద ప్రదేశానికి వెళ్లి మళ్లీ ప్రయత్నించండి.',silence:'నాకు ఏమీ వినపడలేదు. బటన్ నొక్కి మాట్లాడండి.',slow:'నెట్‌వర్క్ నెమ్మదిగా ఉంది. దయచేసి వేచి ఉండండి.',fail:'కనెక్ట్ కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి.',
+ unk:'దీనికి నా దగ్గర నమ్మదగిన సలహా లేదు. దయచేసి మీ స్థానిక వ్యవసాయ అధికారికి మొక్కను చూపించండి.',follow:"మళ్లీ వినాలంటే 'రిపీట్' అనండి, లేదా మరో ప్రశ్న అడగండి.",remind:'3 రోజుల్లో గుర్తు చేయమంటారా?',saved:'సరే, గుర్తు చేస్తాను.',
+ s1:'సులభంగా చెబుదాం. పంట పేరు మాత్రమే చెప్పండి.',s2:'ఇప్పుడు ఒక సమస్య పదం చెప్పండి: ముడత, పసుపు, మచ్చలు.',sure:'ఇది {p} లాగా ఉంది. నాకు బాగా నమ్మకం ఉంది.',unsure:'ఇది {p} కావచ్చు. నాకు పూర్తిగా నమ్మకం లేదు.',act:'ఈరోజు చేయవలసింది:',av:'చేయకూడనిది:',chk:'{n} రోజుల్లో మొక్కలను చూడండి.',rem:'మొక్కలు చూడండి',unsup:'Chrome అవసరం.'},
+hi:{st:['बोलने के लिए दबाएँ','सुन रहा हूँ...','सोच रहा हूँ...','बोल रहा हूँ...'],greet:'बताइए आपकी फसल में क्या दिक्कत है। बटन दबाकर बोलिए।',heard:'मैंने सुना:',ok:'क्या यह सही है?',sorry:'माफ़ कीजिए। कृपया फिर से बताइए।',
+ clear:'मुझे साफ़ सुनाई नहीं दिया। कृपया शांत जगह जाकर फिर कोशिश करें।',silence:'मुझे कुछ सुनाई नहीं दिया। बटन दबाकर बोलिए।',slow:'नेटवर्क धीमा है। कृपया रुकिए।',fail:'कनेक्ट नहीं हो सका। कृपया फिर कोशिश करें।',
+ unk:'इसके लिए मेरे पास भरोसेमंद सलाह नहीं है। कृपया पौधा अपने कृषि अधिकारी को दिखाइए।',follow:"दोबारा सुनने के लिए 'रिपीट' कहें, या दूसरा सवाल पूछें।",remind:'क्या 3 दिन बाद याद दिलाऊँ?',saved:'ठीक है, मैं याद दिलाऊँगा।',
+ s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'Chrome चाहिए।'}};
+const $=id=>document.getElementById(id);
+const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,rate:1,rec:null,last:'',greeted:false};
+const T=(k,v={})=>(STR[S.rl][k]||'').replace(/\{(\w+)\}/g,(_,x)=>v[x]);
+const stat=i=>{$('status').textContent=STR[S.lang].st[i];$('mic').className=i==1?'listen':i?'busy':'';};
+const add=(c,t)=>{const d=document.createElement('div');d.className='m '+c;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=1e5;};
+const chk=()=>{if(S.cur!==S.tok)throw'abort'};
+function stopAll(){S.tok++;try{S.rec&&S.rec.abort()}catch(e){}speechSynthesis.cancel();stat(0)}
+
+function speakOne(s){return new Promise(r=>{const u=new SpeechSynthesisUtterance(s);u.lang=LANGS[S.rl].bcp;u.rate=S.rate;let d=0;const f=()=>{if(!d){d=1;r()}};
+ u.onend=f;u.onerror=f;setTimeout(f,Math.max(2500,s.length*160/S.rate));speechSynthesis.speak(u)})}
+async function say(text){chk();add('app',text);stat(3);speechSynthesis.cancel();
+ for(const s of text.split(/(?<=[.।?])\s+/).filter(Boolean)){await speakOne(s);chk()} stat(2)}
+
+function listen(){return new Promise(res=>{
+ if(S.fake.length){const f=S.fake.shift();stat(1);return setTimeout(()=>res({text:f.t,conf:f.c}),700)}
+ if(S.fakeMode)return res({err:'end'});
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){add('sys',T('unsup'));return res({err:'x'})}
+ const r=new SR();S.rec=r;r.lang=LANGS[S.lang].bcp;r.interimResults=true;r.continuous=true;
+ let txt='',conf=0,nc=0,started=0,spoke=0,done=0,tm={};
+ const fin=o=>{if(done)return;done=1;Object.values(tm).forEach(clearTimeout);try{r.stop()}catch(e){}res(o)};
+ const end=()=>fin(txt.trim()?{text:txt.trim(),conf:nc?conf/nc:.7}:{err:'silence'});
+ tm.slow=setTimeout(()=>{if(!started){add('app',T('slow'));speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(T('slow')),{lang:LANGS[S.rl].bcp}))}},8000);
+ tm.fail=setTimeout(()=>{if(!started)fin({err:'net'})},20000);
+ tm.max=setTimeout(end,30000);
+ r.onaudiostart=()=>{started=1;stat(1);clearTimeout(tm.slow);clearTimeout(tm.fail);tm.sil=setTimeout(()=>{if(!spoke)fin({err:'silence'})},8000)};
+ r.onspeechstart=()=>{spoke=1;clearTimeout(tm.sil)};
+ r.onresult=e=>{txt='';conf=0;nc=0;for(let i=0;i<e.results.length;i++){const a=e.results[i][0];txt+=a.transcript+' ';if(e.results[i].isFinal){conf+=a.confidence||.7;nc++}}
+  clearTimeout(tm.stop);tm.stop=setTimeout(()=>{if(nc||txt.trim())end()},2000)};  // stop after 2 s of silence
+ r.onerror=e=>fin({err:e.error=='network'?'net':e.error=='aborted'?'end':e.error=='not-allowed'?'perm':'silence'});
+ r.onend=end;
+ stat(1);try{r.start()}catch(e){fin({err:'x'})}})}
+
+async function capture(min=3){chk();const r=await listen();chk();stat(2);
+ if(r.err=='silence'){await say(T('silence'));return null}
+ if(r.err=='net'){await say(T('fail'));return null}
+ if(r.err){if(r.err=='perm')add('sys','Microphone permission denied.');return null}
+ const w=r.text.trim().split(/\s+/).length;add('you',r.text);
+ if(r.conf<.6||w<min){await say(T('clear'));return null}   // never act on low-confidence text
+ return r.text}
+
+const norm=s=>s.toLowerCase();
+const has=(s,l)=>l.some(w=>/^[a-z ]+$/.test(w)?new RegExp('\\b'+w+'\\b').test(s):s.includes(w));
+const yn=s=>{s=norm(s);return has(s,KB.no)?0:has(s,KB.yes)?1:-1};
+function detect(t){let te=0,hi=0,la=0;t.split(/\s+/).forEach(w=>{if(/[\u0C00-\u0C7F]/.test(w))te++;else if(/[\u0900-\u097F]/.test(w))hi++;else if(/[a-z]/i.test(w))la++});
+ return te>la&&te>=hi?'te':hi>la?'hi':S.lang}
+function extract(text){const s=norm(text),tags=new Set(),hits={};
+ for(const[k,w]of Object.entries(KB.lex))if(has(s,w))tags.add(k);
+ KB.entries.forEach(e=>{if(has(s,e.names.map(norm)))hits[e.id]=1}); // synonym list (local pest names) → standard names
+ const st=Object.keys(KB.stages).find(k=>has(s,KB.stages[k]));
+ const di=Object.keys(KB.districts).find(k=>has(s,KB.districts[k]));
+ return{text,tags,hits,crop:has(s,KB.cropnames),stage:st,district:di}}
+function score(x){return KB.entries.map(e=>({e,n:e.tags.filter(t=>x.tags.has(t)).length+(x.hits[e.id]?3:0)})).sort((a,b)=>b.n-a.n)}
+const lab=(t)=>KB.labels[t][LANGS[S.rl].li];
+function showTags(x){const c=$('tags');c.innerHTML='';const a=[KB.crop[S.rl]+(x.crop?'':' ?')];if(x.stage)a.push('🌱 '+x.stage);[...x.tags].forEach(t=>t!='rain'&&a.push(lab(t)));
+ if(x.tags.has('rain'))a.push('🌧 '+lab('rain'));if(x.district)a.push('📍 '+x.district);a.forEach(t=>{const d=document.createElement('span');d.className='tag';d.textContent=t;c.appendChild(d)})}
+function heardLine(x){const sy=[...x.tags].map(lab);return T('heard')+' '+(sy.length?KB.crop[S.rl]+', '+sy.join(', '):x.text)+'. '+T('ok')}
+
+async function session(text0){
+ const my=S.cur=++S.tok;$('badge').style.display='none';
+ try{ if(!S.greeted){await say(T('greet'));S.greeted=true}
+  await flow(text0===undefined?await capture(3):text0);
+ }catch(e){if(e!=='abort')console.error(e)} if(S.cur===my)stat(0);S.fakeMode=false}
+
+async function flow(text){let no=0,x;
+ while(text){S.rl=detect(text);x=extract(text);showTags(x);await say(heardLine(x));
+  const a=await capture(1);if(!a)return;
+  if(yn(a)===1)break;
+  if(++no>=2){await say(T('s1'));const c=await capture(1);await say(T('s2'));const w=await capture(1);x=extract((c||'')+' '+(w||''));showTags(x);break} // simple mode
+  await say(T('sorry'));text=await capture(3);if(!text)return}
+ if(!x)return;await answer(x)}
+
+async function answer(x){stat(2);let asked=0;const done=new Set();let sc;
+ for(;;){sc=score(x);const[a,b]=sc;
+  if(a.n==0)return unknown();
+  if(asked<3&&a.n-b.n<2&&a.n<4){const q=[a,b].map(o=>o.e).find(e=>e.q&&!done.has(e.id));
+   if(q){done.add(q.id);asked++;await say(q.q[S.rl]);const r=await capture(1);if(!r)return;if(yn(r)===1){x.tags.add(q.q.tag);showTags(x)}continue}}
+  break}
+ const[a,b]=sc,e=a.e,L=e[S.rl],sure=a.n>=3&&a.n-b.n>=2;
+ const sp=[T(sure?'sure':'unsure',{p:L.n}),T('act'),L.a,T('av'),L.v,T('chk',{n:e.rc})].join(' ');
+ S.last=sp;await say(sp);
+ await say(T('remind'));const r=await capture(1);
+ if(r&&yn(r)===1){saveRem(e.rc);await say(T('saved'))}
+ await followUp()}
+
+function unknown(){$('badge').style.display='block';return say(T('unk'))}
+async function followUp(){await say(T('follow'));
+ for(;;){const c=await capture(1);if(!c)return;const s=norm(c);
+  if(has(s,KB.cmd.slow)){S.rate=.8;await say(S.last)}
+  else if(has(s,KB.cmd.repeat))await say(S.last);
+  else if(has(s,KB.cmd.new)){S.rate=1;return}
+  else return flow(c)}}
+
+function saveRem(d){try{const a=JSON.parse(localStorage.getItem('rem')||'[]');a.push({t:T('rem'),due:Date.now()+d*864e5,lang:S.rl});localStorage.setItem('rem',JSON.stringify(a))}catch(e){}drawRem()}
+function drawRem(){let a=[];try{a=JSON.parse(localStorage.getItem('rem')||'[]')}catch(e){}$('rem').innerHTML='';
+ a.slice(-3).forEach(r=>{const d=document.createElement('div');d.className='card';d.textContent='⏰ '+r.t+' — '+new Date(r.due).toLocaleDateString();$('rem').appendChild(d)})}
+
+async function mic(){if(S.cur===S.tok&&$('mic').className){stopAll();return}
+ try{const st=await navigator.mediaDevices.getUserMedia({audio:{noiseSuppression:true,echoCancellation:true,autoGainControl:true}});st.getTracks().forEach(t=>t.stop())}catch(e){}
+ S.rate=1;S.rl=S.lang;$('tags').innerHTML='';session()}
+$('mic').onclick=mic;
+$('langs').onclick=e=>{const l=e.target.dataset.l;if(!l)return;stopAll();S.lang=S.rl=l;S.greeted=false;document.documentElement.lang=l;[...$('langs').children].forEach(b=>b.classList.toggle('on',b.dataset.l==l));stat(0)};
+// Developer test: three pre-recorded inputs (text + confidence) fed through the same pipeline
+const FAKES=[
+ {l:'te',q:[{t:'నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది',c:.93},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
+ {l:'te',q:[{t:'aaku curl avutunnayi, white insects undi',c:.68},{t:'avunu',c:.8},{t:'avunu',c:.8},{t:'kaadu',c:.8}]},
+ {l:'te',q:[{t:'పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి',c:.9},{t:'అవును',c:.9}]}];
+$('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex'};
+$('devp').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;stopAll();const f=FAKES[i];$('langs').querySelector('[data-l="'+f.l+'"]').click();
+ S.fake=f.q.slice();S.fakeMode=true;S.greeted=true;$('log').innerHTML='';$('tags').innerHTML='';session()};
+fetch('kb.json').then(r=>r.json()).then(j=>{KB=j;stat(0);add('app',STR.te.greet);drawRem()}).catch(()=>{add('sys','Could not load kb.json. Serve this folder over http(s), e.g. GitHub Pages or: python3 -m http.server')});
+</script></body></html>
