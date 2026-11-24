@@ -96,16 +96,16 @@ async function capture(min=3){chk();const r=await listen();chk();stat(2);
  return r.text}
 
 const norm=s=>s.toLowerCase();
-const has=(s,l)=>l.some(w=>/^[a-z ]+$/.test(w)?new RegExp('\\b'+w+'\\b').test(s):s.includes(w));
+const has=(s,l,pre)=>l.some(w=>/^[a-z ]+$/.test(w)?new RegExp('\\b'+w+(pre?'':'\\b')).test(s):s.includes(w)); // pre=1: match word starts (curl→curling, insect→insects, rain→rained)
 const yn=s=>{s=norm(s);return has(s,KB.no)?0:has(s,KB.yes)?1:-1};
 function detect(t){let te=0,hi=0,la=0;t.split(/\s+/).forEach(w=>{if(/[\u0C00-\u0C7F]/.test(w))te++;else if(/[\u0900-\u097F]/.test(w))hi++;else if(/[a-z]/i.test(w))la++});
  return te>la&&te>=hi?'te':hi>la?'hi':S.lang}
 function extract(text){const s=norm(text),tags=new Set(),hits={};
- for(const[k,w]of Object.entries(KB.lex))if(has(s,w))tags.add(k);
- KB.entries.forEach(e=>{if(has(s,e.names.map(norm)))hits[e.id]=1}); // synonym list (local pest names) → standard names
- const st=Object.keys(KB.stages).find(k=>has(s,KB.stages[k]));
+ for(const[k,w]of Object.entries(KB.lex))if(has(s,w,1))tags.add(k);
+ KB.entries.forEach(e=>{if(has(s,e.names.map(norm),1))hits[e.id]=1}); // synonym list (local pest names) → standard names
+ const st=Object.keys(KB.stages).find(k=>has(s,KB.stages[k],1));
  const di=Object.keys(KB.districts).find(k=>has(s,KB.districts[k]));
- return{text,tags,hits,crop:has(s,KB.cropnames),stage:st,district:di}}
+ return{text,tags,hits,crop:has(s,KB.cropnames,1),stage:st,district:di}}
 function score(x){return KB.entries.map(e=>({e,n:e.tags.filter(t=>x.tags.has(t)).length+(x.hits[e.id]?3:0)})).sort((a,b)=>b.n-a.n)}
 const lab=(t)=>KB.labels[t][LANGS[S.rl].li];
 function showTags(x){const c=$('tags');c.innerHTML='';const a=[KB.crop[S.rl]+(x.crop?'':' ?')];if(x.stage)a.push('🌱 '+x.stage);[...x.tags].forEach(t=>t!='rain'&&a.push(lab(t)));
