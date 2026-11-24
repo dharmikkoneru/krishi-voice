@@ -25,6 +25,7 @@ h1{font-size:20px;margin:4px 0 0;text-align:center}
 #dev{font-size:14px;text-align:center;opacity:.35}#dev a{color:var(--mut)}
 #devp{display:none;border:1px dashed var(--bd);border-radius:10px;padding:10px;gap:8px;flex-direction:column}
 #devp button{min-height:44px;font-size:16px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--fg)}
+#diag{font-size:13px;line-height:1.4;color:var(--mut);text-align:left}
 </style></head><body><main>
 <h1>🌶️ Krishi Voice</h1>
 <div class="langs" id="langs"><button data-l="te" class="on">తెలుగు</button><button data-l="hi">हिन्दी</button><button data-l="en">English</button></div>
@@ -36,7 +37,7 @@ h1{font-size:20px;margin:4px 0 0;text-align:center}
 <div id="rem"></div>
 <div id="dev"><a href="#dev" id="devlink">·</a></div>
 <div id="devp"><b>Developer test</b>
-<button data-i="0">1 · Clear Telugu</button><button data-i="1">2 · Noisy mixed Telugu-English</button><button data-i="2">3 · Unknown problem</button></div>
+<button data-i="0">1 · Clear Telugu</button><button data-i="1">2 · Noisy mixed Telugu-English</button><button data-i="2">3 · Unknown problem</button><div id="diag"></div></div>
 </main>
 <script>
 let KB;
@@ -46,15 +47,15 @@ const STR={
 en:{st:['Tap to speak','Listening...','Thinking...','Speaking...'],greet:'Tell me what is wrong with your crop. Tap the button and speak.',heard:'I heard:',ok:'Is that correct?',sorry:'Sorry. Please say it again.',
  clear:'I could not hear you clearly. Please move to a quieter place and try again.',silence:'I did not hear anything. Tap the button and speak.',slow:'The network is slow. Please wait.',fail:'I could not connect. Please try again.',
  unk:'I do not have reliable advice for this. Please show the plant to your local agriculture officer.',follow:"Say 'repeat' to hear it again, or ask another question.",remind:'Shall I remind you in {n} days?',saved:'Okay, I will remind you.',
- s1:'Let us try simply. Say only the crop name.',s2:'Now say one problem word, like curling, yellow or spots.',sure:'This looks like {p}. I am fairly sure.',unsure:'This may be {p}. I am not fully sure.',act:'Do this today:',av:'Avoid:',chk:'Look at the plants in {n} days.',rem:'Check plants',unsup:'Speech recognition needs Chrome.'},
+ s1:'Let us try simply. Say only the crop name.',s2:'Now say one problem word, like curling, yellow or spots.',sure:'This looks like {p}. I am fairly sure.',unsure:'This may be {p}. I am not fully sure.',act:'Do this today:',av:'Avoid:',chk:'Look at the plants in {n} days.',rem:'Check plants',unsup:'Speech recognition needs Chrome.',novoice:'This phone has no English voice installed, so I cannot speak. Install it in Settings, Text-to-speech output, Google, Install voice data, then English. The answer is shown as text.'},
 te:{st:['మాట్లాడటానికి నొక్కండి','వింటున్నాను...','ఆలోచిస్తున్నాను...','చెబుతున్నాను...'],greet:'మీ పంటకు ఏమైంది చెప్పండి. బటన్ నొక్కి మాట్లాడండి.',heard:'నేను విన్నది:',ok:'ఇది సరైనదేనా?',sorry:'క్షమించండి. దయచేసి మళ్లీ చెప్పండి.',
  clear:'నాకు స్పష్టంగా వినపడలేదు. దయచేసి నిశ్శబ్ద ప్రదేశానికి వెళ్లి మళ్లీ ప్రయత్నించండి.',silence:'నాకు ఏమీ వినపడలేదు. బటన్ నొక్కి మాట్లాడండి.',slow:'నెట్‌వర్క్ నెమ్మదిగా ఉంది. దయచేసి వేచి ఉండండి.',fail:'కనెక్ట్ కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి.',
  unk:'దీనికి నా దగ్గర నమ్మదగిన సలహా లేదు. దయచేసి మీ స్థానిక వ్యవసాయ అధికారికి మొక్కను చూపించండి.',follow:"మళ్లీ వినాలంటే 'రిపీట్' అనండి, లేదా మరో ప్రశ్న అడగండి.",remind:'{n} రోజుల్లో గుర్తు చేయమంటారా?',saved:'సరే, గుర్తు చేస్తాను.',
- s1:'సులభంగా చెబుదాం. పంట పేరు మాత్రమే చెప్పండి.',s2:'ఇప్పుడు ఒక సమస్య పదం చెప్పండి: ముడత, పసుపు, మచ్చలు.',sure:'ఇది {p} లాగా ఉంది. నాకు బాగా నమ్మకం ఉంది.',unsure:'ఇది {p} కావచ్చు. నాకు పూర్తిగా నమ్మకం లేదు.',act:'ఈరోజు చేయవలసింది:',av:'చేయకూడనిది:',chk:'{n} రోజుల్లో మొక్కలను చూడండి.',rem:'మొక్కలు చూడండి',unsup:'Chrome అవసరం.'},
+ s1:'సులభంగా చెబుదాం. పంట పేరు మాత్రమే చెప్పండి.',s2:'ఇప్పుడు ఒక సమస్య పదం చెప్పండి: ముడత, పసుపు, మచ్చలు.',sure:'ఇది {p} లాగా ఉంది. నాకు బాగా నమ్మకం ఉంది.',unsure:'ఇది {p} కావచ్చు. నాకు పూర్తిగా నమ్మకం లేదు.',act:'ఈరోజు చేయవలసింది:',av:'చేయకూడనిది:',chk:'{n} రోజుల్లో మొక్కలను చూడండి.',rem:'మొక్కలు చూడండి',unsup:'Chrome అవసరం.',novoice:'ఈ ఫోన్‌లో తెలుగు వాయిస్ లేదు, అందుకే నేను మాట్లాడలేను. Settings, Text-to-speech output, Google, Install voice data లో తెలుగు ఇన్‌స్టాల్ చేయండి. సమాధానం టెక్స్ట్‌గా కింద ఉంది.'},
 hi:{st:['बोलने के लिए दबाएँ','सुन रहा हूँ...','सोच रहा हूँ...','बोल रहा हूँ...'],greet:'बताइए आपकी फसल में क्या दिक्कत है। बटन दबाकर बोलिए।',heard:'मैंने सुना:',ok:'क्या यह सही है?',sorry:'माफ़ कीजिए। कृपया फिर से बताइए।',
  clear:'मुझे साफ़ सुनाई नहीं दिया। कृपया शांत जगह जाकर फिर कोशिश करें।',silence:'मुझे कुछ सुनाई नहीं दिया। बटन दबाकर बोलिए।',slow:'नेटवर्क धीमा है। कृपया रुकिए।',fail:'कनेक्ट नहीं हो सका। कृपया फिर कोशिश करें।',
  unk:'इसके लिए मेरे पास भरोसेमंद सलाह नहीं है। कृपया पौधा अपने कृषि अधिकारी को दिखाइए।',follow:"दोबारा सुनने के लिए 'रिपीट' कहें, या दूसरा सवाल पूछें।",remind:'क्या {n} दिन बाद याद दिलाऊँ?',saved:'ठीक है, मैं याद दिलाऊँगा।',
- s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'Chrome चाहिए।'}};
+ s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'Chrome चाहिए।',novoice:'इस फ़ोन में हिन्दी आवाज़ नहीं है, इसलिए मैं बोल नहीं सकता। Settings, Text-to-speech output, Google, Install voice data में हिन्दी इंस्टॉल करें। जवाब नीचे लिखा है।'}};
 const $=id=>document.getElementById(id);
 const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,rate:1,rec:null,last:'',greeted:false};
 const T=(k,v={})=>(STR[S.rl][k]||'').replace(/\{(\w+)\}/g,(_,x)=>v[x]);
@@ -63,10 +64,17 @@ const add=(c,t)=>{const d=document.createElement('div');d.className='m '+c;d.tex
 const chk=()=>{if(S.cur!==S.tok)throw'abort'};
 function stopAll(){S.tok++;try{S.rec&&S.rec.abort()}catch(e){}speechSynthesis.cancel();stat(0)}
 
-function speakOne(s){return new Promise(r=>{const u=new SpeechSynthesisUtterance(s);u.lang=LANGS[S.rl].bcp;u.rate=S.rate;let d=0;const f=()=>{if(!d){d=1;r()}};
+let VOICES=[];const loadVoices=()=>{try{VOICES=speechSynthesis.getVoices()||[]}catch(e){VOICES=[]}};
+loadVoices();try{speechSynthesis.onvoiceschanged=loadVoices}catch(e){}
+const voiceFor=l=>{const p=LANGS[l].bcp.toLowerCase().split('-')[0];return VOICES.find(v=>(v.lang||'').toLowerCase().replace('_','-').split('-')[0]===p)||null};
+const voiceCount=l=>VOICES.filter(v=>(v.lang||'').toLowerCase().replace('_','-').split('-')[0]===LANGS[l].bcp.toLowerCase().split('-')[0]).length;
+const voicesReady=()=>new Promise(r=>{if(VOICES.length)return r();let n=0;const t=setInterval(()=>{loadVoices();if(VOICES.length||++n>=10){clearInterval(t);r()}},150)});
+let noVoiceWarned=false;
+async function speakOne(s){if(!voiceFor(S.rl)){if(!noVoiceWarned){noVoiceWarned=true;add('sys',T('novoice'))}return}
+ return new Promise(r=>{const u=new SpeechSynthesisUtterance(s);u.lang=LANGS[S.rl].bcp;u.rate=S.rate;let d=0;const f=()=>{if(!d){d=1;r()}};
  u.onend=f;u.onerror=f;setTimeout(f,Math.max(2500,s.length*160/S.rate));speechSynthesis.speak(u)})}
 async function say(text){chk();add('app',text);stat(3);speechSynthesis.cancel();
- for(const s of text.split(/(?<=[.।?])\s+/).filter(Boolean)){await speakOne(s);chk()} stat(2)}
+ await voicesReady();for(const s of text.split(/(?<=[.।?])\s+/).filter(Boolean)){await speakOne(s);chk()} stat(2)}
 
 function listen(){return new Promise(res=>{
  if(S.fake.length){const f=S.fake.shift();stat(1);return setTimeout(()=>res({text:f.t,conf:f.c}),700)}
@@ -76,7 +84,7 @@ function listen(){return new Promise(res=>{
  let txt='',conf=0,nc=0,started=0,spoke=0,done=0,tm={};
  const fin=o=>{if(done)return;done=1;Object.values(tm).forEach(clearTimeout);try{r.stop()}catch(e){}res(o)};
  const end=()=>fin(txt.trim()?{text:txt.trim(),conf:nc?conf/nc:.7}:{err:'silence'});
- tm.slow=setTimeout(()=>{if(!started){add('app',T('slow'));speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(T('slow')),{lang:LANGS[S.rl].bcp}))}},8000);
+ tm.slow=setTimeout(()=>{if(!started){add('app',T('slow'));if(voiceFor(S.rl))speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(T('slow')),{lang:LANGS[S.rl].bcp}))}},8000);
  tm.fail=setTimeout(()=>{if(!started)fin({err:'net'})},20000);
  tm.max=setTimeout(end,30000);
  r.onaudiostart=()=>{started=1;stat(1);clearTimeout(tm.slow);clearTimeout(tm.fail);tm.sil=setTimeout(()=>{if(!spoke)fin({err:'silence'})},8000)};
@@ -166,7 +174,7 @@ const FAKES=[
  {l:'te',q:[{t:'నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది',c:.93},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
  {l:'te',q:[{t:'aaku curl avutunnayi, white insects undi',c:.68},{t:'avunu',c:.8},{t:'avunu',c:.8},{t:'kaadu',c:.8}]},
  {l:'te',q:[{t:'పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి',c:.9},{t:'అవును',c:.9}]}];
-$('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex'};
+$('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex';loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')};
 $('devp').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;stopAll();const f=FAKES[i];$('langs').querySelector('[data-l="'+f.l+'"]').click();
  S.fake=f.q.slice();S.fakeMode=true;S.greeted=true;$('log').innerHTML='';$('tags').innerHTML='';session()};
 fetch('kb.json').then(r=>r.json()).then(j=>{KB=j;stat(0);add('app',STR.te.greet);drawRem()}).catch(()=>{add('sys','Could not load kb.json. Serve this folder over http(s), e.g. GitHub Pages or: python3 -m http.server')});
