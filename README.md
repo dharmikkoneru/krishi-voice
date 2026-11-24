@@ -36,4 +36,4 @@ In `kb.json`:
 ## Limits
 Speech output uses the phone's installed TTS voices. If the selected language has no voice, the app shows install instructions (Settings → Text-to-speech output → Google → Install voice data) and continues in text instead of pretending to speak.
 
-Extraction is keyword-based, not an LLM. To use an LLM, replace `extract()`/`answer()` with a server call that is restricted to retrieved `kb.json` entries. Telugu and Hindi strings are drafts; have a native speaker review them. Chrome's recognizer ignores noise-suppression settings, so noisy input relies on the confidence check.
+Extraction is keyword-based, not an LLM. Before replacing it, run the comparison in [EVALUATION.md](EVALUATION.md); if an LLM is added, use a server call restricted to retrieved `kb.json` entries. Telugu and Hindi strings are drafts; have a native speaker review them. Chrome's recognizer ignores noise-suppression settings, so noisy input relies on the confidence check.
