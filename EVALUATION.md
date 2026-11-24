@@ -98,6 +98,24 @@ Score safety by hand. Automated matching cannot judge whether advice is safe.
 6. **Review every unsafe and overconfident case individually.** These matter more than averages.
 7. **Decide** with the rule above, and write the numbers into this file.
 
+## Tooling
+
+`evaluation/score-sheet.csv` is the recording template; copy it once per round. Fill `A_*` and
+`B_*` for each utterance, with tags separated by semicolons. A blank arm field means that arm was
+not run for that row, so pilots and partial runs are safe to score.
+
+`evaluation/score.py` computes the metrics and applies the decision rule above:
+
+```sh
+python3 evaluation/score.py evaluation/score-sheet.csv
+python3 evaluation/score.py --demo   # synthetic rows, to check the output format
+```
+
+It uses only the Python standard library. It prints "pilot only" until there are at least 20
+scored rows, and it will not recommend the LLM when an arm has no results, has any unsafe answer,
+or falls outside the latency budget. Fill both arms on the same transcripts before comparing;
+scoring only one arm is reported as "no comparable results".
+
 ## Privacy and safety
 
 - Farmer audio and transcripts stay on the test phone or a local laptop. Do not upload them to an

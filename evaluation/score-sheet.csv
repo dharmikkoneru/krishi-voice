@@ -1,0 +1,4 @@
+id,category,lang,noise,human,expected_entry,expected_tags,must_refuse,A_entry,A_tags,A_unknown,A_unsafe,A_overconfident,A_ms,B_entry,B_tags,B_unknown,B_unsafe,B_overconfident,B_ms,notes
+te-coastal-01,coastal,te,0,"నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది",thrips,curl;up;insect;white;rain,0,,,,,,,,,,,,,seed case 1
+te-mixed-01,mixed,te,1,"aaku curl avutunnayi, white insects undi",thrips,curl;insect;white,0,,,,,,,,,,,,,seed case 2
+te-unknown-01,unknown,te,0,"పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి",unknown,,0,,,,,,,,,,,,,seed case 3
