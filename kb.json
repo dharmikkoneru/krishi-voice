@@ -1,0 +1,439 @@
+{
+ "crop": {
+  "en": "chilli",
+  "te": "మిరప",
+  "hi": "मिर्च"
+ },
+ "entries": [
+  {
+   "id": "thrips",
+   "names": [
+    "thrips",
+    "pachcha purugu",
+    "tamara purugu",
+    "తామర",
+    "थ्रिप्स"
+   ],
+   "tags": [
+    "curl",
+    "up",
+    "insect",
+    "white"
+   ],
+   "rc": 3,
+   "q": {
+    "tag": "up",
+    "en": "Are the leaves curling upward?",
+    "te": "ఆకులు పైకి ముడుచుకుంటున్నాయా?",
+    "hi": "क्या पत्ते ऊपर की ओर मुड़ रहे हैं?"
+   },
+   "en": {
+    "n": "thrips",
+    "a": "Spray neem oil on the underside of the leaves this evening.",
+    "v": "Do not spray strong chemicals today."
+   },
+   "te": {
+    "n": "తామర పురుగులు",
+    "a": "ఈరోజు సాయంత్రం ఆకుల అడుగున వేపనూనె పిచికారీ చేయండి.",
+    "v": "ఈరోజు బలమైన రసాయన మందులు చల్లకండి."
+   },
+   "hi": {
+    "n": "थ्रिप्स",
+    "a": "आज शाम पत्तियों के नीचे नीम तेल का छिड़काव करें।",
+    "v": "आज तेज़ रासायनिक दवा न छिड़कें।"
+   }
+  },
+  {
+   "id": "mites",
+   "names": [
+    "mites",
+    "erra nalli",
+    "nalli",
+    "నల్లి",
+    "माइट",
+    "मकड़ी"
+   ],
+   "tags": [
+    "curl",
+    "down",
+    "bronze"
+   ],
+   "rc": 3,
+   "q": {
+    "tag": "down",
+    "en": "Are the leaves curling downward?",
+    "te": "ఆకులు కిందికి ముడుచుకుంటున్నాయా?",
+    "hi": "क्या पत्ते नीचे की ओर मुड़ रहे हैं?"
+   },
+   "en": {
+    "n": "mites",
+    "a": "Spray neem oil or plain water on the underside of the leaves.",
+    "v": "Do not mix chemicals without advice."
+   },
+   "te": {
+    "n": "ఎర్ర నల్లి",
+    "a": "ఆకుల అడుగున వేపనూనె లేదా నీళ్లు పిచికారీ చేయండి.",
+    "v": "సలహా లేకుండా రసాయనాలు కలపకండి."
+   },
+   "hi": {
+    "n": "माइट (मकड़ी)",
+    "a": "पत्तियों के नीचे नीम तेल या साफ पानी छिड़कें।",
+    "v": "बिना सलाह के रसायन न मिलाएँ।"
+   }
+  },
+  {
+   "id": "virus",
+   "names": [
+    "leaf curl virus",
+    "virus",
+    "vairas",
+    "ఆకుముడత",
+    "वायरस"
+   ],
+   "tags": [
+    "curl",
+    "yellow",
+    "stunt",
+    "white"
+   ],
+   "rc": 5,
+   "q": {
+    "tag": "stunt",
+    "en": "Are the new leaves small and yellow?",
+    "te": "కొత్త ఆకులు చిన్నగా, పసుపుగా ఉన్నాయా?",
+    "hi": "क्या नए पत्ते छोटे और पीले हैं?"
+   },
+   "en": {
+    "n": "leaf curl virus",
+    "a": "Pull out badly curled plants and put them far from the field.",
+    "v": "Do not take seed or seedlings from sick plants."
+   },
+   "te": {
+    "n": "ఆకుముడత వైరస్",
+    "a": "బాగా ముడతపడిన మొక్కలను పీకి పొలానికి దూరంగా వేయండి.",
+    "v": "జబ్బు మొక్కల నుంచి విత్తనం లేదా నారు వాడకండి."
+   },
+   "hi": {
+    "n": "लीफ कर्ल वायरस",
+    "a": "ज्यादा मुड़े पौधों को उखाड़कर खेत से दूर फेंकें।",
+    "v": "बीमार पौधों से बीज या पौध न लें।"
+   }
+  },
+  {
+   "id": "anthracnose",
+   "names": [
+    "anthracnose",
+    "dieback",
+    "కాయ కుళ్లు",
+    "एन्थ्रेक्नोज"
+   ],
+   "tags": [
+    "spots",
+    "fruit",
+    "rain"
+   ],
+   "rc": 4,
+   "q": {
+    "tag": "spots",
+    "en": "Are there dark sunken spots on the fruit?",
+    "te": "కాయలపై నల్లటి గుంతల మచ్చలు ఉన్నాయా?",
+    "hi": "क्या फलों पर काले धंसे धब्बे हैं?"
+   },
+   "en": {
+    "n": "anthracnose",
+    "a": "Pick the spotted fruits and drop them away from the field.",
+    "v": "Do not spray when rain is coming."
+   },
+   "te": {
+    "n": "కాయ కుళ్లు తెగులు",
+    "a": "మచ్చలున్న కాయలను కోసి పొలానికి దూరంగా వేయండి.",
+    "v": "వర్షం వచ్చేటప్పుడు మందు చల్లకండి."
+   },
+   "hi": {
+    "n": "एन्थ्रेक्नोज",
+    "a": "धब्बे वाले फल तोड़कर खेत से दूर डालें।",
+    "v": "बारिश आने से पहले छिड़काव न करें।"
+   }
+  },
+  {
+   "id": "borer",
+   "names": [
+    "fruit borer",
+    "borer",
+    "kaya tulchu",
+    "కాయతొలుచు",
+    "फल छेदक"
+   ],
+   "tags": [
+    "hole",
+    "fruit",
+    "caterpillar"
+   ],
+   "rc": 3,
+   "q": {
+    "tag": "hole",
+    "en": "Are there holes in the fruit?",
+    "te": "కాయలలో రంధ్రాలు ఉన్నాయా?",
+    "hi": "क्या फलों में छेद हैं?"
+   },
+   "en": {
+    "n": "fruit borer",
+    "a": "Pick the fruits with holes and destroy them today.",
+    "v": "Do not leave damaged fruits on the ground."
+   },
+   "te": {
+    "n": "కాయ తొలుచు పురుగు",
+    "a": "రంధ్రాలున్న కాయలను కోసి ఈరోజే నాశనం చేయండి.",
+    "v": "పాడైన కాయలను నేలపై వదలకండి."
+   },
+   "hi": {
+    "n": "फल छेदक",
+    "a": "छेद वाले फल तोड़कर आज ही नष्ट करें।",
+    "v": "खराब फल जमीन पर न छोड़ें।"
+   }
+  }
+ ],
+ "lex": {
+  "curl": [
+   "curl",
+   "muduru",
+   "mudat",
+   "ముడ",
+   "मुड़",
+   "सिकुड़"
+  ],
+  "up": [
+   "upward",
+   "paiki",
+   "పైకి",
+   "ऊपर"
+  ],
+  "down": [
+   "downward",
+   "kindiki",
+   "కిందికి",
+   "క్రిందికి",
+   "नीचे की ओर"
+  ],
+  "insect": [
+   "insect",
+   "purugu",
+   "పురుగ",
+   "कीड़े",
+   "कीट"
+  ],
+  "white": [
+   "white",
+   "tella",
+   "తెల్ల",
+   "सफेद",
+   "सफ़ेद"
+  ],
+  "yellow": [
+   "yellow",
+   "pasupu",
+   "పసుపు",
+   "पीला",
+   "पीली"
+  ],
+  "spots": [
+   "spot",
+   "machha",
+   "మచ్చ",
+   "धब्बे"
+  ],
+  "fruit": [
+   "fruit",
+   "kaya",
+   "కాయ",
+   "फल"
+  ],
+  "hole": [
+   "hole",
+   "rampam",
+   "రంధ్ర",
+   "छेद"
+  ],
+  "caterpillar": [
+   "caterpillar",
+   "worm",
+   "గొంగళి",
+   "इल्ली"
+  ],
+  "stunt": [
+   "stunt",
+   "small leaves",
+   "ఎదుగ",
+   "बौन"
+  ],
+  "bronze": [
+   "bronze",
+   "purple",
+   "ఎర్ర",
+   "लाल"
+  ],
+  "rain": [
+   "rain",
+   "varsham",
+   "వర్ష",
+   "बारिश"
+  ]
+ },
+ "labels": {
+  "curl": [
+   "leaves curling",
+   "ఆకులు ముడుచుకోవడం",
+   "पत्ते मुड़ना"
+  ],
+  "up": [
+   "curling upward",
+   "పైకి",
+   "ऊपर की ओर"
+  ],
+  "down": [
+   "curling downward",
+   "కిందికి",
+   "नीचे की ओर"
+  ],
+  "insect": [
+   "small insects",
+   "చిన్న పురుగులు",
+   "छोटे कीड़े"
+  ],
+  "white": [
+   "white colour",
+   "తెల్లగా",
+   "सफेद"
+  ],
+  "yellow": [
+   "yellow",
+   "పసుపు",
+   "पीला"
+  ],
+  "spots": [
+   "spots",
+   "మచ్చలు",
+   "धब्बे"
+  ],
+  "fruit": [
+   "fruit affected",
+   "కాయలపై",
+   "फलों पर"
+  ],
+  "hole": [
+   "holes",
+   "రంధ్రాలు",
+   "छेद"
+  ],
+  "caterpillar": [
+   "caterpillar",
+   "గొంగళి పురుగు",
+   "इल्ली"
+  ],
+  "stunt": [
+   "stunted growth",
+   "ఎదుగుదల లేదు",
+   "बौनापन"
+  ],
+  "bronze": [
+   "bronze leaves",
+   "ఎర్రబారడం",
+   "लालिमा"
+  ],
+  "rain": [
+   "rain",
+   "వర్షం",
+   "बारिश"
+  ]
+ },
+ "stages": {
+  "seedling": [
+   "seedling",
+   "nursery",
+   "నారు",
+   "पौध"
+  ],
+  "flowering": [
+   "flower",
+   "పూత",
+   "फूल"
+  ],
+  "fruiting": [
+   "fruit",
+   "కాయ",
+   "फल"
+  ]
+ },
+ "districts": {
+  "Guntur": [
+   "guntur",
+   "గుంటూరు"
+  ],
+  "Khammam": [
+   "khammam",
+   "ఖమ్మం"
+  ],
+  "Warangal": [
+   "warangal",
+   "వరంగల్"
+  ],
+  "Prakasam": [
+   "prakasam"
+  ],
+  "Kurnool": [
+   "kurnool"
+  ],
+  "Krishna": [
+   "krishna"
+  ]
+ },
+ "cropnames": [
+  "chilli",
+  "chili",
+  "mirchi",
+  "mirapa",
+  "మిరప",
+  "మిర్చి",
+  "मिर्च"
+ ],
+ "yes": [
+  "avunu",
+  "అవును",
+  "haan",
+  "हाँ",
+  "हां",
+  "yes",
+  "sare",
+  "సరే",
+  "ok",
+  "ha"
+ ],
+ "no": [
+  "kaadu",
+  "కాదు",
+  "kadu",
+  "nahi",
+  "नहीं",
+  "no"
+ ],
+ "cmd": {
+  "repeat": [
+   "repeat",
+   "రిపీట్",
+   "మళ్లీ చెప్పు",
+   "दोबारा",
+   "फिर से"
+  ],
+  "new": [
+   "new question",
+   "కొత్త",
+   "नया"
+  ],
+  "slow": [
+   "slower",
+   "slow",
+   "నెమ్మదిగా",
+   "धीरे"
+  ]
+ }
+}
