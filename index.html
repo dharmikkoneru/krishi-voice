@@ -57,7 +57,7 @@ hi:{st:['बोलने के लिए दबाएँ','सुन रहा 
  unk:'इसके लिए मेरे पास भरोसेमंद सलाह नहीं है। कृपया पौधा अपने कृषि अधिकारी को दिखाइए।',follow:"दोबारा सुनने के लिए 'रिपीट' कहें, या दूसरा सवाल पूछें।",remind:'क्या {n} दिन बाद याद दिलाऊँ?',saved:'ठीक है, मैं याद दिलाऊँगा।',
  s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'Chrome चाहिए।',novoice:'इस फ़ोन में हिन्दी आवाज़ नहीं है, इसलिए मैं बोल नहीं सकता। Settings, Text-to-speech output, Google, Install voice data में हिन्दी इंस्टॉल करें। जवाब नीचे लिखा है।'}};
 const $=id=>document.getElementById(id);
-const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,rate:1,rec:null,last:'',greeted:false};
+const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,rate:1,rec:null,last:'',lastEntry:'',lastTags:[],greeted:false};
 const T=(k,v={})=>(STR[S.rl][k]||'').replace(/\{(\w+)\}/g,(_,x)=>v[x]);
 const stat=i=>{$('status').textContent=STR[S.lang].st[i];$('mic').className=i==1?'listen':i?'busy':'';};
 const add=(c,t)=>{const d=document.createElement('div');d.className='m '+c;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=1e5;};
@@ -146,13 +146,14 @@ async function answer(x){stat(2);let asked=0;const done=new Set();let sc;
    if(q){done.add(q.id);asked++;await say(q.q[S.rl]);const r=await capture(1);if(!r)return;if(yn(r)===1){x.tags.add(q.q.tag);showTags(x)}continue}}
   break}
  const[a,b]=sc,e=a.e,L=e[S.rl],sure=a.n>=3&&a.n-b.n>=2;
+ S.lastEntry=e.id;S.lastTags=[...x.tags];drawDiag();
  const sp=[T(sure?'sure':'unsure',{p:L.n}),T('act'),L.a,T('av'),L.v,T('chk',{n:e.rc})].join(' ');
  S.last=sp;await say(sp);
  await say(T('remind',{n:e.rc}));const r=await capture(1);
  if(r&&yn(r)===1){saveRem(e.rc);await say(T('saved'))}
  await followUp()}
 
-function unknown(){$('badge').style.display='block';return say(T('unk'))}
+function unknown(){$('badge').style.display='block';S.lastEntry='unknown';S.lastTags=[];drawDiag();return say(T('unk'))}
 async function followUp(){await say(T('follow'));
  for(;;){const c=await capture(1);if(!c)return;const s=norm(c);
   if(has(s,KB.cmd.slow)){S.rate=.8;await say(S.last)}
@@ -174,7 +175,8 @@ const FAKES=[
  {l:'te',q:[{t:'నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది',c:.93},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
  {l:'te',q:[{t:'aaku curl avutunnayi, white insects undi',c:.68},{t:'avunu',c:.8},{t:'avunu',c:.8},{t:'kaadu',c:.8}]},
  {l:'te',q:[{t:'పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి',c:.9},{t:'అవును',c:.9}]}];
-$('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex';loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')};
+const drawDiag=()=>{loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')+(S.lastEntry?' · last '+S.lastEntry+' ['+S.lastTags.join(',')+']':'')};
+$('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex';drawDiag()};
 $('devp').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;stopAll();const f=FAKES[i];$('langs').querySelector('[data-l="'+f.l+'"]').click();
  S.fake=f.q.slice();S.fakeMode=true;S.greeted=true;$('log').innerHTML='';$('tags').innerHTML='';session()};
 fetch('kb.json').then(r=>r.json()).then(j=>{KB=j;stat(0);add('app',STR.te.greet);drawRem()}).catch(()=>{add('sys','Could not load kb.json. Serve this folder over http(s), e.g. GitHub Pages or: python3 -m http.server')});
