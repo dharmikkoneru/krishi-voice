@@ -1,7 +1,7 @@
 id,category,lang,noise,human,asr,expected_entry,expected_tags,must_refuse,A_entry,A_tags,A_unknown,A_unsafe,A_overconfident,A_ms,B_entry,B_tags,B_unknown,B_unsafe,B_overconfident,B_ms,notes
-te-coastal-01,coastal,te,0,"నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది","నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది",thrips,curl;up;insect;white;rain,0,thrips,curl;insect;rain;up;white,0,,,,thrips,curl;insect;rain;up;white,0,,,4090,seed case 1
-te-mixed-01,mixed,te,1,"aaku curl avutunnayi, white insects undi","aaku curl avutunnayi, white insects undi",thrips,curl;insect;white,0,thrips,curl;insect;white,0,,,,thrips,curl;insect;white,0,,,2821,seed case 2
-te-unknown-01,unknown,te,0,"పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి","పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి",unknown,,0,unknown,,1,,,,unknown,,1,,,2293,seed case 3
+te-coastal-01,coastal,te,0,"నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది","నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది",thrips,curl;up;insect;white;rain,0,thrips,curl;insect;rain;up;white,0,,,,thrips,curl;insect;rain;up;white,0,,,929,seed case 1
+te-mixed-01,mixed,te,1,"aaku curl avutunnayi, white insects undi","aaku curl avutunnayi, white insects undi",thrips,curl;insect;white,0,thrips,curl;insect;white,0,,,,thrips,curl;insect;white,0,,,678,seed case 2
+te-unknown-01,unknown,te,0,"పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి","పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి",unknown,,0,unknown,,1,,,,unknown,,1,,,715,seed case 3
 te-coastal-02,coastal,te,0,,,,,0,,,,,,,,,,,,,"pilot: clear mites (downward curl, bronze leaves)"
 te-coastal-03,coastal,te,0,,,,,0,,,,,,,,,,,,,"pilot: clear anthracnose (dark spots on fruit, rain)"
 te-coastal-04,coastal,te,0,,,,,0,,,,,,,,,,,,,"pilot: clear fruit borer (holes in fruit, worm inside)"

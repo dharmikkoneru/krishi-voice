@@ -171,15 +171,34 @@ a pesticide name or dose. Both arms must run on the same `asr` text. `B_ms` stor
 latency. `--mock` proves the file plumbing, not model quality.
 
 With Gemini's OpenAI-compatible endpoint use
-`LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai` and a current model such as
-`gemini-3.5-flash` (`gemini-2.5-flash` is retired). Keep `max_tokens` at 2000: Gemini 3.x spends
-tokens on reasoning, and a small cap truncates the JSON.
+`LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai` and
+`gemini-3.5-flash-lite`, the model the live proxy runs (`gemini-2.5-flash` is retired).
+`gemini-3.5-flash` is not used for this task: it spends several hundred tokens on reasoning and
+took 9-28 s per request, which exceeded the proxy's timeout. Keep `max_tokens` at 2000 anyway,
+because on a reasoning model a small cap truncates the JSON.
 
 `proxy/` is the same constrained mapping for a live app, with the key server-side. It is
 deployed at `https://krishi-llm.dharmikkoneru.workers.dev` and the app uses it when
-`<meta name="llm-endpoint">` is set. Use flash-lite for the live path: `gemini-3.5-flash`
-spends hundreds of tokens on reasoning and exceeded the proxy's timeout. When the hybrid contributes,
-the app always says “may be” rather than “fairly sure” until the pilot justifies more.
+`<meta name="llm-endpoint">` is set. The app asks it only when the keyword engine is not
+confident, says a short "one moment" while it waits, and falls back to the keyword engine when
+the call fails or exceeds 6 s. When the hybrid contributes, the app always says "may be" rather
+than "fairly sure" until the pilot justifies more.
+
+## Results so far
+
+Last run: `gemini-3.5-flash-lite`, the three seed rows (`asr` = `human`), re-run after the proxy
+changed models. The seven scaffolded pilot rows have no transcript yet, so the runner skips them
+and this is not a verdict.
+
+| Arm | n | top-1 | tag F1 | unknown recall / precision | unsafe | overconfident | p50 | p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| A (keyword) | 3 | 100% | 1.00 | 100% / 100% | 0 | 0 | - | - |
+| B (flash-lite) | 3 | 100% | 1.00 | 100% / 100% | 0 | 0 | 715 ms | 929 ms |
+
+The earlier Arm B run on `gemini-3.5-flash` produced the same 3/3 and tag F1 1.00 with p50
+2821 ms and p95 4090 ms, so only latency moved and the entries did not change. `python3
+evaluation/score.py evaluation/score-sheet.csv` still prints "pilot only (3 rows, need 20)".
+Record the remaining rows before using any of this to decide.
 
 ## First ten
 
