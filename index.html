@@ -2338,7 +2338,13 @@ $('devp').onclick=e=>{const btn=e.target.closest('button[data-i]');if(!btn)retur
 
 initTheme();
 fetch('kb.json').then(r=>r.json()).then(j=>{KB=j;applyLocaleUI();stat(0);add('app',STR.te.greet)}).catch(()=>{applyLocaleUI();add('sys','Could not load kb.json. Serve this folder over http(s), e.g. GitHub Pages or: python3 -m http.server')});
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker'in navigator){
+ if(/\.run\.app$/i.test(location.hostname)){
+  navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});
+ }else{
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+ }
+}
 </script>
 </body>
 </html>

@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 3000;
-const HOST = '0.0.0.0';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -26,6 +25,16 @@ const MIME = {
 const NO_CACHE_EXTS = new Set(['.html', '.js', '.mjs', '.json', '.css']);
 
 const server = createServer(async (req, res) => {
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    });
+    res.end();
+    return;
+  }
+
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     res.writeHead(405, { 'Content-Type': 'text/plain; charset=utf-8' });
     res.end('Method Not Allowed');
@@ -41,9 +50,14 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  if (pathname === '/health') {
+    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('ok');
+    return;
+  }
+
   if (pathname === '/') pathname = '/index.html';
 
-  // Block hidden files and internal directories
   const segments = pathname.split('/').filter(Boolean);
   if (segments.some((s) => s.startsWith('.'))) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -90,6 +104,18 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, HOST, () => {
-  console.log(`Krishi Voice server running at http://${HOST}:${PORT}`);
+server.on('error', (err) => {
+  console.error('Server error:', err);
+  process.exit(1);
+});
+
+const shutdown = () => {
+  server.close(() => process.exit(0));
+  setTimeout(() => process.exit(0), 1000).unref();
+};
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
+
+server.listen(PORT, () => {
+  console.log(`Server listening on http://localhost:${PORT}`);
 });
