@@ -5,3 +5,7 @@
 
 # Local scratch
 .freebuff-tmp/
+
+# wrangler local state
+.wrangler/
+proxy/.wrangler/
