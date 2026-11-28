@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="te"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="llm-endpoint" content="">
 <title>Krishi Voice – Chilli Advisor</title>
 <style>
 :root{--bg:#fbfaf5;--fg:#14210f;--card:#fff;--ac:#1b6b2f;--ac2:#c62828;--mut:#4a5a44;--bd:#c9d2bf;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -41,6 +42,8 @@ h1{font-size:20px;margin:4px 0 0;text-align:center}
 </main>
 <script>
 let KB;
+// Empty = keyword-only. Set to the proxy URL to enable the optional hybrid.
+const LLM_ENDPOINT=(document.querySelector('meta[name="llm-endpoint"]')?.content||'').trim();
 const LANGS={te:{bcp:'te-IN',i:0,li:1},hi:{bcp:'hi-IN',i:1,li:2},en:{bcp:'en-IN',i:2,li:0}};
 // UI strings: add a language = add a key here + LANGS + KB fields
 const STR={
@@ -115,6 +118,13 @@ function extract(text){const s=norm(text),tags=new Set(),hits={};
  const di=Object.keys(KB.districts).find(k=>has(s,KB.districts[k]));
  return{text,tags,hits,crop:has(s,KB.cropnames,1),otherCrop:has(s,KB.othercrops||[],1),stage:st,district:di}}
 function score(x){return KB.entries.map(e=>({e,n:e.tags.filter(t=>x.tags.has(t)).length+(x.hits[e.id]?3:0)})).sort((a,b)=>b.n-a.n)}
+async function llmMap(text){if(!LLM_ENDPOINT||!text)return null;
+ const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),1800);
+ try{const r=await fetch(LLM_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({transcript:text}),signal:ctl.signal,cache:'no-store'});
+  if(!r.ok)return null;const d=await r.json();if(!d||typeof d.entry!=='string')return null;
+  if(d.entry!=='unknown'&&!KB.entries.some(e=>e.id===d.entry))return null;
+  const tags=Array.isArray(d.tags)?d.tags.filter(t=>t in KB.lex):[];
+  return{entry:d.entry,tags:[...new Set(tags)]}}catch(e){return null}finally{clearTimeout(tm)}}
 const lab=(t)=>KB.labels[t][LANGS[S.rl].li];
 function showTags(x){const c=$('tags');c.innerHTML='';const a=[KB.crop[S.rl]+(x.crop?'':' ?')];if(x.stage)a.push('🌱 '+x.stage);[...x.tags].forEach(t=>t!='rain'&&a.push(lab(t)));
  if(x.tags.has('rain'))a.push('🌧 '+lab('rain'));if(x.district)a.push('📍 '+x.district);a.forEach(t=>{const d=document.createElement('span');d.className='tag';d.textContent=t;c.appendChild(d)})}
@@ -132,7 +142,7 @@ async function session(text0){
  }catch(e){if(e!=='abort')console.error(e)} if(S.cur===my)stat(0);S.fakeMode=false}
 
 async function flow(text){let no=0,x;
- while(text){S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){$('badge').style.display='block';S.lastEntry='unknown';S.lastTags=[...x.tags];drawDiag();return say(T('cropOnly'))}await say(heardLine(x));
+ while(text){S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){$('badge').style.display='block';S.lastEntry='unknown';S.lastTags=[...x.tags];drawDiag();return say(T('cropOnly'))}const m=await llmMap(text);if(m){m.tags.forEach(t=>x.tags.add(t));if(m.entry!=='unknown'){x.hits[m.entry]=1;x.llm=true}showTags(x)}await say(heardLine(x));
   const a=await capture(1);if(!a)return;
   if(yn(a)===1)break;
   if(++no>=2){await say(T('s1'));const c=await capture(1);await say(T('s2'));const w=await capture(1);x=extract((c||'')+' '+(w||''));showTags(x);break} // simple mode
@@ -145,7 +155,7 @@ async function answer(x){stat(2);let asked=0;const done=new Set();let sc;
   if(asked<3&&a.n-b.n<2&&a.n<4){const q=[a,b].map(o=>o.e).find(e=>e.q&&!done.has(e.id));
    if(q){done.add(q.id);asked++;await say(q.q[S.rl]);const r=await capture(1);if(!r)return;if(yn(r)===1){x.tags.add(q.q.tag);showTags(x)}continue}}
   break}
- const[a,b]=sc,e=a.e,L=e[S.rl],sure=a.n>=3&&a.n-b.n>=2;
+ const[a,b]=sc,e=a.e,L=e[S.rl],sure=!x.llm&&a.n>=3&&a.n-b.n>=2;
  S.lastEntry=e.id;S.lastTags=[...x.tags];drawDiag();
  const sp=[T(sure?'sure':'unsure',{p:L.n}),T('act'),L.a,T('av'),L.v,T('chk',{n:e.rc})].join(' ');
  S.last=sp;await say(sp);
@@ -181,7 +191,7 @@ const FAKES=[
  {l:'te',q:[{t:'మిరపకు ఏ మందు ఎంత మోతాదులో చల్లాలి',c:.9}]},
  {l:'hi',q:[{t:'मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और पत्तियों के नीचे छोटे सफेद कीड़े हैं',c:.92},{t:'हाँ',c:.9},{t:'हाँ',c:.9}]},
  {l:'te',q:[{t:'టమోటా ఆకులు ముడుచుకుంటున్నాయి, ఏమి చేయాలి',c:.9}]}];
-const drawDiag=()=>{loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')+(S.lastEntry?' · last '+S.lastEntry+' ['+S.lastTags.join(',')+']':'')};
+const drawDiag=()=>{loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')+(LLM_ENDPOINT?' · llm on':'')+(S.lastEntry?' · last '+S.lastEntry+' ['+S.lastTags.join(',')+']':'')};
 $('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex';drawDiag()};
 $('devp').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;stopAll();const f=FAKES[i];$('langs').querySelector('[data-l="'+f.l+'"]').click();
  S.fake=f.q.slice();S.fakeMode=true;S.greeted=true;$('log').innerHTML='';$('tags').innerHTML='';session()};

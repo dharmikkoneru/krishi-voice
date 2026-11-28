@@ -34,6 +34,21 @@ In `kb.json`:
 2. `kb.json`: add a third/fourth value to each `labels` array and each `heard` phrase, a field to every entry and every `q`, and the language to `crop`, `yes`, `no`, `cmd`.
 3. Add a language button in the `#langs` div. Check the language is detected in `detect()` if it uses a new script.
 
+## Optional LLM (off by default)
+
+`index.html` reads `<meta name="llm-endpoint" content="">`. Empty keeps the keyword engine only.
+To try the hybrid, run the proxy so the key stays server-side:
+
+```sh
+PORT=8798 LLM_API_KEY=... LLM_MODEL=... node proxy/server.mjs
+```
+
+Set the meta content to `http://127.0.0.1:8798` for a local test. For a public deployment,
+`cd proxy && npx wrangler deploy`, set `ALLOWED_ORIGINS`, store the key with
+`npx wrangler secret put LLM_API_KEY`, and point the meta at the Worker URL. The proxy accepts
+only a `kb.json` entry id and tags; when it contributes, the app says “may be” instead of
+“fairly sure”. Transcript text leaves the device only when an endpoint is configured.
+
 ## Limits
 
 The knowledge base is chilli-only. If another crop is named and chilli is not, the app refuses and

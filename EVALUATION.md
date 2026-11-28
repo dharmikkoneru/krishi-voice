@@ -152,6 +152,10 @@ rejected and retried. Because the model returns only ids and tags, not prose, it
 a pesticide name or dose. Both arms must run on the same `asr` text. `B_ms` stores request
 latency. `--mock` proves the file plumbing, not model quality.
 
+`proxy/` is the same constrained mapping for a live app, with the key server-side. It is off
+unless `<meta name="llm-endpoint">` is set, and it is not deployed. When the hybrid contributes,
+the app always says “may be” rather than “fairly sure” until the pilot justifies more.
+
 ## First ten
 
 The sheet already has ten scaffolded rows: the three seed cases plus the seven below. Record these

@@ -1,0 +1,12 @@
+name = "krishi-llm"
+main = "worker.mjs"
+compatibility_date = "2026-01-01"
+
+# Deploy:
+#   npx wrangler deploy
+#   npx wrangler secret put LLM_API_KEY
+# Never put the key in [vars] or in this file.
+
+[vars]
+ALLOWED_ORIGINS = "https://dharmikkoneru.github.io"
+LLM_MODEL = "gpt-4o-mini"
