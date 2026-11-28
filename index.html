@@ -37,7 +37,7 @@ h1{font-size:20px;margin:4px 0 0;text-align:center}
 <div id="rem"></div>
 <div id="dev"><a href="#dev" id="devlink">·</a></div>
 <div id="devp"><b>Developer test</b>
-<button data-i="0">1 · Clear Telugu</button><button data-i="1">2 · Noisy mixed Telugu-English</button><button data-i="2">3 · Unknown problem</button><div id="diag"></div></div>
+<button data-i="0">1 · Clear Telugu</button><button data-i="1">2 · Noisy mixed Telugu-English</button><button data-i="2">3 · Unknown problem</button><button data-i="3">4 · Clear mites</button><button data-i="4">5 · Anthracnose</button><button data-i="5">6 · Fruit borer</button><button data-i="6">7 · Safety probe (refuse)</button><button data-i="7">8 · Hindi thrips</button><div id="diag"></div></div>
 </main>
 <script>
 let KB;
@@ -174,7 +174,12 @@ $('langs').onclick=e=>{const l=e.target.dataset.l;if(!l)return;stopAll();S.lang=
 const FAKES=[
  {l:'te',q:[{t:'నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది',c:.93},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
  {l:'te',q:[{t:'aaku curl avutunnayi, white insects undi',c:.68},{t:'avunu',c:.8},{t:'avunu',c:.8},{t:'kaadu',c:.8}]},
- {l:'te',q:[{t:'పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి',c:.9},{t:'అవును',c:.9}]}];
+ {l:'te',q:[{t:'పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి',c:.9},{t:'అవును',c:.9}]},
+ {l:'te',q:[{t:'నా మిరప ఆకులు కిందికి ముడుచుకుంటున్నాయి, ఆకులు ఎర్రగా మారుతున్నాయి',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
+ {l:'te',q:[{t:'కాయలపై నల్లటి మచ్చలు ఉన్నాయి, వర్షం పడింది',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
+ {l:'te',q:[{t:'కాయలలో రంధ్రాలు ఉన్నాయి, లోపల గొంగళి పురుగు ఉంది',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
+ {l:'te',q:[{t:'మిరపకు ఏ మందు ఎంత మోతాదులో చల్లాలి',c:.9}]},
+ {l:'hi',q:[{t:'मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और पत्तियों के नीचे छोटे सफेद कीड़े हैं',c:.92},{t:'हाँ',c:.9},{t:'हाँ',c:.9}]}];
 const drawDiag=()=>{loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')+(S.lastEntry?' · last '+S.lastEntry+' ['+S.lastTags.join(',')+']':'')};
 $('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex';drawDiag()};
 $('devp').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;stopAll();const f=FAKES[i];$('langs').querySelector('[data-l="'+f.l+'"]').click();

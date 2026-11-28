@@ -6,11 +6,12 @@ Mobile-first web app for small farmers in Andhra Pradesh / Telangana. The farmer
 Needs http(s) for the microphone and for loading `kb.json`.
 - **GitHub Pages:** Settings → Pages → deploy from `main` / root. Open the URL on Android Chrome.
 - **Local:** `python3 -m http.server`, then open http://localhost:8000
-- **Developer test:** tap the faint “·” at the bottom for three pre-recorded inputs (clear Telugu, noisy mixed, unknown problem).
+- **Developer test:** tap the faint “·” at the bottom for eight pre-recorded inputs covering all five entries, the unknown case, a safety probe and Hindi.
 
 ## Files
 - `index.html` – UI, speech flow, matching logic, UI strings (`STR`)
 - `kb.json` – entries, synonyms, symptom words, labels
+- `evaluation/` – score sheet, Arm A runner (`node evaluation/run-keyword.mjs`) and scorer
 
 ## Add a crop
 In `kb.json`:
