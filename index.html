@@ -1558,6 +1558,53 @@ button {
   }
 }
 
+.voice-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.voice-seg {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  gap: 2px;
+}
+
+.voice-seg button {
+  min-height: 36px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--fg-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 150ms var(--ease), color 150ms var(--ease);
+}
+
+.voice-seg button.on {
+  background: var(--surface);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.guide-card-foot {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -1633,6 +1680,14 @@ button {
         <div class="status-block">
           <div id="status" role="status" aria-live="polite">…</div>
           <p class="tap-hint" id="tap-hint">తెలుగు, హిందీ లేదా ఇంగ్లీష్‌లో సహజంగా మాట్లాడండి</p>
+        </div>
+
+        <div class="voice-bar">
+          <div class="voice-seg" id="voice-seg" role="group" aria-label="Advisor voice"></div>
+          <button type="button" class="btn-subtle" id="btn-test-voice">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+            <span id="lbl-test-voice">వాయిస్ వినండి</span>
+          </button>
         </div>
 
         <div class="playback-bar" id="playback-bar">
@@ -1711,6 +1766,10 @@ button {
         <div class="adv-foot">
           <span class="adv-recheck" id="adv-recheck"></span>
           <div class="adv-actions">
+            <button type="button" class="btn-subtle" id="adv-listen-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              <span id="adv-listen-label">వినండి</span>
+            </button>
             <button type="button" class="btn-primary-sm" id="adv-rem-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/></svg>
               <span id="adv-rem-label"></span>
@@ -1824,10 +1883,25 @@ hi:{st:['बोलने के लिए दबाएँ','सुन रहा 
  s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'Chrome चाहिए।',novoice:'इस फ़ोन में हिन्दी आवाज़ नहीं है, इसलिए मैं बोल नहीं सकता। Settings, Text-to-speech output, Google, Install voice data में हिन्दी इंस्टॉल करें। जवाब नीचे लिखा है।',
  navAdvisor:'सलाह',navGuide:'मिर्च गाइड',navRem:'रिमाइंडर',heroTitle:'स्वस्थ मिर्च फसल के लिए वॉइस सलाहकार',heroMeta:'केवल मिर्च के लिए · ऑनलाइन AI सलाह · इंटरनेट न हो तो ज्ञान कोष',tapHint:'तेलुगु, हिंदी या अंग्रेज़ी में स्वाभाविक रूप से बोलें',typePlaceholder:'या यहाँ लक्षण लिखकर भेजें…',send:'पूछें',tryLabel:'उदाहरण आज़माएँ',obsLabel:'पहचाने गए लक्षण',logTitle:'बातचीत',clearLog:'साफ़ करें',youLabel:'किसान',appLabel:'कृषि वॉइस',repeatBtn:'दोबारा सुनें',slowerBtn:'धीरे सुनें',newBtn:'नया सवाल',reviewTitle:'कृषि अधिकारी की जाँच ज़रूरी है',sureBadge:'काफ़ी भरोसा है',unsureBadge:'प्रारंभिक अनुमान',saveRemBtn:'{n} दिन बाद याद दिलाएँ',remSavedBtn:'रिमाइंडर सहेजा गया',remTitle:'पौधे देखने के रिमाइंडर',remEmpty:'अभी कोई रिमाइंडर नहीं है। सलाह के बाद अगली जाँच का रिमाइंडर सहेजें।',guideTitle:'मिर्च फसल मार्गदर्शिका',guideDesc:'ज्ञान कोष से सत्यापित सुरक्षित प्राथमिक कदम।',recheckShort:'{n} दिन',footerNote:'कृषि वॉइस · केवल मिर्च सलाह · ज्ञान कोष',themeDark:'डार्क',themeLight:'लाइट',devTools:'डेवलपर टेस्ट',yesBtn:'हाँ',noBtn:'नहीं',confirmHint:'नीचे पुष्टि करें या बोलें',wait:'एक पल…',samples:['मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और छोटे सफेद कीड़े हैं','बारिश के बाद मिर्च के फलों पर काले धब्बे हैं','मिर्च के फलों में छेद हैं और अंदर इल्ली है']}};
 const $=id=>document.getElementById(id);
-STR.en.due='Due';STR.en.dueToday='Due today';STR.en.overdue='Overdue';STR.en.dismiss='Remove reminder';
-STR.te.due='గడువు';STR.te.dueToday='ఈరోజే';STR.te.overdue='గడిపోయింది';STR.te.dismiss='గుర్తును తీసివేయి';
-STR.hi.due='नियत तारीख';STR.hi.dueToday='आज ही';STR.hi.overdue='समय बीत गया';STR.hi.dismiss='याद दिलाना हटाएँ';
-const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,textMode:false,rate:1,rec:null,last:'',lastEntry:'',lastTags:[],lastRc:3,greeted:false,lastTranscript:'',sessionT0:0,pendingResolve:null};
+STR.en.due='Due';STR.en.dueToday='Due today';STR.en.overdue='Overdue';STR.en.dismiss='Remove reminder';STR.en.testVoice='Hear voice';STR.en.listenBtn='Listen';
+STR.te.due='గడువు';STR.te.dueToday='ఈరోజే';STR.te.overdue='గడిపోయింది';STR.te.dismiss='గుర్తును తీసివేయి';STR.te.testVoice='వాయిస్ వినండి';STR.te.listenBtn='వినండి';
+STR.hi.due='नियत तारीख';STR.hi.dueToday='आज ही';STR.hi.overdue='समय बीत गया';STR.hi.dismiss='याद दिलाना हटाएँ';STR.hi.testVoice='आवाज़ सुनें';STR.hi.listenBtn='सुनें';
+
+const VOICE_PROFILES={
+  te:[{id:'shruti',label:'శ్రుతి'},{id:'mohan',label:'మోహన్'}],
+  hi:[{id:'madhur',label:'मधुर'},{id:'swara',label:'स्वरा'}],
+  en:[{id:'neerja',label:'Neerja'},{id:'prabhat',label:'Prabhat'}]
+};
+const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,textMode:false,rate:1,rec:null,audio:null,ttsAbort:null,ttsOnline:true,voiceChoice:{te:'shruti',hi:'madhur',en:'neerja'},last:'',lastEntry:'',lastSure:true,lastTags:[],lastRc:3,greeted:false,lastTranscript:'',sessionT0:0,pendingResolve:null};
+try{
+  const sv=JSON.parse(localStorage.getItem('kv-voices')||'{}');
+  if(sv&&typeof sv==='object'){
+    for(const l of ['te','hi','en']){
+      if(VOICE_PROFILES[l].some(v=>v.id===sv[l]))S.voiceChoice[l]=sv[l];
+    }
+  }
+}catch(e){}
+const currentVoiceFor=l=>S.voiceChoice[l]||VOICE_PROFILES[l][0].id;
 const T=(k,v={})=>(STR[S.rl][k]||'').replace(/\{(\w+)\}/g,(_,x)=>v[x]);
 const UI=(k,v={})=>(STR[S.lang][k]||'').replace(/\{(\w+)\}/g,(_,x)=>v[x]);
 
@@ -1882,6 +1956,7 @@ function hideReview(){
 function showAdvisory(e,sure){
   const L=e[S.rl];
   S.lastRc=e.rc;
+  S.lastSure=sure;
   $('badge').classList.remove('show');
   $('adv-title').textContent=L.n;
   const conf=$('adv-conf');
@@ -1903,6 +1978,9 @@ function stopAll(){
   S.tok++;
   hideQuickReply();
   try{S.rec&&S.rec.abort()}catch(e){}
+  try{S.ttsAbort&&S.ttsAbort.abort()}catch(e){}
+  S.ttsAbort=null;
+  try{if(S.audio){S.audio.pause();S.audio.currentTime=0;S.audio=null}}catch(e){}
   try{speechSynthesis.cancel()}catch(e){}
   stat(0);
 }
@@ -1913,11 +1991,88 @@ const voiceFor=l=>{const p=LANGS[l].bcp.toLowerCase().split('-')[0];return VOICE
 const voiceCount=l=>VOICES.filter(v=>(v.lang||'').toLowerCase().replace('_','-').split('-')[0]===LANGS[l].bcp.toLowerCase().split('-')[0]).length;
 const voicesReady=()=>new Promise(r=>{if(VOICES.length)return r();let n=0;const t=setInterval(()=>{loadVoices();if(VOICES.length||++n>=10){clearInterval(t);r()}},150)});
 let noVoiceWarned=false;
+const TTS_URL_CACHE=new Map();
+
+function playAudioUrl(url,rate){
+  return new Promise(resolve=>{
+    const audio=new Audio(url);
+    S.audio=audio;
+    audio.playbackRate=rate;
+    let settled=false;
+    const finish=()=>{if(settled)return;settled=true;if(S.audio===audio)S.audio=null;resolve(true)};
+    audio.onended=finish;
+    audio.onerror=()=>{if(!settled){settled=true;if(S.audio===audio)S.audio=null;resolve(false)}};
+    const p=audio.play();
+    if(p&&typeof p.catch==='function')p.catch(()=>{if(!settled){settled=true;if(S.audio===audio)S.audio=null;resolve(false)}});
+  });
+}
+
+async function speakCloud(text,lang,rate){
+  if(!S.ttsOnline)return false;
+  const voice=currentVoiceFor(lang);
+  const slow=rate<0.95;
+  const key=lang+'|'+voice+'|'+(slow?'1':'0')+'|'+text;
+  let url=TTS_URL_CACHE.get(key);
+  if(!url){
+    const ctl=new AbortController();
+    S.ttsAbort=ctl;
+    const tm=setTimeout(()=>ctl.abort(),15000);
+    try{
+      const r=await fetch('/api/tts',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({text,lang,slow,voice}),
+        signal:ctl.signal
+      });
+      if(!r.ok){
+        if(r.status===503)S.ttsOnline=false;
+        return false;
+      }
+      const blob=await r.blob();
+      chk();
+      url=URL.createObjectURL(blob);
+      TTS_URL_CACHE.set(key,url);
+      if(TTS_URL_CACHE.size>40){
+        const oldKey=TTS_URL_CACHE.keys().next().value;
+        URL.revokeObjectURL(TTS_URL_CACHE.get(oldKey));
+        TTS_URL_CACHE.delete(oldKey);
+      }
+    }catch(e){
+      if(e==='abort'||ctl.signal.aborted)throw'abort';
+      return false;
+    }finally{
+      clearTimeout(tm);
+      if(S.ttsAbort===ctl)S.ttsAbort=null;
+    }
+  }
+  chk();
+  return playAudioUrl(url,rate);
+}
+
 async function speakOne(s){if(!voiceFor(S.rl)){if(!noVoiceWarned){noVoiceWarned=true;add('sys',T('novoice'))}return}
  return new Promise(r=>{const u=new SpeechSynthesisUtterance(s);u.lang=LANGS[S.rl].bcp;u.rate=S.rate;let d=0;const f=()=>{if(!d){d=1;r()}};
  u.onend=f;u.onerror=f;setTimeout(f,Math.max(2500,s.length*160/S.rate));speechSynthesis.speak(u)})}
-async function say(text){chk();add('app',text);stat(3);try{speechSynthesis.cancel()}catch(e){}
- await voicesReady();for(const s of text.split(/(?<=[.।?])\s+/).filter(Boolean)){await speakOne(s);chk()} stat(2)}
+
+async function speakOnly(text,lang=S.rl){
+  chk();
+  stat(3);
+  try{if(S.audio){S.audio.pause();S.audio=null}}catch(e){}
+  try{speechSynthesis.cancel()}catch(e){}
+  const ok=await speakCloud(text,lang,S.rate);
+  chk();
+  if(!ok){
+    const prevRl=S.rl;S.rl=lang;
+    await voicesReady();
+    for(const s of text.split(/(?<=[.।?])\s+/).filter(Boolean)){await speakOne(s);chk()}
+    S.rl=prevRl;
+  }
+}
+
+async function say(text){
+  chk();add('app',text);
+  await speakOnly(text,S.rl);
+  stat(2);
+}
 
 function listen(allowQuick=false){return new Promise(res=>{
  if(S.fake.length){const f=S.fake.shift();stat(1);return setTimeout(()=>res({text:f.t,conf:f.c}),700)}
@@ -2133,6 +2288,18 @@ function drawGuide(){
 
     const foot=document.createElement('div');
     foot.className='guide-card-foot';
+    const listenBtn=document.createElement('button');
+    listenBtn.type='button';
+    listenBtn.className='btn-subtle';
+    listenBtn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg><span>'+UI('listenBtn')+'</span>';
+    listenBtn.onclick=async()=>{
+      stopAll();
+      const my=S.cur=++S.tok;
+      S.rl=S.lang;S.rate=1;
+      const line=[L.n+'.',UI('act'),L.a,UI('av'),L.v,UI('chk',{n:e.rc})].join(' ');
+      try{await speakOnly(line,S.lang)}catch(err){}
+      if(S.cur===my)stat(0);
+    };
     const remBtn=document.createElement('button');
     remBtn.type='button';
     remBtn.className='btn-subtle';
@@ -2143,7 +2310,7 @@ function drawGuide(){
       remBtn.textContent=UI('remSavedBtn');
       remBtn.disabled=true;
     };
-    foot.appendChild(remBtn);
+    foot.append(listenBtn,remBtn);
 
     card.append(head,sym,det,foot);
     grid.appendChild(card);
@@ -2173,6 +2340,30 @@ function drawSamples(){
   });
 }
 
+function drawVoicePicker(){
+  const seg=$('voice-seg');
+  if(!seg)return;
+  seg.innerHTML='';
+  const active=currentVoiceFor(S.lang);
+  (VOICE_PROFILES[S.lang]||[]).forEach(v=>{
+    const b=document.createElement('button');
+    b.type='button';
+    b.textContent=v.label;
+    b.className=v.id===active?'on':'';
+    b.onclick=async()=>{
+      S.voiceChoice[S.lang]=v.id;
+      try{localStorage.setItem('kv-voices',JSON.stringify(S.voiceChoice))}catch(e){}
+      drawVoicePicker();
+      stopAll();
+      const my=S.cur=++S.tok;
+      S.rl=S.lang;S.rate=1;
+      try{await speakOnly(STR[S.lang].greet,S.lang)}catch(e){}
+      if(S.cur===my)stat(0);
+    };
+    seg.appendChild(b);
+  });
+}
+
 function applyLocaleUI(){
   $('nav-advisor').textContent=UI('navAdvisor');
   $('nav-guide').textContent=UI('navGuide');
@@ -2180,6 +2371,8 @@ function applyLocaleUI(){
   $('hero-title').textContent=UI('heroTitle');
   $('hero-meta').textContent=UI('heroMeta');
   $('tap-hint').textContent=UI('tapHint');
+  $('lbl-test-voice').textContent=UI('testVoice');
+  $('adv-listen-label').textContent=UI('listenBtn');
   $('type-input').placeholder=UI('typePlaceholder');
   $('btn-send').textContent=UI('send');
   $('try-label').textContent=UI('tryLabel');
@@ -2195,6 +2388,7 @@ function applyLocaleUI(){
   $('guide-desc').textContent=UI('guideDesc');
   $('footer-note').textContent=UI('footerNote');
   $('devlink').textContent=UI('devTools');
+  drawVoicePicker();
   updateThemeButton();
   drawSamples();
   drawRem();
@@ -2259,10 +2453,37 @@ $('langs').onclick=e=>{
   const btn=e.target.closest('button[data-l]');
   if(!btn)return;
   const l=btn.dataset.l;
-  stopAll();S.lang=S.rl=l;S.greeted=false;document.documentElement.lang=l;
+  stopAll();S.lang=S.rl=l;S.greeted=false;noVoiceWarned=false;document.documentElement.lang=l;
   [...$('langs').children].forEach(b=>b.classList.toggle('on',b.dataset.l==l));
   applyLocaleUI();
+  if(S.lastEntry&&S.lastEntry!=='unknown'&&KB){
+    const matched=KB.entries.find(it=>it.id===S.lastEntry);
+    if(matched){
+      const L=matched[l];
+      showAdvisory(matched,S.lastSure);
+      S.last=[T(S.lastSure?'sure':'unsure',{p:L.n}),T('act'),L.a,T('av'),L.v,T('chk',{n:matched.rc})].join(' ');
+    }
+  }
+  if(!$('log').querySelector('.m.you')){
+    $('log').innerHTML='';
+    add('app',STR[l].greet);
+  }
   stat(0);
+};
+
+$('btn-test-voice').onclick=async()=>{
+  stopAll();
+  const my=S.cur=++S.tok;
+  S.rl=S.lang;S.rate=1;
+  try{await speakOnly(STR[S.lang].greet,S.lang)}catch(e){}
+  if(S.cur===my)stat(0);
+};
+
+$('adv-listen-btn').onclick=async()=>{
+  if(!S.last)return;
+  stopAll();const my=S.cur=++S.tok;
+  try{S.rate=1;await speakOnly(S.last,S.rl)}catch(e){}
+  if(S.cur===my)stat(0);
 };
 
 $('type-form').onsubmit=e=>{
@@ -2287,13 +2508,13 @@ $('btn-no').onclick=()=>{if(S.pendingResolve){const fn=S.pendingResolve;S.pendin
 $('btn-repeat').onclick=async()=>{
   if(!S.last)return;
   stopAll();const my=S.cur=++S.tok;
-  try{S.rate=1;await say(S.last)}catch(e){}
+  try{S.rate=1;await speakOnly(S.last,S.rl)}catch(e){}
   if(S.cur===my)stat(0);
 };
 $('btn-slower').onclick=async()=>{
   if(!S.last)return;
   stopAll();const my=S.cur=++S.tok;
-  try{S.rate=0.8;await say(S.last)}catch(e){}
+  try{S.rate=0.82;await speakOnly(S.last,S.rl)}catch(e){}
   if(S.cur===my)stat(0);
 };
 $('btn-new').onclick=()=>{

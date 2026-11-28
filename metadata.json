@@ -1,5 +1,6 @@
 {
   "name": "Krishi Voice – Chilli Advisor",
-  "description": "Voice-first chilli crop advisory in Telugu, Hindi, and English. AI advice when online, with a built-in knowledge base when there is no internet.",
-  "requestFramePermissions": ["microphone"]
+  "description": "Voice-first chilli crop advisory in Telugu, Hindi, and English. Safe, offline-ready guidance for small farmers.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
