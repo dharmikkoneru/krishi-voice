@@ -21,6 +21,14 @@ app.get('/sw.js', (_req, res) => {
   res.sendFile(join(__dirname, 'sw.js'));
 });
 
+app.use(
+  '/src/assets/images',
+  express.static(join(__dirname, 'src', 'assets', 'images'), {
+    maxAge: '7d',
+    dotfiles: 'ignore',
+  })
+);
+
 app.get('/favicon.ico', (_req, res) => {
   res.status(204).end();
 });

@@ -1,82 +1,1881 @@
 <!DOCTYPE html>
-<html lang="te"><head><meta charset="utf-8">
+<html lang="te">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="llm-endpoint" content="">
-<title>Krishi Voice – Chilli Advisor</title>
+<meta name="description" content="Voice-first chilli crop advisor for small farmers in Telugu, Hindi, and English. Visual pest identification and verified field guidance.">
+<title>Krishi Voice — Chilli Crop Advisor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=JetBrains+Mono:wght@500&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fbfaf5;--fg:#14210f;--card:#fff;--ac:#1b6b2f;--ac2:#c62828;--mut:#4a5a44;--bd:#c9d2bf;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10170d;--fg:#f1f5ea;--card:#1b2617;--ac:#59c46f;--ac2:#ff7b72;--mut:#b6c4ad;--bd:#34452e;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#10170d;--fg:#f1f5ea;--card:#1b2617;--ac:#59c46f;--ac2:#ff7b72;--mut:#b6c4ad;--bd:#34452e;color-scheme:dark}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,"Noto Sans Telugu","Noto Sans Devanagari",sans-serif}
-main{max-width:520px;margin:0 auto;padding:12px 14px 40px;display:flex;flex-direction:column;gap:12px}
-h1{font-size:20px;margin:4px 0 0;text-align:center}
-.langs{display:flex;gap:8px}.langs button{flex:1;min-height:52px;font-size:20px;border:2px solid var(--bd);background:var(--card);color:var(--fg);border-radius:12px}
-.langs button.on{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:700}
-#mic{align-self:center;width:140px;height:140px;border-radius:50%;border:0;background:var(--ac);color:#fff;font-size:56px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
-#mic.listen{background:var(--ac2);animation:p 1.1s infinite}#mic.busy{opacity:.75}
-@keyframes p{50%{transform:scale(1.07)}}
-#status{text-align:center;font-size:22px;font-weight:700}
-.badge{display:none;align-self:center;background:var(--ac2);color:#fff;padding:8px 14px;border-radius:20px;font-size:18px;font-weight:700}
-#tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}.tag{background:var(--card);border:2px solid var(--ac);border-radius:16px;padding:4px 10px;font-size:17px}
-#log{display:flex;flex-direction:column;gap:8px;max-height:42vh;overflow-y:auto;overflow-x:hidden}
-.m{font-size:21px;line-height:1.4;padding:10px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--card)}
-.m.you{border-color:var(--ac);font-weight:600}.m.sys{font-size:16px;color:var(--mut)}
-.m b{display:block;font-size:14px;color:var(--mut);font-weight:600}
-#rem .card{background:var(--card);border:2px solid var(--ac);border-radius:12px;padding:10px 12px;font-size:20px;margin-top:6px}
-#dev{font-size:14px;text-align:center;opacity:.35}#dev a{color:var(--mut)}
-#devp{display:none;border:1px dashed var(--bd);border-radius:10px;padding:10px;gap:8px;flex-direction:column}
-#devp button{min-height:44px;font-size:16px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--fg)}
-#diag{font-size:13px;line-height:1.4;color:var(--mut);text-align:left}
-#rem .card{display:flex;align-items:center;gap:8px}#rem .card span{flex:1}
-#rem .rx{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font-size:18px}
-</style></head><body><main>
-<h1>🌶️ Krishi Voice</h1>
-<div class="langs" id="langs"><button data-l="te" class="on">తెలుగు</button><button data-l="hi">हिन्दी</button><button data-l="en">English</button></div>
-<button id="mic" aria-label="Speak">🎤</button>
-<div id="status">…</div>
-<div class="badge" id="badge">⚠ Needs human review</div>
-<div id="tags"></div>
-<div id="log" aria-live="polite"></div>
-<div id="rem"></div>
-<div id="dev"><a href="#dev" id="devlink">·</a></div>
-<div id="devp"><b>Developer test</b>
-<button data-i="0">1 · Clear Telugu</button><button data-i="1">2 · Noisy mixed Telugu-English</button><button data-i="2">3 · Unknown problem</button><button data-i="3">4 · Clear mites</button><button data-i="4">5 · Anthracnose</button><button data-i="5">6 · Fruit borer</button><button data-i="6">7 · Safety probe (refuse)</button><button data-i="7">8 · Hindi thrips</button><button data-i="8">9 · Tomato (refuse)</button><button id="devcopy" type="button">Copy result</button><button id="devsave" type="button">Download results</button><div id="diag"></div></div>
+:root {
+  --bg: #f4f6f3;
+  --surface: #ffffff;
+  --surface-subtle: #ebefe9;
+  --surface-hover: #e2e8df;
+  --fg: #111c14;
+  --fg-muted: #4b5c4f;
+  --border: #d7dfd4;
+  --border-strong: #b6c4b2;
+  --accent: #166534;
+  --accent-hover: #14532d;
+  --accent-soft: #e8f5ec;
+  --accent-border: #b7dfc4;
+  --accent-fg: #ffffff;
+  --danger: #b91c1c;
+  --danger-hover: #991b1b;
+  --danger-soft: #fef2f2;
+  --danger-border: #fecaca;
+  --shadow-sm: 0 1px 2px rgba(17, 28, 20, 0.05);
+  --shadow-md: 0 10px 30px rgba(17, 28, 20, 0.08);
+  --shadow-mic: 0 12px 32px rgba(22, 101, 52, 0.28);
+  --shadow-mic-listen: 0 12px 32px rgba(185, 28, 28, 0.34);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --font-display: "Fraunces", "Noto Sans Telugu", "Noto Sans Devanagari", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", "Noto Sans Telugu", "Noto Sans Devanagari", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c120e;
+    --surface: #131c16;
+    --surface-subtle: #1a261e;
+    --surface-hover: #213026;
+    --fg: #eef4ed;
+    --fg-muted: #a4b6a8;
+    --border: #233328;
+    --border-strong: #344a3a;
+    --accent: #2ea85d;
+    --accent-hover: #38be6c;
+    --accent-soft: #12291b;
+    --accent-border: #1e4d30;
+    --accent-fg: #041b0c;
+    --danger: #f87171;
+    --danger-hover: #fca5a5;
+    --danger-soft: #2a1416;
+    --danger-border: #5c2327;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.38);
+    --shadow-mic: 0 12px 32px rgba(46, 168, 93, 0.24);
+    --shadow-mic-listen: 0 12px 32px rgba(239, 68, 68, 0.32);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0c120e;
+  --surface: #131c16;
+  --surface-subtle: #1a261e;
+  --surface-hover: #213026;
+  --fg: #eef4ed;
+  --fg-muted: #a4b6a8;
+  --border: #233328;
+  --border-strong: #344a3a;
+  --accent: #2ea85d;
+  --accent-hover: #38be6c;
+  --accent-soft: #12291b;
+  --accent-border: #1e4d30;
+  --accent-fg: #041b0c;
+  --danger: #f87171;
+  --danger-hover: #fca5a5;
+  --danger-soft: #2a1416;
+  --danger-border: #5c2327;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.38);
+  --shadow-mic: 0 12px 32px rgba(46, 168, 93, 0.24);
+  --shadow-mic-listen: 0 12px 32px rgba(239, 68, 68, 0.32);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+:root[data-theme="dark"] body {
+  letter-spacing: 0.01em;
+}
+
+button, input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+              color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 150ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button:focus-visible, input:focus-visible, a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Top Bar — Strict 3-Zone Contract, compact 58px (6.8% of 844px mobile height) */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.topbar-inner {
+  max-width: 1220px;
+  margin: 0 auto;
+  height: 58px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--fg);
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.brand-mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.topbar-nav {
+  display: none;
+  align-items: center;
+  gap: 28px;
+}
+
+.topbar-nav a {
+  color: var(--fg-muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.topbar-nav a:hover,
+.topbar-nav a.active {
+  color: var(--fg);
+  border-bottom-color: var(--accent);
+}
+
+.theme-btn {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.theme-btn:hover {
+  background: var(--surface-subtle);
+  border-color: var(--border-strong);
+}
+
+.theme-label { display: none; }
+
+/* Main 2-Column Workspace */
+.workspace {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 20px 16px calc(36px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Left Column: Voice Advisor & Symptom Triage */
+.voice-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stage-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px 24px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.stage-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stage-head h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.3vw, 1.85rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.stage-sub {
+  margin: 0;
+  color: var(--fg-muted);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+/* Segmented Language Control */
+.langs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  padding: 4px;
+  background: var(--surface-subtle);
+  border-radius: 13px;
+  border: 1px solid var(--border);
+}
+
+.langs button {
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--fg-muted);
+  font-size: 15.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.langs button:hover:not(.on) {
+  color: var(--fg);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+}
+
+.langs button.on {
+  background: var(--surface);
+  color: var(--fg);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+}
+
+/* Hero Voice Focal Anchor */
+.mic-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px 8px 4px;
+  gap: 14px;
+}
+
+.mic-ring-wrap {
+  position: relative;
+  width: 162px;
+  height: 162px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mic-ring,
+.mic-ring-outer {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), border-color 200ms ease, opacity 200ms ease;
+}
+
+.mic-ring {
+  inset: 8px;
+  border: 2px solid color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.mic-ring-outer {
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.mic-ring-wrap.is-listen .mic-ring {
+  border-color: color-mix(in srgb, var(--danger) 55%, transparent);
+  animation: acoustic-pulse 1.3s ease-out infinite;
+}
+
+.mic-ring-wrap.is-listen .mic-ring-outer {
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+  animation: acoustic-pulse 1.3s ease-out 0.4s infinite;
+}
+
+@keyframes acoustic-pulse {
+  0% { transform: scale(0.94); opacity: 0.9; }
+  75% { transform: scale(1.16); opacity: 0.14; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+#mic {
+  position: relative;
+  z-index: 1;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--accent);
+  color: var(--accent-fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-mic);
+}
+
+#mic:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+#mic:active {
+  transform: scale(0.97);
+}
+
+#mic.listen {
+  background: var(--danger);
+  color: #ffffff;
+  box-shadow: var(--shadow-mic-listen);
+}
+
+#mic.listen:hover {
+  background: var(--danger-hover);
+}
+
+#mic.busy {
+  opacity: 0.88;
+}
+
+#mic .icon-wave { display: none; }
+#mic.listen .icon-mic { display: none; }
+#mic.listen .icon-wave { display: block; }
+
+@keyframes eq-bar {
+  0%, 100% { transform: scaleY(0.45); }
+  50% { transform: scaleY(1); }
+}
+
+#mic.listen .wave-bar {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: eq-bar 0.7s ease-in-out infinite;
+}
+#mic.listen .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+#mic.listen .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+
+#status {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--fg);
+  min-height: 28px;
+}
+
+/* Tactile Confirmation Bar */
+.confirm-bar {
+  display: none;
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  flex-direction: column;
+  gap: 10px;
+}
+
+.confirm-bar.show { display: flex; }
+
+.confirm-prompt {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: center;
+}
+
+.confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-confirm-yes, .btn-confirm-no {
+  min-height: 48px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.btn-confirm-yes {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border: 1px solid transparent;
+}
+
+.btn-confirm-yes:hover { background: var(--accent-hover); }
+
+.btn-confirm-no {
+  background: var(--surface);
+  color: var(--fg);
+  border: 1px solid var(--border-strong);
+}
+
+.btn-confirm-no:hover { background: var(--surface-subtle); }
+
+/* Voice Playback Utilities */
+.playback-bar {
+  display: none;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.playback-bar.show { display: flex; }
+
+.btn-subtle {
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg);
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn-subtle:hover {
+  background: var(--surface-subtle);
+  border-color: var(--border-strong);
+}
+
+/* Quick Visual Symptom Triage */
+.quick-triage {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.quick-triage-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.quick-triage-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fg-muted);
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.quick-btn {
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-align: left;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.quick-btn:hover {
+  background: var(--surface-subtle);
+  border-color: var(--border-strong);
+}
+
+.quick-btn[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.quick-check-btn {
+  display: none;
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 16px;
+  border-radius: 11px;
+  border: 0;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 15px;
+  font-weight: 700;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.quick-check-btn.show { display: inline-flex; }
+.quick-check-btn:hover { background: var(--accent-hover); }
+
+/* Quick Text Input Fallback */
+.text-form {
+  display: flex;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.text-form input {
+  flex: 1;
+  min-width: 0;
+  min-height: 46px;
+  padding: 10px 14px;
+  border-radius: 11px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 15px;
+}
+
+.text-form input::placeholder { color: var(--fg-muted); }
+
+.text-form button {
+  min-height: 46px;
+  min-width: 74px;
+  padding: 10px 16px;
+  border-radius: 11px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-subtle);
+  color: var(--fg);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.text-form button:hover {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+
+/* Right Column: Visual Hero, Diagnosis Card & Tabbed Workspace */
+.content-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* Editorial Chilli Field Hero Banner (visible when idle) */
+.hero-banner {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  aspect-ratio: 16 / 8.2;
+  min-height: 220px;
+  background: linear-gradient(135deg, #163621 0%, #244f32 55%, #122619 100%);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-banner.hidden { display: none; }
+
+.hero-banner img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  display: block;
+}
+
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 20, 13, 0.88) 0%, rgba(10, 20, 13, 0.42) 48%, rgba(10, 20, 13, 0.08) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 22px 24px;
+  gap: 6px;
+  color: #f6faf6;
+}
+
+.hero-kicker {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(246, 250, 246, 0.86);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-banner h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.22;
+  color: #ffffff;
+  text-wrap: balance;
+  max-width: 30ch;
+}
+
+/* Human Review Refusal Banner */
+.badge {
+  display: none;
+  padding: 18px 20px;
+  border-radius: var(--radius-md);
+  background: var(--danger-soft);
+  border: 1px solid var(--danger-border);
+  color: var(--danger);
+  font-size: 16px;
+  font-weight: 700;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.badge.show { display: flex; }
+
+.badge-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.badge-sub {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--fg);
+  line-height: 1.45;
+}
+
+/* Detected Symptoms Strip — Clean Unboxed Metadata */
+.symptoms-strip {
+  display: none;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  padding: 0 2px;
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+.symptoms-strip.show { display: flex; }
+
+.symptoms-label {
+  font-weight: 700;
+  color: var(--fg);
+  white-space: nowrap;
+}
+
+#tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.tag { font-size: 14px; font-weight: 500; color: var(--fg); }
+.tag-sep { color: var(--fg-muted); opacity: 0.65; user-select: none; }
+
+/* Structured Visual Diagnosis Card */
+.advice-card {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-md);
+  flex-direction: column;
+  gap: 18px;
+}
+
+.advice-card.show { display: flex; }
+
+.advice-header {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.advice-photo-wrap {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(135deg, #1d3c27, #2b5438);
+  border: 1px solid var(--border);
+}
+
+.advice-photo-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.advice-photo-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 18px 12px 8px;
+  background: linear-gradient(to top, rgba(10, 18, 12, 0.8), transparent);
+  color: #f5faf5;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.advice-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.advice-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg-muted);
+}
+
+.advice-meta .mono-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.advice-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.4vw, 1.95rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--fg);
+}
+
+.advice-symptoms-line {
+  margin: 0;
+  font-size: 14px;
+  color: var(--fg-muted);
+}
+
+.advice-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.advice-box {
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.advice-box.do {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+}
+
+.advice-box.avoid {
+  background: var(--danger-soft);
+  border-color: var(--danger-border);
+}
+
+.advice-box-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.advice-box.do .advice-box-label { color: var(--accent); }
+.advice-box.avoid .advice-box-label { color: var(--danger); }
+
+.advice-box p {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--fg);
+}
+
+.advice-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.advice-recheck {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Segmented Workspace Tabs */
+.tabs-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tab-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  flex: 1;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--fg-muted);
+  font-size: 14.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.tab-btn:hover:not([aria-selected="true"]) {
+  color: var(--fg);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+}
+
+.tab-btn[aria-selected="true"] {
+  background: var(--surface);
+  color: var(--fg);
+  border-color: var(--border);
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+}
+
+.tab-count {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Visual Chilli Field Guide Grid */
+.guide-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.guide-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 150ms ease, transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guide-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.guide-card.is-selected {
+  border-color: var(--accent);
+}
+
+.guide-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: linear-gradient(135deg, #1b3b26, #2c5539);
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
+
+.guide-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.guide-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.guide-head-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.guide-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--fg);
+  line-height: 1.25;
+}
+
+.guide-rc {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.guide-tags {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--fg-muted);
+  line-height: 1.45;
+}
+
+.guide-snippet {
+  margin: 2px 0 0;
+  font-size: 14.5px;
+  color: var(--fg);
+  line-height: 1.45;
+  flex: 1;
+}
+
+.guide-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 10px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+.guide-actions .btn-subtle {
+  flex: 1;
+  font-size: 13.5px;
+  padding: 8px 10px;
+}
+
+/* Conversation & Reminders Panels */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.panel-meta {
+  font-size: 13px;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+#log {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 6px 6px 0;
+}
+
+.m {
+  font-size: 16.5px;
+  line-height: 1.5;
+  padding: 12px 15px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  max-width: 90%;
+}
+
+.m.app {
+  align-self: flex-start;
+  background: var(--surface-subtle);
+  border-color: var(--border);
+}
+
+.m.you {
+  align-self: flex-end;
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  font-weight: 600;
+}
+
+.m.sys {
+  align-self: stretch;
+  max-width: 100%;
+  font-size: 14px;
+  color: var(--fg-muted);
+  background: transparent;
+  border: 1px dashed var(--border-strong);
+  padding: 10px 12px;
+}
+
+#rem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#rem .card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 15px;
+}
+
+#rem .card span {
+  flex: 1;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+#rem .rx {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--fg-muted);
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#rem .rx:hover {
+  color: var(--danger);
+  border-color: var(--danger-border);
+  background: var(--danger-soft);
+}
+
+.rem-empty {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--fg-muted);
+  padding: 8px 0;
+}
+
+/* Footer & Collapsible Developer Test Panel */
+.site-footer {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 14px 16px 40px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--fg-muted);
+}
+
+#dev a {
+  color: var(--fg-muted);
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+}
+
+#dev a:hover {
+  color: var(--fg);
+  background: var(--surface-subtle);
+}
+
+#devp {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dev-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.dev-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+#devp button {
+  min-height: 44px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  text-align: left;
+}
+
+#devp button:hover {
+  background: var(--surface-subtle);
+  border-color: var(--border-strong);
+}
+
+#devp .dev-actions button { text-align: center; }
+
+#diag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+  word-break: break-word;
+}
+
+/* Responsive Breakpoints */
+@media (min-width: 640px) {
+  .theme-label { display: inline; }
+  .advice-header { grid-template-columns: 220px minmax(0, 1fr); }
+  .advice-grid { grid-template-columns: 1fr 1fr; }
+  .guide-grid { grid-template-columns: repeat(2, 1fr); }
+  .dev-grid { grid-template-columns: repeat(3, 1fr); }
+  .workspace { padding: 28px 24px 48px; }
+  .site-footer { padding: 16px 24px 48px; }
+}
+
+@media (min-width: 980px) {
+  .topbar-nav { display: flex; }
+  .workspace {
+    grid-template-columns: 420px minmax(0, 1fr);
+    gap: 28px;
+    padding: 32px 24px 52px;
+  }
+  .voice-column {
+    position: sticky;
+    top: 82px;
+  }
+  .stage-card { padding: 26px 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mic-ring-wrap.is-listen .mic-ring,
+  .mic-ring-wrap.is-listen .mic-ring-outer,
+  #mic.listen .wave-bar { animation: none; }
+  button, .guide-card, .mic-ring { transition: none; }
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#advisor">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22c4-3 7-7.5 7-13 0-2.5-1.5-4.5-4-5-1.2-.2-2.4.2-3 1-.6-.8-1.8-1.2-3-1-2.5.5-4 2.5-4 5 0 5.5 3 10 7 13z"/>
+          <path d="M12 5V2"/>
+        </svg>
+      </span>
+      <span>Krishi Voice</span>
+    </a>
+
+    <nav class="topbar-nav" aria-label="Workspace sections">
+      <a href="#workspace-tabs" data-nav-tab="guide" id="nav-guide" class="active">Field Guide</a>
+      <a href="#workspace-tabs" data-nav-tab="chat" id="nav-transcript">Conversation</a>
+      <a href="#workspace-tabs" data-nav-tab="reminders" id="nav-reminders">Reminders</a>
+    </nav>
+
+    <button id="theme-toggle" class="theme-btn" type="button" aria-label="Switch to dark mode">
+      <svg id="theme-icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+      <svg id="theme-icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+        <circle cx="12" cy="12" r="5"/>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+      </svg>
+      <span class="theme-label" id="theme-label">Dark</span>
+    </button>
+  </div>
+</header>
+
+<main class="workspace" id="advisor">
+  <section class="voice-column" aria-label="Voice and symptom input">
+    <div class="stage-card">
+      <div class="stage-head">
+        <h1 id="hero-title">Chilli Crop Advisor</h1>
+        <p class="stage-sub" id="hero-sub">Tap the microphone and describe your chilli leaves or fruit.</p>
+      </div>
+
+      <div class="langs" id="langs" role="group" aria-label="Language">
+        <button type="button" data-l="te" class="on" aria-pressed="true">తెలుగు</button>
+        <button type="button" data-l="hi" aria-pressed="false">हिन्दी</button>
+        <button type="button" data-l="en" aria-pressed="false">English</button>
+      </div>
+
+      <div class="mic-stage">
+        <div class="mic-ring-wrap" id="mic-wrap">
+          <span class="mic-ring-outer" aria-hidden="true"></span>
+          <span class="mic-ring" aria-hidden="true"></span>
+          <button id="mic" type="button" aria-label="Speak">
+            <svg class="icon-mic" width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="2" width="6" height="12" rx="3"/>
+              <path d="M5 10v2a7 7 0 0 0 14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="22"/>
+              <line x1="8" y1="22" x2="16" y2="22"/>
+            </svg>
+            <svg class="icon-wave" width="48" height="48" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect class="wave-bar" x="5" y="7" width="3" height="10" rx="1.5"/>
+              <rect class="wave-bar" x="10.5" y="4" width="3" height="16" rx="1.5"/>
+              <rect class="wave-bar" x="16" y="7" width="3" height="10" rx="1.5"/>
+            </svg>
+          </button>
+        </div>
+        <div id="status" role="status" aria-live="polite">…</div>
+      </div>
+
+      <div class="confirm-bar" id="confirm-bar" role="region" aria-label="Quick answer">
+        <div class="confirm-prompt" id="confirm-prompt"></div>
+        <div class="confirm-actions">
+          <button type="button" class="btn-confirm-yes" id="btn-yes">Yes</button>
+          <button type="button" class="btn-confirm-no" id="btn-no">No</button>
+        </div>
+      </div>
+
+      <div class="playback-bar" id="playback-bar">
+        <button type="button" class="btn-subtle" id="btn-repeat">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          <span id="lbl-repeat">Repeat</span>
+        </button>
+        <button type="button" class="btn-subtle" id="btn-slower">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span id="lbl-slower">Slower</span>
+        </button>
+        <button type="button" class="btn-subtle" id="btn-clear-session">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          <span id="lbl-new">New</span>
+        </button>
+      </div>
+
+      <div class="quick-triage" aria-label="Quick symptom selector">
+        <div class="quick-triage-head">
+          <span class="quick-triage-label" id="quick-label">Or tap what you see</span>
+        </div>
+        <div class="quick-grid" id="quick-grid"></div>
+        <button type="button" class="quick-check-btn" id="quick-check-btn">Check selected symptoms</button>
+      </div>
+
+      <form class="text-form" id="text-form">
+        <label for="text-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Describe crop symptoms</label>
+        <input id="text-input" type="text" autocomplete="off" placeholder="Or type symptoms here…">
+        <button type="submit" id="text-submit">Ask</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="content-column" aria-label="Advisory and field guide">
+    <div class="hero-banner" id="hero-banner">
+      <img src="/src/assets/images/chilli_field_hero_1795865047464.jpg" alt="Healthy chilli plants with green and red pods in a sunlit smallholder farm" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+      <div class="hero-scrim">
+        <div class="hero-kicker" id="banner-kicker">
+          <span>Chilli Field Advisory</span>
+          <span aria-hidden="true">·</span>
+          <span>5 Verified Conditions</span>
+          <span aria-hidden="true">·</span>
+          <span>Offline Ready</span>
+        </div>
+        <h2 id="banner-title">Compare your leaves or fruit with verified field guidance</h2>
+      </div>
+    </div>
+
+    <div class="badge" id="badge" role="alert">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0;margin-top:2px">
+        <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      <div class="badge-body">
+        <span id="badge-title">Needs human review</span>
+        <span class="badge-sub" id="badge-sub">Show this plant to your local agriculture officer.</span>
+      </div>
+    </div>
+
+    <div class="symptoms-strip" id="symptoms-strip">
+      <span class="symptoms-label" id="symptoms-label">Detected:</span>
+      <div id="tags"></div>
+    </div>
+
+    <article class="advice-card" id="advice-card" aria-live="polite">
+      <div class="advice-header">
+        <div class="advice-photo-wrap">
+          <img id="advice-photo" src="" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+          <div class="advice-photo-caption" id="advice-photo-caption">Compare with your plant</div>
+        </div>
+        <div class="advice-summary">
+          <div class="advice-meta" id="advice-meta"></div>
+          <h2 class="advice-title" id="advice-title"></h2>
+          <p class="advice-symptoms-line" id="advice-symptoms-line"></p>
+        </div>
+      </div>
+      <div class="advice-grid">
+        <div class="advice-box do">
+          <div class="advice-box-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            <span id="advice-do-label">Do this today</span>
+          </div>
+          <p id="advice-do-text"></p>
+        </div>
+        <div class="advice-box avoid">
+          <div class="advice-box-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            <span id="advice-avoid-label">Avoid</span>
+          </div>
+          <p id="advice-avoid-text"></p>
+        </div>
+      </div>
+      <div class="advice-footer">
+        <span class="advice-recheck" id="advice-recheck"></span>
+        <button type="button" class="btn-subtle" id="advice-remind-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span id="advice-remind-label">Save reminder</span>
+        </button>
+      </div>
+    </article>
+
+    <div class="tabs-shell" id="workspace-tabs">
+      <div class="tab-bar" role="tablist" aria-label="Workspace views">
+        <button type="button" class="tab-btn" role="tab" id="tab-guide" aria-selected="true" aria-controls="panel-guide" data-tab="guide">
+          <span id="tab-lbl-guide">Field Guide</span>
+          <span class="tab-count">(5)</span>
+        </button>
+        <button type="button" class="tab-btn" role="tab" id="tab-chat" aria-selected="false" aria-controls="panel-chat" data-tab="chat">
+          <span id="tab-lbl-chat">Conversation</span>
+        </button>
+        <button type="button" class="tab-btn" role="tab" id="tab-reminders" aria-selected="false" aria-controls="panel-reminders" data-tab="reminders">
+          <span id="tab-lbl-rem">Reminders</span>
+          <span class="tab-count" id="tab-rem-count">(0)</span>
+        </button>
+      </div>
+
+      <section class="tab-panel active" id="panel-guide" role="tabpanel" aria-labelledby="tab-guide">
+        <div class="guide-grid" id="guide-list"></div>
+      </section>
+
+      <section class="tab-panel" id="panel-chat" role="tabpanel" aria-labelledby="tab-chat">
+        <div class="panel">
+          <div class="panel-head">
+            <h2 class="panel-title" id="transcript-heading">Conversation</h2>
+            <span class="panel-meta" id="transcript-meta">Chilli advisory only</span>
+          </div>
+          <div id="log" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="panel-reminders" role="tabpanel" aria-labelledby="tab-reminders">
+        <div class="panel">
+          <div class="panel-head">
+            <h2 class="panel-title" id="reminders-heading">Field check reminders</h2>
+            <span class="panel-meta" id="rem-count">0 saved</span>
+          </div>
+          <div id="rem"></div>
+        </div>
+      </section>
+    </div>
+  </section>
 </main>
+
+<footer class="site-footer">
+  <div class="footer-row">
+    <span id="footer-note">Verified chilli knowledge base only. Never invents pesticide doses.</span>
+    <div id="dev"><a href="#dev" id="devlink" aria-expanded="false">Developer tools</a></div>
+  </div>
+  <div id="devp" aria-label="Developer test panel">
+    <div class="panel-head">
+      <strong class="panel-title">Developer test</strong>
+      <span class="panel-meta">9 recorded scenarios</span>
+    </div>
+    <div class="dev-grid">
+      <button type="button" data-i="0">1 · Clear Telugu</button>
+      <button type="button" data-i="1">2 · Noisy mixed Telugu-English</button>
+      <button type="button" data-i="2">3 · Unknown problem</button>
+      <button type="button" data-i="3">4 · Clear mites</button>
+      <button type="button" data-i="4">5 · Anthracnose</button>
+      <button type="button" data-i="5">6 · Fruit borer</button>
+      <button type="button" data-i="6">7 · Safety probe (refuse)</button>
+      <button type="button" data-i="7">8 · Hindi thrips</button>
+      <button type="button" data-i="8">9 · Tomato (refuse)</button>
+    </div>
+    <div class="dev-actions">
+      <button id="devcopy" type="button">Copy result</button>
+      <button id="devsave" type="button">Download results</button>
+    </div>
+    <div id="diag"></div>
+  </div>
+</footer>
+
 <script>
 let KB;
 // Empty = keyword-only. Set to the proxy URL to enable the optional hybrid.
 const LLM_ENDPOINT=(document.querySelector('meta[name="llm-endpoint"]')?.content||'').trim();
 const LANGS={te:{bcp:'te-IN',i:0,li:1},hi:{bcp:'hi-IN',i:1,li:2},en:{bcp:'en-IN',i:2,li:0}};
+
+const ENTRY_IMG={
+ thrips:'/src/assets/images/pest_thrips_1795865049026.jpg',
+ mites:'/src/assets/images/pest_mites_1795865047981.jpg',
+ virus:'/src/assets/images/pest_virus_1795865050394.jpg',
+ anthracnose:'/src/assets/images/pest_anthracnose_1795865051921.jpg',
+ borer:'/src/assets/images/pest_borer_1795865054129.jpg'
+};
+
+const QUICK_SYMPTOMS=[
+ {id:'curl_up', en:'Leaves curling up', te:'ఆకులు పైకి ముడత', hi:'पत्ते ऊपर मुड़ना', phrase:{en:'leaves curling upward',te:'ఆకులు పైకి ముడుచుకుంటున్నాయి',hi:'पत्ते ऊपर की ओर मुड़ रहे हैं'}},
+ {id:'curl_down', en:'Leaves curling down', te:'ఆకులు కిందికి ముడత', hi:'पत्ते नीचे मुड़ना', phrase:{en:'leaves curling downward bronze',te:'ఆకులు కిందికి ముడుచుకుంటున్నాయి ఎర్రగా',hi:'पत्ते नीचे की ओर मुड़ रहे हैं लालिमा'}},
+ {id:'white_ins', en:'Tiny white insects', te:'చిన్న తెల్ల పురుగులు', hi:'छोटे सफेद कीड़े', phrase:{en:'small white insects under leaves',te:'ఆకుల కింద చిన్న తెల్ల పురుగులు',hi:'पत्तियों के नीचे छोटे सफेद कीड़े'}},
+ {id:'yellow_stunt', en:'Small yellow leaves', te:'చిన్న పసుపు ఆకులు', hi:'छोटे पीले पत्ते', phrase:{en:'small yellow stunted curled leaves',te:'కొత్త ఆకులు చిన్నగా పసుపుగా ముడత',hi:'नए पत्ते छोटे और पीले मुड़े'}},
+ {id:'fruit_spots', en:'Dark spots on fruit', te:'కాయలపై నల్ల మచ్చలు', hi:'फलों पर काले धब्बे', phrase:{en:'dark spots on chilli fruit after rain',te:'కాయలపై నల్లటి మచ్చలు వర్షం',hi:'फलों पर काले धब्बे बारिश'}},
+ {id:'fruit_holes', en:'Holes in fruit', te:'కాయలలో రంధ్రాలు', hi:'फलों में छेद', phrase:{en:'holes in chilli fruit with caterpillar',te:'కాయలలో రంధ్రాలు గొంగళి పురుగు',hi:'फलों में छेद इल्ली'}}
+];
+
 // UI strings: add a language = add a key here + LANGS + KB fields
 const STR={
 en:{st:['Tap to speak','Listening...','Thinking...','Speaking...'],greet:'Tell me what is wrong with your crop. Tap the button and speak.',heard:'I heard:',ok:'Is that correct?',sorry:'Sorry. Please say it again.',
  clear:'I could not hear you clearly. Please move to a quieter place and try again.',silence:'I did not hear anything. Tap the button and speak.',slow:'The network is slow. Please wait.',fail:'I could not connect. Please try again.',
  unk:'I do not have reliable advice for this. Please show the plant to your local agriculture officer.',cropOnly:'This advisor is for chilli only. Please show this crop to your local agriculture officer.',follow:"Say 'repeat' to hear it again, or ask another question.",remind:'Shall I remind you in {n} days?',saved:'Okay, I will remind you.',
- s1:'Let us try simply. Say only the crop name.',s2:'Now say one problem word, like curling, yellow or spots.',sure:'This looks like {p}. I am fairly sure.',unsure:'This may be {p}. I am not fully sure.',act:'Do this today:',av:'Avoid:',chk:'Look at the plants in {n} days.',rem:'Check plants',unsup:'Speech recognition needs Chrome.',novoice:'This phone has no English voice installed, so I cannot speak. Install it in Settings, Text-to-speech output, Google, Install voice data, then English. The answer is shown as text.'},
+ s1:'Let us try simply. Say only the crop name.',s2:'Now say one problem word, like curling, yellow or spots.',sure:'This looks like {p}. I am fairly sure.',unsure:'This may be {p}. I am not fully sure.',act:'Do this today:',av:'Avoid:',chk:'Look at the plants in {n} days.',rem:'Check plants',unsup:'Speech recognition needs Chrome. You can also tap symptoms or type below.',novoice:'This phone has no English voice installed, so I cannot speak. Install it in Settings, Text-to-speech output, Google, Install voice data, then English. The answer is shown as text.'},
 te:{st:['మాట్లాడటానికి నొక్కండి','వింటున్నాను...','ఆలోచిస్తున్నాను...','చెబుతున్నాను...'],greet:'మీ పంటకు ఏమైంది చెప్పండి. బటన్ నొక్కి మాట్లాడండి.',heard:'నేను విన్నది:',ok:'ఇది సరైనదేనా?',sorry:'క్షమించండి. దయచేసి మళ్లీ చెప్పండి.',
  clear:'నాకు స్పష్టంగా వినపడలేదు. దయచేసి నిశ్శబ్ద ప్రదేశానికి వెళ్లి మళ్లీ ప్రయత్నించండి.',silence:'నాకు ఏమీ వినపడలేదు. బటన్ నొక్కి మాట్లాడండి.',slow:'నెట్‌వర్క్ నెమ్మదిగా ఉంది. దయచేసి వేచి ఉండండి.',fail:'కనెక్ట్ కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి.',
  unk:'దీనికి నా దగ్గర నమ్మదగిన సలహా లేదు. దయచేసి మీ స్థానిక వ్యవసాయ అధికారికి మొక్కను చూపించండి.',cropOnly:'ఈ సలహా మిరప పంటకు మాత్రమే. దయచేసి ఈ పంటను మీ వ్యవసాయ అధికారికి చూపించండి.',follow:"మళ్లీ వినాలంటే 'రిపీట్' అనండి, లేదా మరో ప్రశ్న అడగండి.",remind:'{n} రోజుల్లో గుర్తు చేయమంటారా?',saved:'సరే, గుర్తు చేస్తాను.',
- s1:'సులభంగా చెబుదాం. పంట పేరు మాత్రమే చెప్పండి.',s2:'ఇప్పుడు ఒక సమస్య పదం చెప్పండి: ముడత, పసుపు, మచ్చలు.',sure:'ఇది {p} లాగా ఉంది. నాకు బాగా నమ్మకం ఉంది.',unsure:'ఇది {p} కావచ్చు. నాకు పూర్తిగా నమ్మకం లేదు.',act:'ఈరోజు చేయవలసింది:',av:'చేయకూడనిది:',chk:'{n} రోజుల్లో మొక్కలను చూడండి.',rem:'మొక్కలు చూడండి',unsup:'Chrome అవసరం.',novoice:'ఈ ఫోన్‌లో తెలుగు వాయిస్ లేదు, అందుకే నేను మాట్లాడలేను. Settings, Text-to-speech output, Google, Install voice data లో తెలుగు ఇన్‌స్టాల్ చేయండి. సమాధానం టెక్స్ట్‌గా కింద ఉంది.'},
+ s1:'సులభంగా చెబుదాం. పంట పేరు మాత్రమే చెప్పండి.',s2:'ఇప్పుడు ఒక సమస్య పదం చెప్పండి: ముడత, పసుపు, మచ్చలు.',sure:'ఇది {p} లాగా ఉంది. నాకు బాగా నమ్మకం ఉంది.',unsure:'ఇది {p} కావచ్చు. నాకు పూర్తిగా నమ్మకం లేదు.',act:'ఈరోజు చేయవలసింది:',av:'చేయకూడనిది:',chk:'{n} రోజుల్లో మొక్కలను చూడండి.',rem:'మొక్కలు చూడండి',unsup:'వాయిస్ గుర్తింపుకు Chrome అవసరం. కింద లక్షణాలు ఎంచుకోవచ్చు లేదా టైప్ చేయవచ్చు.',novoice:'ఈ ఫోన్‌లో తెలుగు వాయిస్ లేదు, అందుకే నేను మాట్లాడలేను. Settings, Text-to-speech output, Google, Install voice data లో తెలుగు ఇన్‌స్టాల్ చేయండి. సమాధానం టెక్స్ట్‌గా కింద ఉంది.'},
 hi:{st:['बोलने के लिए दबाएँ','सुन रहा हूँ...','सोच रहा हूँ...','बोल रहा हूँ...'],greet:'बताइए आपकी फसल में क्या दिक्कत है। बटन दबाकर बोलिए।',heard:'मैंने सुना:',ok:'क्या यह सही है?',sorry:'माफ़ कीजिए। कृपया फिर से बताइए।',
  clear:'मुझे साफ़ सुनाई नहीं दिया। कृपया शांत जगह जाकर फिर कोशिश करें।',silence:'मुझे कुछ सुनाई नहीं दिया। बटन दबाकर बोलिए।',slow:'नेटवर्क धीमा है। कृपया रुकिए।',fail:'कनेक्ट नहीं हो सका। कृपया फिर कोशिश करें।',
  unk:'इसके लिए मेरे पास भरोसेमंद सलाह नहीं है। कृपया पौधा अपने कृषि अधिकारी को दिखाइए।',cropOnly:'यह सलाह केवल मिर्च के लिए है। कृपया यह फसल अपने कृषि अधिकारी को दिखाइए।',follow:"दोबारा सुनने के लिए 'रिपीट' कहें, या दूसरा सवाल पूछें।",remind:'क्या {n} दिन बाद याद दिलाऊँ?',saved:'ठीक है, मैं याद दिलाऊँगा।',
- s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'Chrome चाहिए।',novoice:'इस फ़ोन में हिन्दी आवाज़ नहीं है, इसलिए मैं बोल नहीं सकता। Settings, Text-to-speech output, Google, Install voice data में हिन्दी इंस्टॉल करें। जवाब नीचे लिखा है।'}};
+ s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'वॉइस पहचान के लिए Chrome चाहिए। आप नीचे लक्षण चुन सकते हैं या लिख सकते हैं।',novoice:'इस फ़ोन में हिन्दी आवाज़ नहीं है, इसलिए मैं बोल नहीं सकता। Settings, Text-to-speech output, Google, Install voice data में हिन्दी इंस्टॉल करें। जवाब नीचे लिखा है।'}};
+
+const UI={
+ en:{
+  heroTitle:'Chilli Crop Advisor',
+  heroSub:'Tap the microphone and describe your chilli leaves or fruit.',
+  bannerKicker:['Chilli Field Advisory','5 Verified Conditions','Offline Ready'],
+  bannerTitle:'Compare your leaves or fruit with verified field guidance',
+  navGuide:'Field Guide',navTranscript:'Conversation',navReminders:'Reminders',
+  quickLabel:'Or tap what you see',quickCheck:'Check selected symptoms',
+  inputPlaceholder:'Or type symptoms here…',ask:'Ask',
+  yes:'Yes',no:'No',yesWord:'yes',noWord:'no',
+  repeat:'Repeat',slower:'Slower',newQ:'New',
+  detected:'Detected:',badgeTitle:'Needs human review',
+  badgeSub:'Show this plant to your local agriculture officer.',
+  comparePhoto:'Compare with your plant',
+  confSure:'Fairly sure',confUnsure:'Needs closer check',
+  recheckChip:'Recheck in {n} days',saveRem:'Remind in {n} days',rcShort:'{n}d check',
+  transcript:'Conversation',transcriptMeta:'Chilli advisory only',
+  reminders:'Field check reminders',remCount:'{n} saved',remEmpty:'No reminders saved yet. Reminders are added after an advisory.',
+  viewAdvice:'View steps',listenBtn:'Listen',
+  footer:'Verified chilli knowledge base only. Never invents pesticide doses.',
+  dark:'Dark',light:'Light'
+ },
+ te:{
+  heroTitle:'మిరప పంట సలహాదారు',
+  heroSub:'బటన్ నొక్కి మీ మిరప ఆకులు లేదా కాయల సమస్య చెప్పండి.',
+  bannerKicker:['మిరప పొలం సలహా','5 ధృవీకరించిన సమస్యలు','ఆఫ్‌లైన్ సిద్ధం'],
+  bannerTitle:'మీ ఆకులు లేదా కాయలను ధృవీకరించిన చిత్రాలతో పోల్చి చూడండి',
+  navGuide:'మిరప గైడ్',navTranscript:'సంభాషణ',navReminders:'గుర్తులు',
+  quickLabel:'లేదా కనిపించే లక్షణాలు ఎంచుకోండి',quickCheck:'ఎంచుకున్న లక్షణాలు పరిశీలించు',
+  inputPlaceholder:'లేదా సమస్యను ఇక్కడ టైప్ చేయండి…',ask:'అడగండి',
+  yes:'అవును',no:'కాదు',yesWord:'అవును',noWord:'కాదు',
+  repeat:'మళ్లీ విను',slower:'నెమ్మదిగా',newQ:'కొత్త ప్రశ్న',
+  detected:'గుర్తించినవి:',badgeTitle:'అధికారి పరిశీలన అవసరం',
+  badgeSub:'దయచేసి ఈ మొక్కను మీ స్థానిక వ్యవసాయ అధికారికి చూపించండి.',
+  comparePhoto:'మీ మొక్కతో పోల్చి చూడండి',
+  confSure:'బాగా నమ్మకం ఉంది',confUnsure:'పూర్తి నమ్మకం లేదు',
+  recheckChip:'{n} రోజుల్లో మళ్లీ చూడండి',saveRem:'{n} రోజుల్లో గుర్తు పెట్టు',rcShort:'{n} రోజులు',
+  transcript:'సంభాషణ',transcriptMeta:'మిరప పంటకు మాత్రమే',
+  reminders:'మొక్కలు చూసే గుర్తులు',remCount:'{n} సేవ్ అయ్యాయి',remEmpty:'ఇంకా గుర్తులు లేవు. సలహా తర్వాత గుర్తు పెట్టుకోవచ్చు.',
+  viewAdvice:'వివరాలు చూడు',listenBtn:'వినండి',
+  footer:'ధృవీకరించిన మిరప సలహాలు మాత్రమే. మందుల మోతాదులు ఊహించి చెప్పదు.',
+  dark:'డార్క్',light:'లైట్'
+ },
+ hi:{
+  heroTitle:'मिर्च फसल सलाहकार',
+  heroSub:'बटन दबाएँ और अपनी मिर्च के पत्तों या फलों की समस्या बताएँ।',
+  bannerKicker:['मिर्च खेत सलाह','5 प्रमाणित समस्याएँ','ऑफ़लाइन तैयार'],
+  bannerTitle:'अपने पत्तों या फलों की तुलना प्रमाणित तस्वीरों से करें',
+  navGuide:'मिर्च गाइड',navTranscript:'बातचीत',navReminders:'रिमाइंडर',
+  quickLabel:'या दिखने वाले लक्षण चुनें',quickCheck:'चुने हुए लक्षण जाँचें',
+  inputPlaceholder:'या समस्या यहाँ लिखें…',ask:'पूछें',
+  yes:'हाँ',no:'नहीं',yesWord:'हाँ',noWord:'नहीं',
+  repeat:'दोबारा सुनें',slower:'धीमे सुनें',newQ:'नया सवाल',
+  detected:'पहचाने गए लक्षण:',badgeTitle:'कृषि अधिकारी की जाँच ज़रूरी',
+  badgeSub:'कृपया यह पौधा अपने स्थानीय कृषि अधिकारी को दिखाइए।',
+  comparePhoto:'अपने पौधे से मिलान करें',
+  confSure:'काफ़ी भरोसा है',confUnsure:'पक्का नहीं है',
+  recheckChip:'{n} दिन बाद देखें',saveRem:'{n} दिन का रिमाइंडर',rcShort:'{n} दिन',
+  transcript:'बातचीत',transcriptMeta:'केवल मिर्च के लिए',
+  reminders:'पौधे देखने के रिमाइंडर',remCount:'{n} सहेजे गए',remEmpty:'अभी कोई रिमाइंडर नहीं है। सलाह के बाद रिमाइंडर जोड़ सकते हैं।',
+  viewAdvice:'उपाय देखें',listenBtn:'सुनें',
+  footer:'केवल प्रमाणित मिर्च जानकारी। दवा की मात्रा का अनुमान नहीं लगाता।',
+  dark:'डार्क',light:'लाइट'
+ }
+};
+
 const $=id=>document.getElementById(id);
 STR.en.due='Due';STR.en.dueToday='Due today';STR.en.overdue='Overdue';STR.en.dismiss='Remove reminder';
 STR.te.due='గడువు';STR.te.dueToday='ఈరోజే';STR.te.overdue='గడిపోయింది';STR.te.dismiss='గుర్తును తీసివేయి';
 STR.hi.due='नियत तारीख';STR.hi.dueToday='आज ही';STR.hi.overdue='समय बीत गया';STR.hi.dismiss='याद दिलाना हटाएँ';
-const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,rate:1,rec:null,last:'',lastEntry:'',lastTags:[],greeted:false,lastTranscript:'',sessionT0:0};
+const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,rate:1,rec:null,last:'',lastEntry:'',lastTags:[],greeted:false,lastTranscript:'',sessionT0:0,lastRc:3,pendingResolve:null,selectedQuick:new Set(),activeTab:'guide'};
 const T=(k,v={})=>(STR[S.rl][k]||'').replace(/\{(\w+)\}/g,(_,x)=>v[x]);
-const stat=i=>{$('status').textContent=STR[S.lang].st[i];$('mic').className=i==1?'listen':i?'busy':'';};
+const U=(k,v={})=>(UI[S.lang][k]||UI.en[k]||'').replace(/\{(\w+)\}/g,(_,x)=>v[x]);
+const cap=s=>s?s.charAt(0).toUpperCase()+s.slice(1):'';
+const stat=i=>{$('status').textContent=STR[S.lang].st[i];$('mic').className=i==1?'listen':i?'busy':'';const w=$('mic-wrap');if(w)w.classList.toggle('is-listen',i==1);};
 const add=(c,t)=>{const d=document.createElement('div');d.className='m '+c;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=1e5;};
 const chk=()=>{if(S.cur!==S.tok)throw'abort'};
-function stopAll(){S.tok++;try{S.rec&&S.rec.abort()}catch(e){}speechSynthesis.cancel();stat(0)}
+function hideConfirm(){const b=$('confirm-bar');if(b)b.classList.remove('show');S.pendingResolve=null;}
+function stopAll(){S.tok++;hideConfirm();try{S.rec&&S.rec.abort()}catch(e){}speechSynthesis.cancel();stat(0)}
+
+function switchTab(name){
+ S.activeTab=name;
+ document.querySelectorAll('.tab-btn').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===name?'true':'false'));
+ document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+name));
+ document.querySelectorAll('[data-nav-tab]').forEach(a=>a.classList.toggle('active',a.dataset.navTab===name));
+}
+
+function updateHeroBannerVisibility(){
+ const hero=$('hero-banner');
+ if(!hero)return;
+ const adviceOpen=$('advice-card')?.classList.contains('show');
+ const badgeOpen=$('badge')?.classList.contains('show');
+ hero.classList.toggle('hidden',!!(adviceOpen||badgeOpen));
+}
+
+function setBadge(show,customSub){
+ const el=$('badge');
+ if(!el)return;
+ el.style.display=show?'flex':'none';
+ el.classList.toggle('show',!!show);
+ if(show){
+  const t=$('badge-title'),s=$('badge-sub');
+  if(t)t.textContent=UI[S.rl]?.badgeTitle||UI.en.badgeTitle;
+  if(s)s.textContent=customSub||UI[S.rl]?.badgeSub||UI.en.badgeSub;
+ }
+ updateHeroBannerVisibility();
+}
+
+function showAdviceCard(e,sure){
+ const card=$('advice-card');if(!card||!e)return;
+ const L=e[S.rl];
+ S.lastRc=e.rc;
+ const u=UI[S.rl]||UI.en;
+ const li=LANGS[S.rl].li;
+ const img=$('advice-photo');
+ if(img){
+  img.style.display='block';
+  img.src=ENTRY_IMG[e.id]||'';
+  img.alt=cap(L.n)+' diagnostic reference photograph';
+ }
+ $('advice-photo-caption').textContent=u.comparePhoto;
+ const meta=$('advice-meta');
+ if(meta){
+  meta.innerHTML='';
+  const parts=[cap(KB.crop[S.rl]), sure?u.confSure:u.confUnsure, u.recheckChip.replace('{n}',e.rc)];
+  parts.forEach((p,idx)=>{
+   if(idx>0){const sep=document.createElement('span');sep.setAttribute('aria-hidden','true');sep.textContent='·';meta.appendChild(sep);}
+   const sp=document.createElement('span');if(idx===2)sp.className='mono-num';sp.textContent=p;meta.appendChild(sp);
+  });
+ }
+ $('advice-title').textContent=cap(L.n);
+ $('advice-symptoms-line').textContent=e.tags.map(t=>KB.labels[t][li]).join(' · ');
+ $('advice-do-label').textContent=T('act').replace(/:$/,'');
+ $('advice-do-text').textContent=L.a;
+ $('advice-avoid-label').textContent=T('av').replace(/:$/,'');
+ $('advice-avoid-text').textContent=L.v;
+ $('advice-recheck').textContent=T('chk',{n:e.rc});
+ $('advice-remind-label').textContent=u.saveRem.replace('{n}',e.rc);
+ card.classList.add('show');
+ const pb=$('playback-bar');if(pb)pb.classList.add('show');
+ document.querySelectorAll('.guide-card').forEach(c=>c.classList.toggle('is-selected',c.dataset.id===e.id));
+ updateHeroBannerVisibility();
+}
+
+function hideAdviceCard(){
+ const card=$('advice-card');if(card)card.classList.remove('show');
+ document.querySelectorAll('.guide-card').forEach(c=>c.classList.remove('is-selected'));
+ updateHeroBannerVisibility();
+}
+
+function renderQuickSymptoms(){
+ const box=$('quick-grid');if(!box)return;
+ box.innerHTML='';
+ QUICK_SYMPTOMS.forEach(item=>{
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.className='quick-btn';
+  const pressed=S.selectedQuick.has(item.id);
+  btn.setAttribute('aria-pressed',pressed?'true':'false');
+  btn.textContent=item[S.lang]||item.en;
+  btn.onclick=()=>{
+   if(S.selectedQuick.has(item.id))S.selectedQuick.delete(item.id);
+   else S.selectedQuick.add(item.id);
+   renderQuickSymptoms();
+  };
+  box.appendChild(btn);
+ });
+ const checkBtn=$('quick-check-btn');
+ if(checkBtn){
+  checkBtn.textContent=U('quickCheck');
+  checkBtn.classList.toggle('show',S.selectedQuick.size>0);
+ }
+}
+
+function applyLocaleUI(){
+ const u=UI[S.lang]||UI.en;
+ $('hero-title').textContent=u.heroTitle;
+ $('hero-sub').textContent=u.heroSub;
+ $('nav-guide').textContent=u.navGuide;
+ $('nav-transcript').textContent=u.navTranscript;
+ $('nav-reminders').textContent=u.navReminders;
+ $('tab-lbl-guide').textContent=u.navGuide;
+ $('tab-lbl-chat').textContent=u.navTranscript;
+ $('tab-lbl-rem').textContent=u.navReminders;
+ $('quick-label').textContent=u.quickLabel;
+ $('text-input').placeholder=u.inputPlaceholder;
+ $('text-submit').textContent=u.ask;
+ $('btn-yes').textContent=u.yes;
+ $('btn-no').textContent=u.no;
+ $('lbl-repeat').textContent=u.repeat;
+ $('lbl-slower').textContent=u.slower;
+ $('lbl-new').textContent=u.newQ;
+ $('symptoms-label').textContent=u.detected;
+ $('transcript-heading').textContent=u.transcript;
+ $('transcript-meta').textContent=u.transcriptMeta;
+ $('reminders-heading').textContent=u.reminders;
+ $('footer-note').textContent=u.footer;
+ $('banner-title').textContent=u.bannerTitle;
+ const bk=$('banner-kicker');
+ if(bk){
+  bk.innerHTML='';
+  u.bannerKicker.forEach((part,idx)=>{
+   if(idx>0){const sep=document.createElement('span');sep.setAttribute('aria-hidden','true');sep.textContent='·';bk.appendChild(sep);}
+   const sp=document.createElement('span');sp.textContent=part;bk.appendChild(sp);
+  });
+ }
+ updateThemeButton();
+ renderQuickSymptoms();
+ drawRem();
+ renderGuide();
+}
+
+function renderGuide(){
+ const box=$('guide-list');if(!box||!KB)return;
+ box.innerHTML='';
+ const li=LANGS[S.lang].li;
+ const u=UI[S.lang]||UI.en;
+ KB.entries.forEach(e=>{
+  const L=e[S.lang];
+  const card=document.createElement('article');
+  card.className='guide-card'+(S.lastEntry===e.id?' is-selected':'');
+  card.dataset.id=e.id;
+
+  const media=document.createElement('div');media.className='guide-media';
+  const img=document.createElement('img');
+  img.src=ENTRY_IMG[e.id]||'';
+  img.alt=cap(L.n)+' on chilli plant';
+  img.loading='lazy';
+  img.referrerPolicy='no-referrer';
+  img.onerror=()=>{img.style.display='none';};
+  media.appendChild(img);
+
+  const body=document.createElement('div');body.className='guide-body';
+  const head=document.createElement('div');head.className='guide-head-row';
+  const name=document.createElement('h3');name.className='guide-name';name.textContent=cap(L.n);
+  const rc=document.createElement('span');rc.className='guide-rc';rc.textContent=u.rcShort.replace('{n}',e.rc);
+  head.append(name,rc);
+
+  const tags=document.createElement('p');tags.className='guide-tags';
+  tags.textContent=e.tags.map(t=>KB.labels[t][li]).join(' · ');
+
+  const snip=document.createElement('p');snip.className='guide-snippet';
+  snip.textContent=L.a;
+
+  const acts=document.createElement('div');acts.className='guide-actions';
+  const viewBtn=document.createElement('button');viewBtn.type='button';viewBtn.className='btn-subtle';
+  viewBtn.textContent=u.viewAdvice;
+  viewBtn.onclick=()=>{
+   stopAll();S.rl=S.lang;S.lastEntry=e.id;S.lastTags=e.tags.slice();
+   setBadge(false);
+   showAdviceCard(e,true);
+   $('advice-card').scrollIntoView({behavior:'smooth',block:'nearest'});
+  };
+
+  const listenBtn=document.createElement('button');listenBtn.type='button';listenBtn.className='btn-subtle';
+  listenBtn.textContent=u.listenBtn;
+  listenBtn.setAttribute('aria-label',u.listenBtn+' '+cap(L.n));
+  listenBtn.onclick=()=>{
+   stopAll();S.cur=++S.tok;S.rl=S.lang;S.lastEntry=e.id;S.lastTags=e.tags.slice();
+   setBadge(false);
+   const sp=[L.n+'.',STR[S.lang].act,L.a,STR[S.lang].av,L.v,STR[S.lang].chk.replace('{n}',e.rc)].join(' ');
+   S.last=sp;showAdviceCard(e,true);
+   say(sp).then(()=>stat(0)).catch(()=>{});
+  };
+
+  acts.append(viewBtn,listenBtn);
+  body.append(head,tags,snip,acts);
+  card.append(media,body);
+  box.appendChild(card);
+ });
+}
 
 let VOICES=[];const loadVoices=()=>{try{VOICES=speechSynthesis.getVoices()||[]}catch(e){VOICES=[]}};
 loadVoices();try{speechSynthesis.onvoiceschanged=loadVoices}catch(e){}
 const voiceFor=l=>{const p=LANGS[l].bcp.toLowerCase().split('-')[0];return VOICES.find(v=>(v.lang||'').toLowerCase().replace('_','-').split('-')[0]===p)||null};
 const voiceCount=l=>VOICES.filter(v=>(v.lang||'').toLowerCase().replace('_','-').split('-')[0]===LANGS[l].bcp.toLowerCase().split('-')[0]).length;
-const voicesReady=()=>new Promise(r=>{if(VOICES.length)return r();let n=0;const t=setInterval(()=>{loadVoices();if(VOICES.length||++n>=10){clearInterval(t);r()}},150)});
+let voicesChecked=false;
+const voicesReady=()=>new Promise(r=>{if(VOICES.length||voicesChecked)return r();let n=0;const t=setInterval(()=>{loadVoices();if(VOICES.length||++n>=3){voicesChecked=true;clearInterval(t);r()}},100)});
 let noVoiceWarned=false;
 async function speakOne(s){if(!voiceFor(S.rl)){if(!noVoiceWarned){noVoiceWarned=true;add('sys',T('novoice'))}return}
  return new Promise(r=>{const u=new SpeechSynthesisUtterance(s);u.lang=LANGS[S.rl].bcp;u.rate=S.rate;let d=0;const f=()=>{if(!d){d=1;r()}};
@@ -84,13 +1883,33 @@ async function speakOne(s){if(!voiceFor(S.rl)){if(!noVoiceWarned){noVoiceWarned=
 async function say(text){chk();add('app',text);stat(3);speechSynthesis.cancel();
  await voicesReady();for(const s of text.split(/(?<=[.।?])\s+/).filter(Boolean)){await speakOne(s);chk()} stat(2)}
 
-function listen(){return new Promise(res=>{
+function listen(opts={}){return new Promise(res=>{
  if(S.fake.length){const f=S.fake.shift();stat(1);return setTimeout(()=>res({text:f.t,conf:f.c}),700)}
  if(S.fakeMode)return res({err:'end'});
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){add('sys',T('unsup'));return res({err:'x'})}
+ let settled=false;
+ const finish=o=>{if(settled)return;settled=true;hideConfirm();res(o)};
+ if(opts.confirmPrompt){
+  const bar=$('confirm-bar'),pr=$('confirm-prompt');
+  if(bar&&pr){
+   const u=UI[S.rl]||UI.en;
+   pr.textContent=opts.confirmPrompt;
+   $('btn-yes').textContent=u.yes;
+   $('btn-no').textContent=u.no;
+   bar.classList.add('show');
+   S.pendingResolve=choice=>{
+    try{S.rec&&S.rec.abort()}catch(e){}
+    finish({text:choice?u.yesWord:u.noWord,conf:1});
+   };
+  }
+ }
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){
+  if(opts.confirmPrompt){stat(0);return;}
+  add('sys',T('unsup'));return finish({err:'x'})
+ }
  const r=new SR();S.rec=r;r.lang=LANGS[S.lang].bcp;r.interimResults=true;r.continuous=true;
  let txt='',conf=0,nc=0,started=0,spoke=0,done=0,tm={};
- const fin=o=>{if(done)return;done=1;Object.values(tm).forEach(clearTimeout);try{r.stop()}catch(e){}res(o)};
+ const fin=o=>{if(done)return;done=1;Object.values(tm).forEach(clearTimeout);try{r.stop()}catch(e){}finish(o)};
  const end=()=>fin(txt.trim()?{text:txt.trim(),conf:nc?conf/nc:.7}:{err:'silence'});
  tm.slow=setTimeout(()=>{if(!started){add('app',T('slow'));if(voiceFor(S.rl))speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(T('slow')),{lang:LANGS[S.rl].bcp}))}},8000);
  tm.fail=setTimeout(()=>{if(!started)fin({err:'net'})},20000);
@@ -99,11 +1918,11 @@ function listen(){return new Promise(res=>{
  r.onspeechstart=()=>{spoke=1;clearTimeout(tm.sil)};
  r.onresult=e=>{txt='';conf=0;nc=0;for(let i=0;i<e.results.length;i++){const a=e.results[i][0];txt+=a.transcript+' ';if(e.results[i].isFinal){conf+=a.confidence||.7;nc++}}
   clearTimeout(tm.stop);tm.stop=setTimeout(()=>{if(nc||txt.trim())end()},2000)};  // stop after 2 s of silence
- r.onerror=e=>fin({err:e.error=='network'?'net':e.error=='aborted'?'end':e.error=='not-allowed'?'perm':'silence'});
- r.onend=end;
- stat(1);try{r.start()}catch(e){fin({err:'x'})}})}
+ r.onerror=e=>{if(opts.confirmPrompt&&e.error!=='aborted'){stat(0);return;}fin({err:e.error=='network'?'net':e.error=='aborted'?'end':e.error=='not-allowed'?'perm':'silence'})};
+ r.onend=()=>{if(!settled&&!opts.confirmPrompt)end()};
+ stat(1);try{r.start()}catch(e){if(!opts.confirmPrompt)fin({err:'x'});else stat(0)}})}
 
-async function capture(min=3){chk();const r=await listen();chk();stat(2);
+async function capture(min=3,opts={}){chk();const r=await listen(opts);chk();stat(2);
  if(r.err=='silence'){await say(T('silence'));return null}
  if(r.err=='net'){await say(T('fail'));return null}
  if(r.err){if(r.err=='perm')add('sys','Microphone permission denied.');return null}
@@ -131,8 +1950,20 @@ async function llmMap(text){if(!LLM_ENDPOINT||!text)return null;
   const tags=Array.isArray(d.tags)?d.tags.filter(t=>t in KB.lex):[];
   return{entry:d.entry,tags:[...new Set(tags)]}}catch(e){return null}finally{clearTimeout(tm)}}
 const lab=(t)=>KB.labels[t][LANGS[S.rl].li];
-function showTags(x){const c=$('tags');c.innerHTML='';const a=[KB.crop[S.rl]+(x.crop?'':' ?')];if(x.stage)a.push('🌱 '+x.stage);[...x.tags].forEach(t=>t!='rain'&&a.push(lab(t)));
- if(x.tags.has('rain'))a.push('🌧 '+lab('rain'));if(x.district)a.push('📍 '+x.district);a.forEach(t=>{const d=document.createElement('span');d.className='tag';d.textContent=t;c.appendChild(d)})}
+function showTags(x){
+ const c=$('tags'),strip=$('symptoms-strip');
+ c.innerHTML='';
+ const a=[cap(KB.crop[S.rl])+(x.crop?'':' ?')];
+ if(x.stage)a.push(x.stage);
+ [...x.tags].forEach(t=>t!='rain'&&a.push(lab(t)));
+ if(x.tags.has('rain'))a.push(lab('rain'));
+ if(x.district)a.push(x.district);
+ a.forEach((t,idx)=>{
+  if(idx>0){const sep=document.createElement('span');sep.className='tag-sep';sep.setAttribute('aria-hidden','true');sep.textContent='·';c.appendChild(sep)}
+  const d=document.createElement('span');d.className='tag';d.textContent=t;c.appendChild(d);
+ });
+ if(strip)strip.classList.toggle('show',a.length>0);
+}
 function heardLine(x){const li=LANGS[S.rl].li,used=new Set(),parts=[];
  const tagged=t=>x.tags.has(t);
  if(tagged('curl')){used.add('curl');if(tagged('up')){used.add('up');parts.push(KB.heard.curlUp[li])}else if(tagged('down')){used.add('down');parts.push(KB.heard.curlDown[li])}else parts.push(KB.heard.curl[li])}
@@ -141,14 +1972,15 @@ function heardLine(x){const li=LANGS[S.rl].li,used=new Set(),parts=[];
  return T('heard')+' '+(parts.length?KB.crop[S.rl]+', '+parts.join(', '):x.text)+'. '+T('ok')}
 
 async function session(text0){
- const my=S.cur=++S.tok;$('badge').style.display='none';S.sessionT0=Date.now();S.lastTranscript='';S.lastEntry='';S.lastTags=[];
+ const my=S.cur=++S.tok;setBadge(false);hideAdviceCard();hideConfirm();S.sessionT0=Date.now();S.lastTranscript='';S.lastEntry='';S.lastTags=[];
+ switchTab('chat');
  try{ if(!S.greeted){await say(T('greet'));S.greeted=true}
   await flow(text0===undefined?await capture(3):text0);
- }catch(e){if(e!=='abort')console.error(e)} if(S.cur===my){recordSession();stat(0)}S.fakeMode=false}
+ }catch(e){if(e!=='abort')console.error(e)} if(S.cur===my){hideConfirm();recordSession();stat(0)}S.fakeMode=false}
 
 async function flow(text){let no=0,x;
- while(text){S.lastTranscript=text;S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){$('badge').style.display='block';S.lastEntry='unknown';S.lastTags=[...x.tags];drawDiag();return say(T('cropOnly'))}const m=await llmMap(text);if(m){m.tags.forEach(t=>x.tags.add(t));if(m.entry!=='unknown'){x.hits[m.entry]=1;x.llm=true}showTags(x)}await say(heardLine(x));
-  const a=await capture(1);if(!a)return;
+ while(text){S.lastTranscript=text;S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){setBadge(true,T('cropOnly'));S.lastEntry='unknown';S.lastTags=[...x.tags];drawDiag();return say(T('cropOnly'))}const m=await llmMap(text);if(m){m.tags.forEach(t=>x.tags.add(t));if(m.entry!=='unknown'){x.hits[m.entry]=1;x.llm=true}showTags(x)}const h=heardLine(x);await say(h);
+  const a=await capture(1,{confirmPrompt:T('ok')});if(!a)return;
   if(yn(a)===1)break;
   if(++no>=2){await say(T('s1'));const c=await capture(1);await say(T('s2'));const w=await capture(1);S.lastTranscript=((c||'')+' '+(w||'')).trim();x=extract(S.lastTranscript);showTags(x);break} // simple mode
   await say(T('sorry'));text=await capture(3);if(!text)return}
@@ -158,17 +1990,19 @@ async function answer(x){stat(2);let asked=0;const done=new Set();let sc;
  for(;;){sc=score(x);const[a,b]=sc;
   if(a.n==0)return unknown();
   if(asked<3&&a.n-b.n<2&&a.n<4){const q=[a,b].map(o=>o.e).find(e=>e.q&&!done.has(e.id));
-   if(q){done.add(q.id);asked++;await say(q.q[S.rl]);const r=await capture(1);if(!r)return;if(yn(r)===1){x.tags.add(q.q.tag);showTags(x)}continue}}
+   if(q){done.add(q.id);asked++;await say(q.q[S.rl]);const r=await capture(1,{confirmPrompt:q.q[S.rl]});if(!r)return;if(yn(r)===1){x.tags.add(q.q.tag);showTags(x)}continue}}
   break}
  const[a,b]=sc,e=a.e,L=e[S.rl],sure=!x.llm&&a.n>=3&&a.n-b.n>=2;
  S.lastEntry=e.id;S.lastTags=[...x.tags];drawDiag();
+ showAdviceCard(e,sure);
  const sp=[T(sure?'sure':'unsure',{p:L.n}),T('act'),L.a,T('av'),L.v,T('chk',{n:e.rc})].join(' ');
  S.last=sp;await say(sp);
- await say(T('remind',{n:e.rc}));const r=await capture(1);
+ const remPrompt=T('remind',{n:e.rc});
+ await say(remPrompt);const r=await capture(1,{confirmPrompt:remPrompt});
  if(r&&yn(r)===1){saveRem(e.rc);await say(T('saved'))}
  await followUp()}
 
-function unknown(){$('badge').style.display='block';S.lastEntry='unknown';S.lastTags=[];drawDiag();return say(T('unk'))}
+function unknown(){setBadge(true,T('unk'));hideAdviceCard();S.lastEntry='unknown';S.lastTags=[];drawDiag();return say(T('unk'))}
 async function followUp(){await say(T('follow'));
  for(;;){const c=await capture(1);if(!c)return;const s=norm(c);
   if(has(s,KB.cmd.slow)){S.rate=.8;await say(S.last)}
@@ -184,11 +2018,15 @@ function remList(){let a=[];try{a=JSON.parse(localStorage.getItem('rem')||'[]')}
  return a.filter(r=>r&&typeof r.due==='number'&&r.due>cut).sort((x,y)=>x.due-y.due)}
 const remKey=r=>r.id||r.due+'|'+r.t;
 function drawRem(){const box=$('rem');if(!box)return;box.innerHTML='';
+ const list=remList();
+ const cnt=$('rem-count');if(cnt)cnt.textContent=U('remCount',{n:list.length});
+ const tcnt=$('tab-rem-count');if(tcnt)tcnt.textContent='('+list.length+')';
+ if(!list.length){const p=document.createElement('p');p.className='rem-empty';p.textContent=U('remEmpty');box.appendChild(p);return;}
  const t0=new Date();t0.setHours(0,0,0,0);const today=t0.getTime();
- remList().slice(0,3).forEach(r=>{const d=document.createElement('div');d.className='card';
+ list.slice(0,5).forEach(r=>{const d=document.createElement('div');d.className='card';
   const when=r.due<today?T('overdue'):r.due<today+864e5?T('dueToday'):new Date(r.due).toLocaleDateString();
-  const s=document.createElement('span');s.textContent='⏰ '+r.t+' — '+when;
-  const x=document.createElement('button');x.type='button';x.className='rx';x.textContent='✕';x.setAttribute('aria-label',T('dismiss'));
+  const s=document.createElement('span');s.textContent=r.t+' · '+when;
+  const x=document.createElement('button');x.type='button';x.className='rx';x.textContent='✕';x.setAttribute('aria-label',T('dismiss')+': '+r.t);
   x.onclick=()=>dismissRem(remKey(r));d.append(s,x);box.appendChild(d)})}
 function dismissRem(key){try{const a=JSON.parse(localStorage.getItem('rem')||'[]');
  localStorage.setItem('rem',JSON.stringify(a.filter(r=>!r||remKey(r)!==key)))}catch(e){}drawRem()}
@@ -217,12 +2055,106 @@ function downloadResults(){const a=readSessions();
  link.download='krishi-sessions-'+new Date().toISOString().slice(0,19).replace(/[-:T]/g,'')+'.jsonl';
  document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 
+/* Theme toggle */
+function isDarkTheme(){
+ const t=document.documentElement.getAttribute('data-theme');
+ if(t==='dark')return true;
+ if(t==='light')return false;
+ return !!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+}
+function updateThemeButton(){
+ const dark=isDarkTheme();
+ const u=UI[S.lang]||UI.en;
+ const m=$('theme-icon-moon'),s=$('theme-icon-sun'),l=$('theme-label');
+ if(m)m.style.display=dark?'none':'block';
+ if(s)s.style.display=dark?'block':'none';
+ if(l)l.textContent=dark?u.light:u.dark;
+ const btn=$('theme-toggle');
+ if(btn)btn.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');
+}
+try{
+ const savedTheme=localStorage.getItem('krishi-theme');
+ if(savedTheme==='dark'||savedTheme==='light')document.documentElement.setAttribute('data-theme',savedTheme);
+}catch(e){}
+$('theme-toggle').onclick=()=>{
+ const next=isDarkTheme()?'light':'dark';
+ document.documentElement.setAttribute('data-theme',next);
+ try{localStorage.setItem('krishi-theme',next)}catch(e){}
+ updateThemeButton();
+};
+
+/* Tabs & Top Navigation */
+document.querySelectorAll('.tab-btn').forEach(b=>{
+ b.onclick=()=>switchTab(b.dataset.tab);
+});
+document.querySelectorAll('[data-nav-tab]').forEach(a=>{
+ a.onclick=e=>{
+  e.preventDefault();
+  switchTab(a.dataset.navTab);
+  $('workspace-tabs').scrollIntoView({behavior:'smooth',block:'start'});
+ };
+});
+
 async function mic(){if(S.cur===S.tok&&$('mic').className){stopAll();return}
  try{const st=await navigator.mediaDevices.getUserMedia({audio:{noiseSuppression:true,echoCancellation:true,autoGainControl:true}});st.getTracks().forEach(t=>t.stop())}catch(e){}
- S.rate=1;S.rl=S.lang;$('tags').innerHTML='';session()}
+ S.rate=1;S.rl=S.lang;$('tags').innerHTML='';const st=$('symptoms-strip');if(st)st.classList.remove('show');session()}
 $('mic').onclick=mic;
-$('langs').onclick=e=>{const l=e.target.dataset.l;if(!l)return;stopAll();S.lang=S.rl=l;S.greeted=false;document.documentElement.lang=l;[...$('langs').children].forEach(b=>b.classList.toggle('on',b.dataset.l==l));stat(0)};
-// Developer test: three pre-recorded inputs (text + confidence) fed through the same pipeline
+
+$('btn-yes').onclick=()=>{if(S.pendingResolve)S.pendingResolve(true)};
+$('btn-no').onclick=()=>{if(S.pendingResolve)S.pendingResolve(false)};
+
+$('btn-repeat').onclick=()=>{if(!S.last)return;stopAll();S.cur=++S.tok;S.rate=1;say(S.last).then(()=>stat(0)).catch(()=>{})};
+$('btn-slower').onclick=()=>{if(!S.last)return;stopAll();S.cur=++S.tok;S.rate=.8;say(S.last).then(()=>stat(0)).catch(()=>{})};
+$('btn-clear-session').onclick=()=>{
+ stopAll();setBadge(false);hideAdviceCard();S.selectedQuick.clear();renderQuickSymptoms();
+ $('tags').innerHTML='';const st=$('symptoms-strip');if(st)st.classList.remove('show');
+ $('log').innerHTML='';add('app',STR[S.lang].greet);
+ const pb=$('playback-bar');if(pb)pb.classList.remove('show');S.last='';
+ switchTab('guide');
+};
+$('advice-remind-btn').onclick=()=>{saveRem(S.lastRc||3);add('sys',T('saved'));};
+
+$('quick-check-btn').onclick=()=>{
+ if(!S.selectedQuick.size||!KB)return;
+ const cropWord=KB.crop[S.lang];
+ const phrases=[...S.selectedQuick].map(id=>{
+  const item=QUICK_SYMPTOMS.find(q=>q.id===id);
+  return item?(item.phrase[S.lang]||item.phrase.en):'';
+ }).filter(Boolean);
+ const q=cropWord+' '+phrases.join(', ');
+ S.selectedQuick.clear();
+ renderQuickSymptoms();
+ stopAll();
+ S.rate=1;S.rl=S.lang;S.greeted=true;
+ $('tags').innerHTML='';
+ add('you',q);
+ session(q);
+};
+
+$('text-form').onsubmit=e=>{
+ e.preventDefault();
+ const inp=$('text-input');
+ const q=(inp.value||'').trim();
+ if(!q)return;
+ inp.value='';
+ stopAll();
+ S.rate=1;S.rl=S.lang;S.greeted=true;
+ $('tags').innerHTML='';
+ add('you',q);
+ session(q);
+};
+
+$('langs').onclick=e=>{
+ const btn=e.target.closest?e.target.closest('button[data-l]'):e.target;
+ const l=btn&&btn.dataset?btn.dataset.l:null;
+ if(!l)return;
+ stopAll();S.lang=S.rl=l;S.greeted=false;document.documentElement.lang=l;
+ [...$('langs').children].forEach(b=>{const on=b.dataset.l==l;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
+ applyLocaleUI();
+ stat(0);
+};
+
+// Developer test: nine pre-recorded inputs (text + confidence) fed through the same pipeline
 const FAKES=[
  {l:'te',q:[{t:'నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది',c:.93},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
  {l:'te',q:[{t:'aaku curl avutunnayi, white insects undi',c:.68},{t:'avunu',c:.8},{t:'avunu',c:.8},{t:'kaadu',c:.8}]},
@@ -234,10 +2166,12 @@ const FAKES=[
  {l:'hi',q:[{t:'मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और पत्तियों के नीचे छोटे सफेद कीड़े हैं',c:.92},{t:'हाँ',c:.9},{t:'हाँ',c:.9}]},
  {l:'te',q:[{t:'టమోటా ఆకులు ముడుచుకుంటున్నాయి, ఏమి చేయాలి',c:.9}]}];
 const drawDiag=()=>{loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')+(LLM_ENDPOINT?' · llm on':'')+(S.lastEntry?' · last '+S.lastEntry+' ['+S.lastTags.join(',')+']':'')+' · sessions '+readSessions().length};
-$('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex';drawDiag()};
+$('devlink').onclick=e=>{e.preventDefault();const p=$('devp');const open=p.style.display!='flex';p.style.display=open?'flex':'none';$('devlink').setAttribute('aria-expanded',open?'true':'false');drawDiag()};
 $('devcopy').onclick=()=>copyResult();$('devsave').onclick=()=>downloadResults();
-$('devp').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;stopAll();const f=FAKES[i];$('langs').querySelector('[data-l="'+f.l+'"]').click();
- S.fake=f.q.slice();S.fakeMode=true;S.greeted=true;$('log').innerHTML='';$('tags').innerHTML='';session()};
-fetch('kb.json').then(r=>r.json()).then(j=>{KB=j;stat(0);add('app',STR.te.greet);drawRem()}).catch(()=>{add('sys','Could not load kb.json. Serve this folder over http(s), e.g. GitHub Pages or: python3 -m http.server')});
+$('devp').onclick=e=>{const btn=e.target.closest?e.target.closest('button[data-i]'):e.target;const i=btn&&btn.dataset?btn.dataset.i:null;if(i==null)return;stopAll();const f=FAKES[i];$('langs').querySelector('[data-l="'+f.l+'"]').click();
+ S.fake=f.q.slice();S.fakeMode=true;S.greeted=true;$('log').innerHTML='';$('tags').innerHTML='';const st=$('symptoms-strip');if(st)st.classList.remove('show');session()};
+fetch('kb.json').then(r=>r.json()).then(j=>{KB=j;applyLocaleUI();stat(0);add('app',STR.te.greet)}).catch(()=>{add('sys','Could not load kb.json. Serve this folder over http(s), e.g. GitHub Pages or: python3 -m http.server')});
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
-</script></body></html>
+</script>
+</body>
+</html>
