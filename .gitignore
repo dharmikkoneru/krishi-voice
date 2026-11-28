@@ -3,9 +3,8 @@
 .env.*
 !.env.example
 
+# Dependencies
+node_modules/
+
 # Local scratch
 .freebuff-tmp/
-
-# wrangler local state
-.wrangler/
-proxy/.wrangler/

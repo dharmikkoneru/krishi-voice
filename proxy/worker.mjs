@@ -5,13 +5,9 @@
 import { ENTRIES, TAGS } from './constraints.mjs';
 
 const MAX_TRANSCRIPT = 600;
-const HOUR_MS = 3600_000;
-const DEVICE_RE = /^[A-Za-z0-9_-]{8,64}$/;
-
-const num = (value, fallback) => {
-  const n = Number(value);
-  return Number.isFinite(n) && n > 0 ? Math.floor(n) : fallback;
-};
+const WINDOW_MS = 3600_000;
+const LIMIT = 40;
+const rate = new Map();
 
 const SYSTEM = `You map a chilli farmer's complaint to a fixed knowledge base.
 Reply with JSON only, no prose: {"entry":"<id>","tags":["<tag>"]}.
@@ -53,99 +49,18 @@ function json(body, status, origin) {
   });
 }
 
-// Counters live in one Durable Object, so they survive isolate restarts and are
-// shared by every isolate. Keying is per device first, per IP second: a village
-// behind one NAT address shares the (much larger) IP budget but each phone has
-// its own, so one heavy user cannot lock out the neighbours.
-const dayKey = (day) => `day:${day}`;
-
-export class Limiter {
-  constructor(state, env) {
-    this.storage = state.storage;
-    this.env = env;
-    this.chain = Promise.resolve();
+function limited(ip) {
+  const now = Date.now();
+  const cutoff = now - WINDOW_MS;
+  const recent = (rate.get(ip) || []).filter((t) => t > cutoff);
+  recent.push(now);
+  rate.set(ip, recent);
+  if (rate.size > 2000) {
+    for (const [key, times] of rate) {
+      if (!times.some((t) => t > cutoff)) rate.delete(key);
+    }
   }
-
-  // Serialise checks so a burst cannot read the same counters twice.
-  fetch(request) {
-    const body = request.json().catch(() => ({}));
-    const run = this.chain.then(async () => this.check(await body));
-    this.chain = run.catch(() => {});
-    return run;
-  }
-
-  async check({ device, ip }) {
-    const limits = {
-      device: num(this.env.DEVICE_HOURLY, 20),
-      ip: num(this.env.IP_HOURLY, 400),
-      daily: num(this.env.DAILY_CAP, 400),
-    };
-    const now = Date.now();
-    const bucket = Math.floor(now / HOUR_MS);
-    const day = new Date(now).toISOString().slice(0, 10);
-
-    // Drop finished hour buckets and old days on the first call of a new hour.
-    if ((await this.storage.get('bucket')) !== bucket) {
-      const stale = await this.storage.list({ prefix: 'h:' });
-      for (const key of stale.keys()) {
-        if (!key.startsWith(`h:${bucket}:`)) await this.storage.delete(key);
-      }
-      const days = await this.storage.list({ prefix: 'day:' });
-      for (const key of days.keys()) {
-        if (key !== dayKey(day)) await this.storage.delete(key);
-      }
-      await this.storage.put('bucket', bucket);
-    }
-
-    const deviceKey = `h:${bucket}:d:${device}`;
-    const ipKey = `h:${bucket}:i:${ip}`;
-    const [deviceCount, ipCount, dayCount] = await Promise.all([
-      this.storage.get(deviceKey),
-      this.storage.get(ipKey),
-      this.storage.get(dayKey(day)),
-    ]);
-
-    const minute = 60_000;
-    const untilNextHour = HOUR_MS - (now % HOUR_MS) + 1000;
-    const untilTomorrow = new Date(`${day}T00:00:00Z`).getTime() + 86_400_000 - now + 1000;
-
-    if ((dayCount || 0) >= limits.daily) {
-      return deny('daily_cap', Math.ceil(untilTomorrow / 1000));
-    }
-    if ((ipCount || 0) >= limits.ip) {
-      return deny('ip_hourly', Math.ceil(untilNextHour / 1000));
-    }
-    if ((deviceCount || 0) >= limits.device) {
-      return deny('device_hourly', Math.ceil(Math.max(untilNextHour, minute) / 1000));
-    }
-
-    await Promise.all([
-      this.storage.put(deviceKey, (deviceCount || 0) + 1),
-      this.storage.put(ipKey, (ipCount || 0) + 1),
-      this.storage.put(dayKey(day), (dayCount || 0) + 1),
-    ]);
-    return new Response(JSON.stringify({ ok: true }), {
-      headers: { 'content-type': 'application/json' },
-    });
-  }
-}
-
-function deny(reason, retryAfter) {
-  return new Response(JSON.stringify({ ok: false, reason, retryAfter }), {
-    headers: { 'content-type': 'application/json' },
-  });
-}
-
-async function checkLimits(env, device, ip) {
-  if (!env.LIMITER) throw new Error('no limiter binding');
-  const stub = env.LIMITER.get(env.LIMITER.idFromName('global'));
-  const response = await stub.fetch('https://limiter/check', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ device, ip }),
-  });
-  if (!response.ok) throw new Error(`limiter responded ${response.status}`);
-  return response.json();
+  return recent.length > LIMIT;
 }
 
 function normalize(content) {
@@ -185,7 +100,7 @@ export default {
         headers: {
           ...cors(origin),
           'access-control-allow-methods': 'POST, OPTIONS',
-          'access-control-allow-headers': 'content-type, x-device-id',
+          'access-control-allow-headers': 'content-type',
           'access-control-max-age': '600',
         },
       });
@@ -213,33 +128,7 @@ export default {
       request.headers.get('cf-connecting-ip') ||
       request.headers.get('x-forwarded-for') ||
       'unknown';
-    const claimed = (request.headers.get('x-device-id') || '').trim();
-    // An unusable id counts as the IP itself, so clients cannot dodge the
-    // per-device budget by sending a malformed header, and old clients still
-    // hit a limit instead of running unmetered.
-    const device = DEVICE_RE.test(claimed) ? claimed : `ip:${ip}`;
-
-    let verdict;
-    try {
-      verdict = await checkLimits(env, device, ip);
-    } catch {
-      // Without the counter the daily cap cannot be enforced, so refuse rather
-      // than spend the owner's key. The app falls back to the keyword engine.
-      return json({ error: 'limiter_unavailable' }, 503, origin);
-    }
-    if (!verdict.ok) {
-      return new Response(
-        JSON.stringify({ error: verdict.reason, retry_after: verdict.retryAfter }),
-        {
-          status: 429,
-          headers: {
-            'content-type': 'application/json; charset=utf-8',
-            'retry-after': String(verdict.retryAfter || 60),
-            ...cors(origin),
-          },
-        }
-      );
-    }
+    if (limited(ip)) return json({ error: 'rate_limited' }, 429, origin);
 
     const base = (env.LLM_BASE_URL || 'https://api.openai.com/v1').replace(/\/+$/, '');
     const model = env.LLM_MODEL || 'gpt-4o-mini';

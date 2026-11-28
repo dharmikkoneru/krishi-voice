@@ -29,8 +29,5 @@ jobs:
       - name: Proxy allowlist matches kb.json
         run: node proxy/check-constraints.mjs
 
-      - name: Proxy limits (per device, per IP, daily cap)
-        run: node proxy/check-limits.mjs
-
       - name: Scorer demo output
         run: python3 evaluation/score.py --demo
