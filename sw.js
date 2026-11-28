@@ -12,7 +12,7 @@
  * Bump CACHE_VERSION on every release to retire the previous cache.
  */
 
-const CACHE_VERSION = 'krishi-voice-v2';
+const CACHE_VERSION = 'krishi-voice-v3';
 const SHELL = ['./', './index.html', './kb.json'];
 const OPTIONAL_ASSETS = [
   './src/assets/images/hero_chilli_field_1795851503543.jpg',
