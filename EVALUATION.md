@@ -116,6 +116,24 @@ scored rows, and it will not recommend the LLM when an arm has no results, has a
 or falls outside the latency budget. Fill both arms on the same transcripts before comparing;
 scoring only one arm is reported as "no comparable results".
 
+## Exporting from the app
+
+The hidden developer panel (the faint “·” at the bottom) has **Copy result** and **Download
+results**. Every finished session is stored locally in `localStorage` under `sessions` (newest
+200) as `{id, ts, lang, asr, entry, tags, unknown, duration_ms}`. Nothing leaves the phone and no
+names, audio or phone numbers are stored.
+
+1. Run the utterance until the app answers or refuses (developer test or microphone).
+2. **Copy result** copies that session as one CSV row in `score-sheet.csv` column order, with
+   `human`, `expected_*` and `B_*` blank. Append it to `evaluation/score-sheet.csv`.
+3. Fill `human` with what was actually said, then `expected_entry`, `expected_tags` and
+   `must_refuse`, after listening to the recording.
+4. **Download results** exports every stored session as JSONL for a backup or a second sheet.
+
+`A_entry`, `A_tags`, `A_unknown` and `A_ms` come from that run (`A_ms` is the end-to-end session
+time, not just the matcher). Re-running `node evaluation/run-keyword.mjs` should reproduce the
+same `A_*` values; use the runner whenever you edit `asr` or `human`.
+
 ## Running Arm A automatically
 
 `evaluation/run-keyword.mjs` loads the real `extract()` and `score()` from `index.html` and fills

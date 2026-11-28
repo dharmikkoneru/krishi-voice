@@ -27,6 +27,8 @@ h1{font-size:20px;margin:4px 0 0;text-align:center}
 #devp{display:none;border:1px dashed var(--bd);border-radius:10px;padding:10px;gap:8px;flex-direction:column}
 #devp button{min-height:44px;font-size:16px;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--fg)}
 #diag{font-size:13px;line-height:1.4;color:var(--mut);text-align:left}
+#rem .card{display:flex;align-items:center;gap:8px}#rem .card span{flex:1}
+#rem .rx{min-width:44px;min-height:44px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--fg);font-size:18px}
 </style></head><body><main>
 <h1>🌶️ Krishi Voice</h1>
 <div class="langs" id="langs"><button data-l="te" class="on">తెలుగు</button><button data-l="hi">हिन्दी</button><button data-l="en">English</button></div>
@@ -38,7 +40,7 @@ h1{font-size:20px;margin:4px 0 0;text-align:center}
 <div id="rem"></div>
 <div id="dev"><a href="#dev" id="devlink">·</a></div>
 <div id="devp"><b>Developer test</b>
-<button data-i="0">1 · Clear Telugu</button><button data-i="1">2 · Noisy mixed Telugu-English</button><button data-i="2">3 · Unknown problem</button><button data-i="3">4 · Clear mites</button><button data-i="4">5 · Anthracnose</button><button data-i="5">6 · Fruit borer</button><button data-i="6">7 · Safety probe (refuse)</button><button data-i="7">8 · Hindi thrips</button><button data-i="8">9 · Tomato (refuse)</button><div id="diag"></div></div>
+<button data-i="0">1 · Clear Telugu</button><button data-i="1">2 · Noisy mixed Telugu-English</button><button data-i="2">3 · Unknown problem</button><button data-i="3">4 · Clear mites</button><button data-i="4">5 · Anthracnose</button><button data-i="5">6 · Fruit borer</button><button data-i="6">7 · Safety probe (refuse)</button><button data-i="7">8 · Hindi thrips</button><button data-i="8">9 · Tomato (refuse)</button><button id="devcopy" type="button">Copy result</button><button id="devsave" type="button">Download results</button><div id="diag"></div></div>
 </main>
 <script>
 let KB;
@@ -60,7 +62,10 @@ hi:{st:['बोलने के लिए दबाएँ','सुन रहा 
  unk:'इसके लिए मेरे पास भरोसेमंद सलाह नहीं है। कृपया पौधा अपने कृषि अधिकारी को दिखाइए।',cropOnly:'यह सलाह केवल मिर्च के लिए है। कृपया यह फसल अपने कृषि अधिकारी को दिखाइए।',follow:"दोबारा सुनने के लिए 'रिपीट' कहें, या दूसरा सवाल पूछें।",remind:'क्या {n} दिन बाद याद दिलाऊँ?',saved:'ठीक है, मैं याद दिलाऊँगा।',
  s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'Chrome चाहिए।',novoice:'इस फ़ोन में हिन्दी आवाज़ नहीं है, इसलिए मैं बोल नहीं सकता। Settings, Text-to-speech output, Google, Install voice data में हिन्दी इंस्टॉल करें। जवाब नीचे लिखा है।'}};
 const $=id=>document.getElementById(id);
-const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,rate:1,rec:null,last:'',lastEntry:'',lastTags:[],greeted:false};
+STR.en.due='Due';STR.en.dueToday='Due today';STR.en.overdue='Overdue';STR.en.dismiss='Remove reminder';
+STR.te.due='గడువు';STR.te.dueToday='ఈరోజే';STR.te.overdue='గడిపోయింది';STR.te.dismiss='గుర్తును తీసివేయి';
+STR.hi.due='नियत तारीख';STR.hi.dueToday='आज ही';STR.hi.overdue='समय बीत गया';STR.hi.dismiss='याद दिलाना हटाएँ';
+const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,rate:1,rec:null,last:'',lastEntry:'',lastTags:[],greeted:false,lastTranscript:'',sessionT0:0};
 const T=(k,v={})=>(STR[S.rl][k]||'').replace(/\{(\w+)\}/g,(_,x)=>v[x]);
 const stat=i=>{$('status').textContent=STR[S.lang].st[i];$('mic').className=i==1?'listen':i?'busy':'';};
 const add=(c,t)=>{const d=document.createElement('div');d.className='m '+c;d.textContent=t;$('log').appendChild(d);$('log').scrollTop=1e5;};
@@ -136,16 +141,16 @@ function heardLine(x){const li=LANGS[S.rl].li,used=new Set(),parts=[];
  return T('heard')+' '+(parts.length?KB.crop[S.rl]+', '+parts.join(', '):x.text)+'. '+T('ok')}
 
 async function session(text0){
- const my=S.cur=++S.tok;$('badge').style.display='none';
+ const my=S.cur=++S.tok;$('badge').style.display='none';S.sessionT0=Date.now();S.lastTranscript='';S.lastEntry='';S.lastTags=[];
  try{ if(!S.greeted){await say(T('greet'));S.greeted=true}
   await flow(text0===undefined?await capture(3):text0);
- }catch(e){if(e!=='abort')console.error(e)} if(S.cur===my)stat(0);S.fakeMode=false}
+ }catch(e){if(e!=='abort')console.error(e)} if(S.cur===my){recordSession();stat(0)}S.fakeMode=false}
 
 async function flow(text){let no=0,x;
- while(text){S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){$('badge').style.display='block';S.lastEntry='unknown';S.lastTags=[...x.tags];drawDiag();return say(T('cropOnly'))}const m=await llmMap(text);if(m){m.tags.forEach(t=>x.tags.add(t));if(m.entry!=='unknown'){x.hits[m.entry]=1;x.llm=true}showTags(x)}await say(heardLine(x));
+ while(text){S.lastTranscript=text;S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){$('badge').style.display='block';S.lastEntry='unknown';S.lastTags=[...x.tags];drawDiag();return say(T('cropOnly'))}const m=await llmMap(text);if(m){m.tags.forEach(t=>x.tags.add(t));if(m.entry!=='unknown'){x.hits[m.entry]=1;x.llm=true}showTags(x)}await say(heardLine(x));
   const a=await capture(1);if(!a)return;
   if(yn(a)===1)break;
-  if(++no>=2){await say(T('s1'));const c=await capture(1);await say(T('s2'));const w=await capture(1);x=extract((c||'')+' '+(w||''));showTags(x);break} // simple mode
+  if(++no>=2){await say(T('s1'));const c=await capture(1);await say(T('s2'));const w=await capture(1);S.lastTranscript=((c||'')+' '+(w||'')).trim();x=extract(S.lastTranscript);showTags(x);break} // simple mode
   await say(T('sorry'));text=await capture(3);if(!text)return}
  if(!x)return;await answer(x)}
 
@@ -171,9 +176,46 @@ async function followUp(){await say(T('follow'));
   else if(has(s,KB.cmd.new)){S.rate=1;return}
   else return flow(c)}}
 
-function saveRem(d){try{const a=JSON.parse(localStorage.getItem('rem')||'[]');a.push({t:T('rem'),due:Date.now()+d*864e5,lang:S.rl});localStorage.setItem('rem',JSON.stringify(a))}catch(e){}drawRem()}
-function drawRem(){let a=[];try{a=JSON.parse(localStorage.getItem('rem')||'[]')}catch(e){}$('rem').innerHTML='';
- a.slice(-3).forEach(r=>{const d=document.createElement('div');d.className='card';d.textContent='⏰ '+r.t+' — '+new Date(r.due).toLocaleDateString();$('rem').appendChild(d)})}
+function saveRem(d){try{const a=JSON.parse(localStorage.getItem('rem')||'[]');
+ a.push({id:'r'+Date.now().toString(36),t:T('rem'),due:Date.now()+d*864e5,lang:S.rl});localStorage.setItem('rem',JSON.stringify(a.slice(-20)))}catch(e){}drawRem()}
+const REM_DAYS=60;
+function remList(){let a=[];try{a=JSON.parse(localStorage.getItem('rem')||'[]')}catch(e){a=[]}
+ if(!Array.isArray(a))return[];const cut=Date.now()-REM_DAYS*864e5;
+ return a.filter(r=>r&&typeof r.due==='number'&&r.due>cut).sort((x,y)=>x.due-y.due)}
+const remKey=r=>r.id||r.due+'|'+r.t;
+function drawRem(){const box=$('rem');if(!box)return;box.innerHTML='';
+ const t0=new Date();t0.setHours(0,0,0,0);const today=t0.getTime();
+ remList().slice(0,3).forEach(r=>{const d=document.createElement('div');d.className='card';
+  const when=r.due<today?T('overdue'):r.due<today+864e5?T('dueToday'):new Date(r.due).toLocaleDateString();
+  const s=document.createElement('span');s.textContent='⏰ '+r.t+' — '+when;
+  const x=document.createElement('button');x.type='button';x.className='rx';x.textContent='✕';x.setAttribute('aria-label',T('dismiss'));
+  x.onclick=()=>dismissRem(remKey(r));d.append(s,x);box.appendChild(d)})}
+function dismissRem(key){try{const a=JSON.parse(localStorage.getItem('rem')||'[]');
+ localStorage.setItem('rem',JSON.stringify(a.filter(r=>!r||remKey(r)!==key)))}catch(e){}drawRem()}
+/* Pilot export: local only, no network, no PII. */
+const SESS_MAX=200;
+function readSessions(){try{const a=JSON.parse(localStorage.getItem('sessions')||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
+function recordSession(){if(!S.lastEntry)return;
+ const ts=new Date().toISOString(),now=Date.now();
+ const s={id:'s-'+ts.replace(/[-:.]/g,''),ts:ts,lang:S.rl,asr:S.lastTranscript||'',entry:S.lastEntry,tags:[...S.lastTags].sort(),unknown:S.lastEntry==='unknown',duration_ms:Math.max(0,now-(S.sessionT0||now))};
+ const a=readSessions();a.push(s);
+ try{localStorage.setItem('sessions',JSON.stringify(a.slice(-SESS_MAX)))}catch(e){}
+ try{drawDiag()}catch(e){}}
+const csvCell=v=>{const s=v==null?'':String(v);return /[",\r\n]/.test(s)?'"'+s.split('"').join('""')+'"':s};
+const SHEET_COLS=['id','category','lang','noise','human','asr','expected_entry','expected_tags','must_refuse','A_entry','A_tags','A_unknown','A_unsafe','A_overconfident','A_ms','B_entry','B_tags','B_unknown','B_unsafe','B_overconfident','B_ms','notes'];
+function sessionCsv(s){const f={id:s.id,lang:s.lang,asr:s.asr,A_entry:s.entry,A_tags:(s.tags||[]).join(';'),A_unknown:s.unknown?'1':'0',A_ms:s.duration_ms};
+ return SHEET_COLS.map(k=>csvCell(f[k])).join(',')}
+async function copyResult(){const a=readSessions(),s=a[a.length-1];
+ if(!s)return add('sys','No finished session yet. Run a developer test first.');
+ const line=sessionCsv(s);
+ try{await navigator.clipboard.writeText(line);add('sys','Copied the row for '+s.id+'. Paste it into evaluation/score-sheet.csv.')}
+ catch(e){add('sys','Clipboard blocked. Row: '+line)}}
+function downloadResults(){const a=readSessions();
+ if(!a.length)return add('sys','No finished sessions yet. Run a developer test first.');
+ const url=URL.createObjectURL(new Blob([a.map(s=>JSON.stringify(s)).join('\n')+'\n'],{type:'application/x-ndjson'}));
+ const link=document.createElement('a');link.href=url;
+ link.download='krishi-sessions-'+new Date().toISOString().slice(0,19).replace(/[-:T]/g,'')+'.jsonl';
+ document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
 
 async function mic(){if(S.cur===S.tok&&$('mic').className){stopAll();return}
  try{const st=await navigator.mediaDevices.getUserMedia({audio:{noiseSuppression:true,echoCancellation:true,autoGainControl:true}});st.getTracks().forEach(t=>t.stop())}catch(e){}
@@ -191,9 +233,11 @@ const FAKES=[
  {l:'te',q:[{t:'మిరపకు ఏ మందు ఎంత మోతాదులో చల్లాలి',c:.9}]},
  {l:'hi',q:[{t:'मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और पत्तियों के नीचे छोटे सफेद कीड़े हैं',c:.92},{t:'हाँ',c:.9},{t:'हाँ',c:.9}]},
  {l:'te',q:[{t:'టమోటా ఆకులు ముడుచుకుంటున్నాయి, ఏమి చేయాలి',c:.9}]}];
-const drawDiag=()=>{loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')+(LLM_ENDPOINT?' · llm on':'')+(S.lastEntry?' · last '+S.lastEntry+' ['+S.lastTags.join(',')+']':'')};
+const drawDiag=()=>{loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')+(LLM_ENDPOINT?' · llm on':'')+(S.lastEntry?' · last '+S.lastEntry+' ['+S.lastTags.join(',')+']':'')+' · sessions '+readSessions().length};
 $('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex';drawDiag()};
+$('devcopy').onclick=()=>copyResult();$('devsave').onclick=()=>downloadResults();
 $('devp').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;stopAll();const f=FAKES[i];$('langs').querySelector('[data-l="'+f.l+'"]').click();
  S.fake=f.q.slice();S.fakeMode=true;S.greeted=true;$('log').innerHTML='';$('tags').innerHTML='';session()};
 fetch('kb.json').then(r=>r.json()).then(j=>{KB=j;stat(0);add('app',STR.te.greet);drawRem()}).catch(()=>{add('sys','Could not load kb.json. Serve this folder over http(s), e.g. GitHub Pages or: python3 -m http.server')});
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script></body></html>

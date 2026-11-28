@@ -6,7 +6,7 @@ Mobile-first web app for small farmers in Andhra Pradesh / Telangana. The farmer
 Needs http(s) for the microphone and for loading `kb.json`.
 - **GitHub Pages:** Settings → Pages → deploy from `main` / root. Open the URL on Android Chrome.
 - **Local:** `python3 -m http.server`, then open http://localhost:8000
-- **Developer test:** tap the faint “·” at the bottom for nine pre-recorded inputs covering all five entries, the unknown case, a safety probe, Hindi and a non-chilli crop.
+- **Developer test:** tap the faint “·” at the bottom for nine pre-recorded inputs covering all five entries, the unknown case, a safety probe, Hindi and a non-chilli crop. It also has **Copy result** and **Download results** for pilot exports (see below).
 
 ## Files
 - `index.html` – UI, speech flow, matching logic, UI strings (`STR`)
@@ -48,6 +48,51 @@ Set the meta content to `http://127.0.0.1:8798` for a local test. For a public d
 `npx wrangler secret put LLM_API_KEY`, and point the meta at the Worker URL. The proxy accepts
 only a `kb.json` entry id and tags; when it contributes, the app says “may be” instead of
 “fairly sure”. Transcript text leaves the device only when an endpoint is configured.
+
+## Pilot export (developer panel only)
+
+The hidden developer panel records one entry per finished session in `localStorage` under
+`sessions`, capped at the newest 200. Each entry is
+`{id, ts, lang, asr, entry, tags, unknown, duration_ms}`: an ISO timestamp, the final recogniser
+transcript, the last matched entry id, the sorted symptom tags, the unknown flag and the
+end-to-end session time. No names, phone numbers or audio are stored, and nothing is sent
+anywhere.
+
+- **Copy result** copies the newest session as one row in `evaluation/score-sheet.csv` column
+  order (`id`, `lang`, `asr`, `A_entry`, `A_tags`, `A_unknown`, `A_ms`), with `human`,
+  `expected_*` and `B_*` blank. Append it to the sheet and fill those by hand.
+- **Download results** downloads every stored session as JSONL
+  (`krishi-sessions-YYYYMMDDTHHMMSS.jsonl`).
+- A session is recorded only when the run reached an answer or a refusal; aborted runs are not.
+
+Neither button changes the farmer-facing screen.
+
+## Reminders
+
+“Shall I remind you in N days?” stores an in-app reminder. Reminders are sorted by due date,
+labelled “Overdue”, “Due today” or a date, and each has a ✕ control that removes it. Entries
+older than 60 days are dropped. There is no Notification permission prompt and no server.
+
+## Offline
+
+`sw.js` caches the app shell and `kb.json` under an explicit cache version
+(`CACHE_VERSION`; bump it on release). Navigation and `kb.json` are network-first with a cache
+fallback, so an online load always gets the current deploy and the cache is only an offline
+fallback; caches from older versions are deleted on activate. Cross-origin requests (the optional
+LLM proxy) are never intercepted or cached, and speech recognition still needs the network.
+Test: load once online, go offline, reload — the app renders and `kb.json` still loads. The
+keyword engine keeps working offline; the LLM does not.
+
+## Checks
+
+CI (`.github/workflows/checks.yml`) runs on push to `main` and on pull requests, on Node 20 and
+Python 3.11, with no secrets and no network beyond setup:
+
+```sh
+node evaluation/run-keyword.mjs --self-check
+node proxy/check-constraints.mjs
+python3 evaluation/score.py --demo
+```
 
 ## Limits
 

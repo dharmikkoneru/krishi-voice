@@ -1,0 +1,33 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # No dependencies to install, no keys and no network calls beyond setup.
+      - name: Arm A self-check (app's own matcher)
+        run: node evaluation/run-keyword.mjs --self-check
+
+      - name: Proxy allowlist matches kb.json
+        run: node proxy/check-constraints.mjs
+
+      - name: Scorer demo output
+        run: python3 evaluation/score.py --demo
