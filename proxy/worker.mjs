@@ -145,7 +145,7 @@ export default {
         body: JSON.stringify({
           model,
           temperature: 0,
-          max_tokens: 120,
+          max_tokens: 2000,
           messages: [
             { role: 'system', content: SYSTEM },
             { role: 'user', content: `Transcript: ${JSON.stringify(transcript)}` },

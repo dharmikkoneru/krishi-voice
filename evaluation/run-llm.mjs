@@ -39,7 +39,7 @@ Rules:
 
 function normalizeReply(reply) {
   const match = String(reply).match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('reply was not JSON');
+  if (!match) throw new Error(`reply was not JSON: ${String(reply).slice(0, 200) || '(empty)'}`);
   const data = JSON.parse(match[0]);
   let entry = String(data.entry ?? '').trim().toLowerCase();
   if (entry !== 'unknown' && !ENTRIES.includes(entry)) {
@@ -71,7 +71,7 @@ async function ask(transcript, { base, model, key }) {
         body: JSON.stringify({
           model,
           temperature: 0,
-          max_tokens: 120,
+          max_tokens: 2000,
           messages: [
             { role: 'system', content: SYSTEM },
             { role: 'user', content: `Transcript: ${JSON.stringify(transcript)}` },

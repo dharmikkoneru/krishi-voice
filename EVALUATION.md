@@ -152,6 +152,11 @@ rejected and retried. Because the model returns only ids and tags, not prose, it
 a pesticide name or dose. Both arms must run on the same `asr` text. `B_ms` stores request
 latency. `--mock` proves the file plumbing, not model quality.
 
+With Gemini's OpenAI-compatible endpoint use
+`LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai` and a current model such as
+`gemini-3.5-flash` (`gemini-2.5-flash` is retired). Keep `max_tokens` at 2000: Gemini 3.x spends
+tokens on reasoning, and a small cap truncates the JSON.
+
 `proxy/` is the same constrained mapping for a live app, with the key server-side. It is off
 unless `<meta name="llm-endpoint">` is set, and it is not deployed. When the hybrid contributes,
 the app always says “may be” rather than “fairly sure” until the pilot justifies more.
