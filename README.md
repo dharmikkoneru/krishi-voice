@@ -73,15 +73,15 @@ Neither button changes the farmer-facing screen.
 labelled “Overdue”, “Due today” or a date, and each has a ✕ control that removes it. Entries
 older than 60 days are dropped. There is no Notification permission prompt and no server.
 
-## Offline
+## Offline shell
 
 `sw.js` caches the app shell and `kb.json` under an explicit cache version
 (`CACHE_VERSION`; bump it on release). Navigation and `kb.json` are network-first with a cache
 fallback, so an online load always gets the current deploy and the cache is only an offline
 fallback; caches from older versions are deleted on activate. Cross-origin requests (the optional
 LLM proxy) are never intercepted or cached, and speech recognition still needs the network.
-Test: load once online, go offline, reload — the app renders and `kb.json` still loads. The
-keyword engine keeps working offline; the LLM does not.
+Test: load once online, go offline, reload — the app renders and `kb.json` still loads. With no connection the app answers from the built-in
+knowledge base only; the AI proxy and speech recognition need the network.
 
 ## Checks
 
