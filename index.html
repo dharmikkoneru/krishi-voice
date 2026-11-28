@@ -1964,6 +1964,8 @@ function extract(text){const s=norm(text),tags=new Set(),hits={};
  const di=Object.keys(KB.districts).find(k=>has(s,KB.districts[k]));
  return{text,tags,hits,crop:has(s,KB.cropnames,1),otherCrop:has(s,KB.othercrops||[],1),stage:st,district:di}}
 function score(x){return KB.entries.map(e=>({e,n:e.tags.filter(t=>x.tags.has(t)).length+(x.hits[e.id]?3:0)})).sort((a,b)=>b.n-a.n)}
+// Same confidence rule the advisory uses. The AI is consulted only when the keyword engine lacks it.
+function kwSure(x){const[a,b]=score(x);return a.n>=3&&a.n-b.n>=2}
 async function llmMap(text){if(!LLM_ENDPOINT||!text)return null;
  const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),6000);
  try{const r=await fetch(LLM_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({transcript:text}),signal:ctl.signal,cache:'no-store'});
@@ -2010,7 +2012,7 @@ async function session(text0,fromText=false){
  }catch(e){if(e!=='abort')console.error(e)} if(S.cur===my){recordSession();stat(0)}S.fakeMode=false;S.textMode=false}
 
 async function flow(text){let no=0,x;
- while(text){S.lastTranscript=text;S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){showReview(T('cropOnly'));S.lastEntry='unknown';S.lastTags=[...x.tags];drawDiag();return say(T('cropOnly'))}const m=await llmMap(text);if(m){m.tags.forEach(t=>x.tags.add(t));if(m.entry!=='unknown'){x.hits[m.entry]=1;x.llm=true}showTags(x)}await say(heardLine(x));
+ while(text){S.lastTranscript=text;S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){showReview(T('cropOnly'));S.lastEntry='unknown';S.lastTags=[...x.tags];drawDiag();return say(T('cropOnly'))}const m=kwSure(x)?null:await llmMap(text);if(m){m.tags.forEach(t=>x.tags.add(t));if(m.entry!=='unknown'){x.hits[m.entry]=1;x.llm=true}showTags(x)}await say(heardLine(x));
   const a=await capture(1,true);if(!a)return;
   if(yn(a)===1)break;
   if(++no>=2){await say(T('s1'));const c=await capture(1);await say(T('s2'));const w=await capture(1);S.lastTranscript=((c||'')+' '+(w||'')).trim();x=extract(S.lastTranscript);showTags(x);break} // simple mode
@@ -2023,7 +2025,7 @@ async function answer(x){stat(2);let asked=0;const done=new Set();let sc;
   if(asked<3&&a.n-b.n<2&&a.n<4){const q=[a,b].map(o=>o.e).find(e=>e.q&&!done.has(e.id));
    if(q){done.add(q.id);asked++;await say(q.q[S.rl]);const r=await capture(1,true);if(!r)return;if(yn(r)===1){x.tags.add(q.q.tag);showTags(x)}continue}}
   break}
- const[a,b]=sc,e=a.e,L=e[S.rl],sure=!x.llm&&a.n>=3&&a.n-b.n>=2;
+ const[a,b]=sc,e=a.e,L=e[S.rl],sure=!x.llm&&kwSure(x);
  S.lastEntry=e.id;S.lastTags=[...x.tags];drawDiag();
  showAdvisory(e,sure);
  const sp=[T(sure?'sure':'unsure',{p:L.n}),T('act'),L.a,T('av'),L.v,T('chk',{n:e.rc})].join(' ');
