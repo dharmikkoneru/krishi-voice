@@ -1,0 +1,12 @@
+{
+  "name": "krishi-voice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Voice-first chilli crop advisory in Telugu, Hindi, and English",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "build": "node evaluation/run-keyword.mjs --self-check && node proxy/check-constraints.mjs",
+    "lint": "node --check server.mjs && node evaluation/run-keyword.mjs --self-check"
+  }
+}

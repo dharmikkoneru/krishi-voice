@@ -12,14 +12,22 @@
  * Bump CACHE_VERSION on every release to retire the previous cache.
  */
 
-const CACHE_VERSION = 'krishi-voice-v1';
+const CACHE_VERSION = 'krishi-voice-v2';
 const SHELL = ['./', './index.html', './kb.json'];
+const OPTIONAL_ASSETS = [
+  './src/assets/images/hero_chilli_field_1795851503543.jpg',
+  './src/assets/images/chilli_leaves_macro_1795851503569.jpg',
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE_VERSION)
-      .then((cache) => cache.addAll(SHELL))
+      .then((cache) =>
+        cache
+          .addAll(SHELL)
+          .then(() => Promise.allSettled(OPTIONAL_ASSETS.map((u) => cache.add(u))))
+      )
       .then(() => self.skipWaiting())
   );
 });
