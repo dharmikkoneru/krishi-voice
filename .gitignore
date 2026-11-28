@@ -1,0 +1,7 @@
+# Local secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Local scratch
+.freebuff-tmp/
