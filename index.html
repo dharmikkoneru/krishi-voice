@@ -37,7 +37,7 @@ h1{font-size:20px;margin:4px 0 0;text-align:center}
 <div id="rem"></div>
 <div id="dev"><a href="#dev" id="devlink">·</a></div>
 <div id="devp"><b>Developer test</b>
-<button data-i="0">1 · Clear Telugu</button><button data-i="1">2 · Noisy mixed Telugu-English</button><button data-i="2">3 · Unknown problem</button><button data-i="3">4 · Clear mites</button><button data-i="4">5 · Anthracnose</button><button data-i="5">6 · Fruit borer</button><button data-i="6">7 · Safety probe (refuse)</button><button data-i="7">8 · Hindi thrips</button><div id="diag"></div></div>
+<button data-i="0">1 · Clear Telugu</button><button data-i="1">2 · Noisy mixed Telugu-English</button><button data-i="2">3 · Unknown problem</button><button data-i="3">4 · Clear mites</button><button data-i="4">5 · Anthracnose</button><button data-i="5">6 · Fruit borer</button><button data-i="6">7 · Safety probe (refuse)</button><button data-i="7">8 · Hindi thrips</button><button data-i="8">9 · Tomato (refuse)</button><div id="diag"></div></div>
 </main>
 <script>
 let KB;
@@ -46,15 +46,15 @@ const LANGS={te:{bcp:'te-IN',i:0,li:1},hi:{bcp:'hi-IN',i:1,li:2},en:{bcp:'en-IN'
 const STR={
 en:{st:['Tap to speak','Listening...','Thinking...','Speaking...'],greet:'Tell me what is wrong with your crop. Tap the button and speak.',heard:'I heard:',ok:'Is that correct?',sorry:'Sorry. Please say it again.',
  clear:'I could not hear you clearly. Please move to a quieter place and try again.',silence:'I did not hear anything. Tap the button and speak.',slow:'The network is slow. Please wait.',fail:'I could not connect. Please try again.',
- unk:'I do not have reliable advice for this. Please show the plant to your local agriculture officer.',follow:"Say 'repeat' to hear it again, or ask another question.",remind:'Shall I remind you in {n} days?',saved:'Okay, I will remind you.',
+ unk:'I do not have reliable advice for this. Please show the plant to your local agriculture officer.',cropOnly:'This advisor is for chilli only. Please show this crop to your local agriculture officer.',follow:"Say 'repeat' to hear it again, or ask another question.",remind:'Shall I remind you in {n} days?',saved:'Okay, I will remind you.',
  s1:'Let us try simply. Say only the crop name.',s2:'Now say one problem word, like curling, yellow or spots.',sure:'This looks like {p}. I am fairly sure.',unsure:'This may be {p}. I am not fully sure.',act:'Do this today:',av:'Avoid:',chk:'Look at the plants in {n} days.',rem:'Check plants',unsup:'Speech recognition needs Chrome.',novoice:'This phone has no English voice installed, so I cannot speak. Install it in Settings, Text-to-speech output, Google, Install voice data, then English. The answer is shown as text.'},
 te:{st:['మాట్లాడటానికి నొక్కండి','వింటున్నాను...','ఆలోచిస్తున్నాను...','చెబుతున్నాను...'],greet:'మీ పంటకు ఏమైంది చెప్పండి. బటన్ నొక్కి మాట్లాడండి.',heard:'నేను విన్నది:',ok:'ఇది సరైనదేనా?',sorry:'క్షమించండి. దయచేసి మళ్లీ చెప్పండి.',
  clear:'నాకు స్పష్టంగా వినపడలేదు. దయచేసి నిశ్శబ్ద ప్రదేశానికి వెళ్లి మళ్లీ ప్రయత్నించండి.',silence:'నాకు ఏమీ వినపడలేదు. బటన్ నొక్కి మాట్లాడండి.',slow:'నెట్‌వర్క్ నెమ్మదిగా ఉంది. దయచేసి వేచి ఉండండి.',fail:'కనెక్ట్ కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి.',
- unk:'దీనికి నా దగ్గర నమ్మదగిన సలహా లేదు. దయచేసి మీ స్థానిక వ్యవసాయ అధికారికి మొక్కను చూపించండి.',follow:"మళ్లీ వినాలంటే 'రిపీట్' అనండి, లేదా మరో ప్రశ్న అడగండి.",remind:'{n} రోజుల్లో గుర్తు చేయమంటారా?',saved:'సరే, గుర్తు చేస్తాను.',
+ unk:'దీనికి నా దగ్గర నమ్మదగిన సలహా లేదు. దయచేసి మీ స్థానిక వ్యవసాయ అధికారికి మొక్కను చూపించండి.',cropOnly:'ఈ సలహా మిరప పంటకు మాత్రమే. దయచేసి ఈ పంటను మీ వ్యవసాయ అధికారికి చూపించండి.',follow:"మళ్లీ వినాలంటే 'రిపీట్' అనండి, లేదా మరో ప్రశ్న అడగండి.",remind:'{n} రోజుల్లో గుర్తు చేయమంటారా?',saved:'సరే, గుర్తు చేస్తాను.',
  s1:'సులభంగా చెబుదాం. పంట పేరు మాత్రమే చెప్పండి.',s2:'ఇప్పుడు ఒక సమస్య పదం చెప్పండి: ముడత, పసుపు, మచ్చలు.',sure:'ఇది {p} లాగా ఉంది. నాకు బాగా నమ్మకం ఉంది.',unsure:'ఇది {p} కావచ్చు. నాకు పూర్తిగా నమ్మకం లేదు.',act:'ఈరోజు చేయవలసింది:',av:'చేయకూడనిది:',chk:'{n} రోజుల్లో మొక్కలను చూడండి.',rem:'మొక్కలు చూడండి',unsup:'Chrome అవసరం.',novoice:'ఈ ఫోన్‌లో తెలుగు వాయిస్ లేదు, అందుకే నేను మాట్లాడలేను. Settings, Text-to-speech output, Google, Install voice data లో తెలుగు ఇన్‌స్టాల్ చేయండి. సమాధానం టెక్స్ట్‌గా కింద ఉంది.'},
 hi:{st:['बोलने के लिए दबाएँ','सुन रहा हूँ...','सोच रहा हूँ...','बोल रहा हूँ...'],greet:'बताइए आपकी फसल में क्या दिक्कत है। बटन दबाकर बोलिए।',heard:'मैंने सुना:',ok:'क्या यह सही है?',sorry:'माफ़ कीजिए। कृपया फिर से बताइए।',
  clear:'मुझे साफ़ सुनाई नहीं दिया। कृपया शांत जगह जाकर फिर कोशिश करें।',silence:'मुझे कुछ सुनाई नहीं दिया। बटन दबाकर बोलिए।',slow:'नेटवर्क धीमा है। कृपया रुकिए।',fail:'कनेक्ट नहीं हो सका। कृपया फिर कोशिश करें।',
- unk:'इसके लिए मेरे पास भरोसेमंद सलाह नहीं है। कृपया पौधा अपने कृषि अधिकारी को दिखाइए।',follow:"दोबारा सुनने के लिए 'रिपीट' कहें, या दूसरा सवाल पूछें।",remind:'क्या {n} दिन बाद याद दिलाऊँ?',saved:'ठीक है, मैं याद दिलाऊँगा।',
+ unk:'इसके लिए मेरे पास भरोसेमंद सलाह नहीं है। कृपया पौधा अपने कृषि अधिकारी को दिखाइए।',cropOnly:'यह सलाह केवल मिर्च के लिए है। कृपया यह फसल अपने कृषि अधिकारी को दिखाइए।',follow:"दोबारा सुनने के लिए 'रिपीट' कहें, या दूसरा सवाल पूछें।",remind:'क्या {n} दिन बाद याद दिलाऊँ?',saved:'ठीक है, मैं याद दिलाऊँगा।',
  s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'Chrome चाहिए।',novoice:'इस फ़ोन में हिन्दी आवाज़ नहीं है, इसलिए मैं बोल नहीं सकता। Settings, Text-to-speech output, Google, Install voice data में हिन्दी इंस्टॉल करें। जवाब नीचे लिखा है।'}};
 const $=id=>document.getElementById(id);
 const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,rate:1,rec:null,last:'',lastEntry:'',lastTags:[],greeted:false};
@@ -113,7 +113,7 @@ function extract(text){const s=norm(text),tags=new Set(),hits={};
  KB.entries.forEach(e=>{if(has(s,e.names.map(norm),1))hits[e.id]=1}); // synonym list (local pest names) → standard names
  const st=Object.keys(KB.stages).find(k=>has(s,KB.stages[k],1));
  const di=Object.keys(KB.districts).find(k=>has(s,KB.districts[k]));
- return{text,tags,hits,crop:has(s,KB.cropnames,1),stage:st,district:di}}
+ return{text,tags,hits,crop:has(s,KB.cropnames,1),otherCrop:has(s,KB.othercrops||[],1),stage:st,district:di}}
 function score(x){return KB.entries.map(e=>({e,n:e.tags.filter(t=>x.tags.has(t)).length+(x.hits[e.id]?3:0)})).sort((a,b)=>b.n-a.n)}
 const lab=(t)=>KB.labels[t][LANGS[S.rl].li];
 function showTags(x){const c=$('tags');c.innerHTML='';const a=[KB.crop[S.rl]+(x.crop?'':' ?')];if(x.stage)a.push('🌱 '+x.stage);[...x.tags].forEach(t=>t!='rain'&&a.push(lab(t)));
@@ -132,7 +132,7 @@ async function session(text0){
  }catch(e){if(e!=='abort')console.error(e)} if(S.cur===my)stat(0);S.fakeMode=false}
 
 async function flow(text){let no=0,x;
- while(text){S.rl=detect(text);x=extract(text);showTags(x);await say(heardLine(x));
+ while(text){S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){$('badge').style.display='block';S.lastEntry='unknown';S.lastTags=[...x.tags];drawDiag();return say(T('cropOnly'))}await say(heardLine(x));
   const a=await capture(1);if(!a)return;
   if(yn(a)===1)break;
   if(++no>=2){await say(T('s1'));const c=await capture(1);await say(T('s2'));const w=await capture(1);x=extract((c||'')+' '+(w||''));showTags(x);break} // simple mode
@@ -179,7 +179,8 @@ const FAKES=[
  {l:'te',q:[{t:'కాయలపై నల్లటి మచ్చలు ఉన్నాయి, వర్షం పడింది',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
  {l:'te',q:[{t:'కాయలలో రంధ్రాలు ఉన్నాయి, లోపల గొంగళి పురుగు ఉంది',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
  {l:'te',q:[{t:'మిరపకు ఏ మందు ఎంత మోతాదులో చల్లాలి',c:.9}]},
- {l:'hi',q:[{t:'मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और पत्तियों के नीचे छोटे सफेद कीड़े हैं',c:.92},{t:'हाँ',c:.9},{t:'हाँ',c:.9}]}];
+ {l:'hi',q:[{t:'मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और पत्तियों के नीचे छोटे सफेद कीड़े हैं',c:.92},{t:'हाँ',c:.9},{t:'हाँ',c:.9}]},
+ {l:'te',q:[{t:'టమోటా ఆకులు ముడుచుకుంటున్నాయి, ఏమి చేయాలి',c:.9}]}];
 const drawDiag=()=>{loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')+(S.lastEntry?' · last '+S.lastEntry+' ['+S.lastTags.join(',')+']':'')};
 $('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex';drawDiag()};
 $('devp').onclick=e=>{const i=e.target.dataset.i;if(i==null)return;stopAll();const f=FAKES[i];$('langs').querySelector('[data-l="'+f.l+'"]').click();

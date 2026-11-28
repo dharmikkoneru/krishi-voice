@@ -6,47 +6,17 @@
  *   node evaluation/run-keyword.mjs evaluation/score-sheet.csv
  *   node evaluation/run-keyword.mjs --self-check
  *
- * The script loads the real `extract()` and `score()` functions from
- * index.html, so Arm A is exactly what the app does. It reads `asr` when
- * present and falls back to `human`; rows with neither are skipped.
- * Arm B still has to be filled by hand.
+ * Reads `asr` when present, falls back to `human`; rows with neither are
+ * skipped. Arm B is filled by evaluation/run-llm.mjs instead.
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { parseCsv, toCsv } from './csv.mjs';
+import { loadEngine, runArmA } from './engine.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const root = join(here, '..');
-
-function loadEngine() {
-  const html = readFileSync(join(root, 'index.html'), 'utf8');
-  const start = html.indexOf('const norm=s=>');
-  const end = html.indexOf('const lab=');
-  if (start < 0 || end <= start) {
-    throw new Error(
-      'Could not find the matching functions in index.html ' +
-        '(looked for "const norm=s=>" ... "const lab=").'
-    );
-  }
-  const code = html.slice(start, end);
-  const kb = JSON.parse(readFileSync(join(root, 'kb.json'), 'utf8'));
-  return new Function('KB', code + '\nreturn { extract, score };')(kb);
-}
-
-function runArmA(engine, text) {
-  const x = engine.extract(text);
-  const ranked = engine.score(x);
-  const [top, second] = ranked;
-  const unknown = !top || top.n === 0;
-  return {
-    entry: unknown ? 'unknown' : top.e.id,
-    tags: [...x.tags].sort(),
-    unknown,
-    // Same first-pass condition as answer(): a question comes before any answer.
-    asks: !unknown && top.n < 4 && top.n - (second ? second.n : 0) < 2,
-  };
-}
 
 const FIXTURES = [
   {
@@ -97,6 +67,12 @@ const FIXTURES = [
     entry: 'thrips',
     tags: ['curl', 'up', 'white', 'insect'],
   },
+  {
+    name: 'other crop: tomato',
+    text: 'టమోటా ఆకులు ముడుచుకుంటున్నాయి, ఏమి చేయాలి',
+    entry: 'unknown',
+    tags: [],
+  },
 ];
 
 function selfCheck(engine) {
@@ -118,61 +94,6 @@ function selfCheck(engine) {
     process.exit(1);
   }
   console.log(`\nAll ${FIXTURES.length} fixtures passed.`);
-}
-
-// Minimal RFC 4180 reader/writer: quoted commas, escaped quotes, CRLF.
-function parseCsv(text) {
-  const rows = [];
-  let row = [];
-  let cell = '';
-  let quoted = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (quoted) {
-      if (c === '"') {
-        if (text[i + 1] === '"') {
-          cell += '"';
-          i++;
-        } else {
-          quoted = false;
-        }
-      } else {
-        cell += c;
-      }
-    } else if (c === '"') {
-      quoted = true;
-    } else if (c === ',') {
-      row.push(cell);
-      cell = '';
-    } else if (c === '\n') {
-      row.push(cell.replace(/\r$/, ''));
-      rows.push(row);
-      row = [];
-      cell = '';
-    } else {
-      cell += c;
-    }
-  }
-  if (cell.length || row.length) {
-    row.push(cell.replace(/\r$/, ''));
-    rows.push(row);
-  }
-  return rows;
-}
-
-function toCsv(rows) {
-  return (
-    rows
-      .map((row) =>
-        row
-          .map((cell) => {
-            const value = cell == null ? '' : String(cell);
-            return /[",\n\r]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
-          })
-          .join(',')
-      )
-      .join('\n') + '\n'
-  );
 }
 
 function fill(file, engine) {
@@ -221,9 +142,10 @@ function fill(file, engine) {
     }
     scored++;
     if (result.asks) ambiguous++;
+    const note = result.otherCrop ? ' (other crop)' : result.unknown ? ' (unknown)' : '';
     console.log(
-      `${row[at.id]}: ${result.entry}${result.unknown ? ' (unknown)' : ''} ` +
-        `[${result.tags.join(',')}]${result.asks ? '  <- would ask a question' : ''}`
+      `${row[at.id]}: ${result.entry}${note} [${result.tags.join(',')}]` +
+        `${result.asks ? '  <- would ask a question' : ''}`
     );
   }
 

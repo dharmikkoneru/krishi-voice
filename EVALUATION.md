@@ -132,6 +132,26 @@ output, `human` is what was actually said. Rows with neither are skipped. The ru
 clarifying question, because those need a real answer before the final entry is known. Arm B
 still has to be filled by hand.
 
+## Running Arm B (optional)
+
+Arm B is an offline mapping step, not shipped in the app. It sends each transcript to an
+OpenAI-compatible model constrained to `kb.json` ids and tags:
+
+```sh
+export LLM_API_KEY=...                        # never commit it
+export LLM_BASE_URL=https://api.openai.com/v1 # optional
+export LLM_MODEL=...                          # optional, default gpt-4o-mini
+node evaluation/run-llm.mjs evaluation/score-sheet.csv
+node evaluation/run-llm.mjs --limit 10
+node evaluation/run-llm.mjs --dry-run         # print requests; no key or network
+node evaluation/run-llm.mjs --mock            # copy Arm A into B; plumbing test only
+```
+
+The reply must be one allowed entry id (or `unknown`) plus tags from `lex`; anything else is
+rejected and retried. Because the model returns only ids and tags, not prose, it cannot introduce
+a pesticide name or dose. Both arms must run on the same `asr` text. `B_ms` stores request
+latency. `--mock` proves the file plumbing, not model quality.
+
 ## First ten
 
 The sheet already has ten scaffolded rows: the three seed cases plus the seven below. Record these

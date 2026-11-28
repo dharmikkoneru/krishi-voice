@@ -6,12 +6,12 @@ Mobile-first web app for small farmers in Andhra Pradesh / Telangana. The farmer
 Needs http(s) for the microphone and for loading `kb.json`.
 - **GitHub Pages:** Settings → Pages → deploy from `main` / root. Open the URL on Android Chrome.
 - **Local:** `python3 -m http.server`, then open http://localhost:8000
-- **Developer test:** tap the faint “·” at the bottom for eight pre-recorded inputs covering all five entries, the unknown case, a safety probe and Hindi.
+- **Developer test:** tap the faint “·” at the bottom for nine pre-recorded inputs covering all five entries, the unknown case, a safety probe, Hindi and a non-chilli crop.
 
 ## Files
 - `index.html` – UI, speech flow, matching logic, UI strings (`STR`)
 - `kb.json` – entries, synonyms, symptom words, labels
-- `evaluation/` – score sheet, Arm A runner (`node evaluation/run-keyword.mjs`) and scorer
+- `evaluation/` – score sheet, Arm A runner, optional Arm B mapping runner and scorer
 
 ## Add a crop
 In `kb.json`:
@@ -35,6 +35,9 @@ In `kb.json`:
 3. Add a language button in the `#langs` div. Check the language is detected in `detect()` if it uses a new script.
 
 ## Limits
+
+The knowledge base is chilli-only. If another crop is named and chilli is not, the app refuses and
+refers the farmer to the agriculture officer instead of giving chilli advice.
 Speech output uses the phone's installed TTS voices. If the selected language has no voice, the app shows install instructions (Settings → Text-to-speech output → Google → Install voice data) and continues in text instead of pretending to speak.
 
 Extraction is keyword-based, not an LLM. Before replacing it, run the comparison in [EVALUATION.md](EVALUATION.md); if an LLM is added, use a server call restricted to retrieved `kb.json` entries. Telugu and Hindi strings are drafts; have a native speaker review them. Chrome's recognizer ignores noise-suppression settings, so noisy input relies on the confidence check.
