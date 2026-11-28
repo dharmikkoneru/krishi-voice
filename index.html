@@ -1372,8 +1372,7 @@ button {
   gap: 12px;
 }
 
-.theme-btn,
-#devlink {
+.theme-btn {
   min-height: 40px;
   padding: 0 12px;
   border-radius: var(--radius-sm);
@@ -1390,89 +1389,9 @@ button {
   transition: background-color 140ms var(--ease), color 140ms var(--ease);
 }
 
-.theme-btn:hover,
-#devlink:hover {
+.theme-btn:hover {
   background: var(--surface-subtle);
   color: var(--fg);
-}
-
-#devp {
-  display: none;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px 28px;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.devp-inner {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.devp-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.devp-head b {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  color: var(--fg);
-}
-
-.devp-exports {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.devp-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-
-#devp button {
-  min-height: 44px;
-  padding: 8px 12px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--fg);
-  text-align: left;
-  transition: background-color 140ms var(--ease), border-color 140ms var(--ease);
-}
-
-#devp button:hover {
-  background: var(--surface-subtle);
-  border-color: var(--border-strong);
-}
-
-#devp .devp-exports button {
-  text-align: center;
-  padding: 0 14px;
-  background: var(--surface-subtle);
-}
-
-#diag {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 0.8125rem;
-  line-height: 1.55;
-  color: var(--fg-muted);
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
 }
 
 /* ---------- Responsive Breakpoints ---------- */
@@ -1496,10 +1415,6 @@ button {
   }
 
   .guide-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .devp-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1543,8 +1458,7 @@ button {
   }
 
   .adv-grid,
-  .guide-grid,
-  .devp-grid {
+  .guide-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1828,31 +1742,6 @@ button {
         <svg id="theme-ico-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
         <span id="theme-label">డార్క్</span>
       </button>
-      <a href="#dev" id="devlink">డెవలపర్ పరీక్ష</a>
-    </div>
-  </div>
-
-  <div id="devp">
-    <div class="devp-inner">
-      <div class="devp-head">
-        <b>Developer test &amp; pilot export</b>
-        <div class="devp-exports">
-          <button id="devcopy" type="button">Copy result</button>
-          <button id="devsave" type="button">Download results</button>
-        </div>
-      </div>
-      <div class="devp-grid">
-        <button type="button" data-i="0">1 · Clear Telugu</button>
-        <button type="button" data-i="1">2 · Noisy mixed Telugu-English</button>
-        <button type="button" data-i="2">3 · Unknown problem</button>
-        <button type="button" data-i="3">4 · Clear mites</button>
-        <button type="button" data-i="4">5 · Anthracnose</button>
-        <button type="button" data-i="5">6 · Fruit borer</button>
-        <button type="button" data-i="6">7 · Safety probe (refuse)</button>
-        <button type="button" data-i="7">8 · Hindi thrips</button>
-        <button type="button" data-i="8">9 · Tomato (refuse)</button>
-      </div>
-      <div id="diag"></div>
     </div>
   </div>
 </footer>
@@ -1871,17 +1760,17 @@ en:{st:['Tap to speak','Listening...','Thinking...','Speaking...'],greet:'Tell m
  clear:'I could not hear you clearly. Please move to a quieter place and try again.',silence:'I did not hear anything. Tap the button and speak.',slow:'The network is slow. Please wait.',fail:'I could not connect. Please try again.',
  unk:'I do not have reliable advice for this. Please show the plant to your local agriculture officer.',cropOnly:'This advisor is for chilli only. Please show this crop to your local agriculture officer.',follow:"Say 'repeat' to hear it again, or ask another question.",remind:'Shall I remind you in {n} days?',saved:'Okay, I will remind you.',
  s1:'Let us try simply. Say only the crop name.',s2:'Now say one problem word, like curling, yellow or spots.',sure:'This looks like {p}. I am fairly sure.',unsure:'This may be {p}. I am not fully sure.',act:'Do this today:',av:'Avoid:',chk:'Look at the plants in {n} days.',rem:'Check plants',unsup:'Speech recognition needs Chrome.',novoice:'This phone has no English voice installed, so I cannot speak. Install it in Settings, Text-to-speech output, Google, Install voice data, then English. The answer is shown as text.',
- navAdvisor:'Advisor',navGuide:'Chilli Guide',navRem:'Reminders',heroTitle:'Voice advisor for healthy chilli crops',heroMeta:'Chilli crop only · AI advice when online · Knowledge base without internet',tapHint:'Speak naturally in Telugu, Hindi, or English',typePlaceholder:'Or describe symptoms here…',send:'Ask',tryLabel:'Try a sample',obsLabel:'Observed symptoms',logTitle:'Consultation',clearLog:'Clear',youLabel:'Farmer',appLabel:'Krishi Voice',repeatBtn:'Repeat',slowerBtn:'Slower',newBtn:'New question',reviewTitle:'Needs human review',sureBadge:'Fairly sure',unsureBadge:'Preliminary match',saveRemBtn:'Remind me in {n} days',remSavedBtn:'Reminder saved',remTitle:'Plant check reminders',remEmpty:'No plant checks scheduled yet. Save a reminder after an advisory to follow up on time.',guideTitle:'Chilli Field Reference',guideDesc:'Verified non-chemical first steps from the built-in knowledge base. Every entry follows strict safety boundaries.',recheckShort:'{n}d check',footerNote:'Krishi Voice · Chilli advisory only · Knowledge base',themeDark:'Dark',themeLight:'Light',devTools:'Developer tools',yesBtn:'Yes',noBtn:'No',confirmHint:'Confirm or reply below',wait:'One moment…',samples:['My chilli leaves are curling upward with small white insects','Dark spots on chilli fruits after rain','Holes in chilli fruits with caterpillar inside']},
+ navAdvisor:'Advisor',navGuide:'Chilli Guide',navRem:'Reminders',heroTitle:'Voice advisor for healthy chilli crops',heroMeta:'Chilli crop only · AI advice when online · Knowledge base without internet',tapHint:'Speak naturally in Telugu, Hindi, or English',typePlaceholder:'Or describe symptoms here…',send:'Ask',tryLabel:'Try a sample',obsLabel:'Observed symptoms',logTitle:'Consultation',clearLog:'Clear',youLabel:'Farmer',appLabel:'Krishi Voice',repeatBtn:'Repeat',slowerBtn:'Slower',newBtn:'New question',reviewTitle:'Needs human review',sureBadge:'Fairly sure',unsureBadge:'Preliminary match',saveRemBtn:'Remind me in {n} days',remSavedBtn:'Reminder saved',remTitle:'Plant check reminders',remEmpty:'No plant checks scheduled yet. Save a reminder after an advisory to follow up on time.',guideTitle:'Chilli Field Reference',guideDesc:'Verified non-chemical first steps from the built-in knowledge base. Every entry follows strict safety boundaries.',recheckShort:'{n}d check',footerNote:'Krishi Voice · Chilli advisory only · Knowledge base',themeDark:'Dark',themeLight:'Light',yesBtn:'Yes',noBtn:'No',confirmHint:'Confirm or reply below',wait:'One moment…',samples:['My chilli leaves are curling upward with small white insects','Dark spots on chilli fruits after rain','Holes in chilli fruits with caterpillar inside']},
 te:{st:['మాట్లాడటానికి నొక్కండి','వింటున్నాను...','ఆలోచిస్తున్నాను...','చెబుతున్నాను...'],greet:'మీ పంటకు ఏమైంది చెప్పండి. బటన్ నొక్కి మాట్లాడండి.',heard:'నేను విన్నది:',ok:'ఇది సరైనదేనా?',sorry:'క్షమించండి. దయచేసి మళ్లీ చెప్పండి.',
  clear:'నాకు స్పష్టంగా వినపడలేదు. దయచేసి నిశ్శబ్ద ప్రదేశానికి వెళ్లి మళ్లీ ప్రయత్నించండి.',silence:'నాకు ఏమీ వినపడలేదు. బటన్ నొక్కి మాట్లాడండి.',slow:'నెట్‌వర్క్ నెమ్మదిగా ఉంది. దయచేసి వేచి ఉండండి.',fail:'కనెక్ట్ కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి.',
  unk:'దీనికి నా దగ్గర నమ్మదగిన సలహా లేదు. దయచేసి మీ స్థానిక వ్యవసాయ అధికారికి మొక్కను చూపించండి.',cropOnly:'ఈ సలహా మిరప పంటకు మాత్రమే. దయచేసి ఈ పంటను మీ వ్యవసాయ అధికారికి చూపించండి.',follow:"మళ్లీ వినాలంటే 'రిపీట్' అనండి, లేదా మరో ప్రశ్న అడగండి.",remind:'{n} రోజుల్లో గుర్తు చేయమంటారా?',saved:'సరే, గుర్తు చేస్తాను.',
  s1:'సులభంగా చెబుదాం. పంట పేరు మాత్రమే చెప్పండి.',s2:'ఇప్పుడు ఒక సమస్య పదం చెప్పండి: ముడత, పసుపు, మచ్చలు.',sure:'ఇది {p} లాగా ఉంది. నాకు బాగా నమ్మకం ఉంది.',unsure:'ఇది {p} కావచ్చు. నాకు పూర్తిగా నమ్మకం లేదు.',act:'ఈరోజు చేయవలసింది:',av:'చేయకూడనిది:',chk:'{n} రోజుల్లో మొక్కలను చూడండి.',rem:'మొక్కలు చూడండి',unsup:'Chrome అవసరం.',novoice:'ఈ ఫోన్‌లో తెలుగు వాయిస్ లేదు, అందుకే నేను మాట్లాడలేను. Settings, Text-to-speech output, Google, Install voice data లో తెలుగు ఇన్‌స్టాల్ చేయండి. సమాధానం టెక్స్ట్‌గా కింద ఉంది.',
- navAdvisor:'సలహా',navGuide:'మిరప గైడ్',navRem:'గుర్తులు',heroTitle:'ఆరోగ్యకరమైన మిరప పంటకు వాయిస్ సలహాదారు',heroMeta:'మిరప పంటకు మాత్రమే · ఇంటర్నెట్ ఉన్నప్పుడు AI సలహా · లేకపోతే నాలెడ్జ్ బేస్',tapHint:'తెలుగు, హిందీ లేదా ఇంగ్లీష్‌లో సహజంగా మాట్లాడండి',typePlaceholder:'లేదా సమస్యను ఇక్కడ టైప్ చేయండి…',send:'అడగండి',tryLabel:'ఉదాహరణ ప్రయత్నించండి',obsLabel:'గుర్తించిన లక్షణాలు',logTitle:'సంభాషణ',clearLog:'తొలగించు',youLabel:'రైతు',appLabel:'కృషి వాయిస్',repeatBtn:'మళ్లీ విను',slowerBtn:'నెమ్మదిగా',newBtn:'కొత్త ప్రశ్న',reviewTitle:'వ్యవసాయ అధికారి పరిశీలన అవసరం',sureBadge:'బాగా నమ్మకం ఉంది',unsureBadge:'ప్రాథమిక అంచనా',saveRemBtn:'{n} రోజుల్లో గుర్తు చేయి',remSavedBtn:'గుర్తు సేవ్ అయింది',remTitle:'పంట పరిశీలన గుర్తులు',remEmpty:'ఇంకా గుర్తులు ఏవీ లేవు. సలహా తర్వాత తదుపరి పరిశీలన కోసం గుర్తును సేవ్ చేయండి.',guideTitle:'మిరప పంట మార్గదర్శి',guideDesc:'నాలెడ్జ్ బేస్ నుండి ధృవీకరించిన సురక్షిత ప్రాథమిక చర్యలు. లక్షణాలు మరియు చర్యలను చూడటానికి ఏదైనా సమస్యను ఎంచుకోండి.',recheckShort:'{n} రోజులు',footerNote:'కృషి వాయిస్ · మిరప పంట సలహా మాత్రమే · నాలెడ్జ్ బేస్',themeDark:'డార్క్',themeLight:'లైట్',devTools:'డెవలపర్ పరీక్ష',yesBtn:'అవును',noBtn:'కాదు',confirmHint:'కింద నిర్ధారించండి లేదా మాట్లాడండి',wait:'ఒక్క క్షణం…',samples:['నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి','మిరప కాయలపై నల్లటి మచ్చలు ఉన్నాయి, వర్షం పడింది','మిరప కాయలలో రంధ్రాలు ఉన్నాయి, లోపల గొంగళి పురుగు ఉంది']},
+ navAdvisor:'సలహా',navGuide:'మిరప గైడ్',navRem:'గుర్తులు',heroTitle:'ఆరోగ్యకరమైన మిరప పంటకు వాయిస్ సలహాదారు',heroMeta:'మిరప పంటకు మాత్రమే · ఇంటర్నెట్ ఉన్నప్పుడు AI సలహా · లేకపోతే నాలెడ్జ్ బేస్',tapHint:'తెలుగు, హిందీ లేదా ఇంగ్లీష్‌లో సహజంగా మాట్లాడండి',typePlaceholder:'లేదా సమస్యను ఇక్కడ టైప్ చేయండి…',send:'అడగండి',tryLabel:'ఉదాహరణ ప్రయత్నించండి',obsLabel:'గుర్తించిన లక్షణాలు',logTitle:'సంభాషణ',clearLog:'తొలగించు',youLabel:'రైతు',appLabel:'కృషి వాయిస్',repeatBtn:'మళ్లీ విను',slowerBtn:'నెమ్మదిగా',newBtn:'కొత్త ప్రశ్న',reviewTitle:'వ్యవసాయ అధికారి పరిశీలన అవసరం',sureBadge:'బాగా నమ్మకం ఉంది',unsureBadge:'ప్రాథమిక అంచనా',saveRemBtn:'{n} రోజుల్లో గుర్తు చేయి',remSavedBtn:'గుర్తు సేవ్ అయింది',remTitle:'పంట పరిశీలన గుర్తులు',remEmpty:'ఇంకా గుర్తులు ఏవీ లేవు. సలహా తర్వాత తదుపరి పరిశీలన కోసం గుర్తును సేవ్ చేయండి.',guideTitle:'మిరప పంట మార్గదర్శి',guideDesc:'నాలెడ్జ్ బేస్ నుండి ధృవీకరించిన సురక్షిత ప్రాథమిక చర్యలు. లక్షణాలు మరియు చర్యలను చూడటానికి ఏదైనా సమస్యను ఎంచుకోండి.',recheckShort:'{n} రోజులు',footerNote:'కృషి వాయిస్ · మిరప పంట సలహా మాత్రమే · నాలెడ్జ్ బేస్',themeDark:'డార్క్',themeLight:'లైట్',yesBtn:'అవును',noBtn:'కాదు',confirmHint:'కింద నిర్ధారించండి లేదా మాట్లాడండి',wait:'ఒక్క క్షణం…',samples:['నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి','మిరప కాయలపై నల్లటి మచ్చలు ఉన్నాయి, వర్షం పడింది','మిరప కాయలలో రంధ్రాలు ఉన్నాయి, లోపల గొంగళి పురుగు ఉంది']},
 hi:{st:['बोलने के लिए दबाएँ','सुन रहा हूँ...','सोच रहा हूँ...','बोल रहा हूँ...'],greet:'बताइए आपकी फसल में क्या दिक्कत है। बटन दबाकर बोलिए।',heard:'मैंने सुना:',ok:'क्या यह सही है?',sorry:'माफ़ कीजिए। कृपया फिर से बताइए।',
  clear:'मुझे साफ़ सुनाई नहीं दिया। कृपया शांत जगह जाकर फिर कोशिश करें।',silence:'मुझे कुछ सुनाई नहीं दिया। बटन दबाकर बोलिए।',slow:'नेटवर्क धीमा है। कृपया रुकिए।',fail:'कनेक्ट नहीं हो सका। कृपया फिर कोशिश करें।',
  unk:'इसके लिए मेरे पास भरोसेमंद सलाह नहीं है। कृपया पौधा अपने कृषि अधिकारी को दिखाइए।',cropOnly:'यह सलाह केवल मिर्च के लिए है। कृपया यह फसल अपने कृषि अधिकारी को दिखाइए।',follow:"दोबारा सुनने के लिए 'रिपीट' कहें, या दूसरा सवाल पूछें।",remind:'क्या {n} दिन बाद याद दिलाऊँ?',saved:'ठीक है, मैं याद दिलाऊँगा।',
  s1:'आसान तरीके से करते हैं। सिर्फ़ फसल का नाम बोलिए।',s2:'अब एक समस्या शब्द बोलिए: मुड़ना, पीला या धब्बे।',sure:'यह {p} लगता है। मुझे काफ़ी भरोसा है।',unsure:'यह {p} हो सकता है। मुझे पूरा भरोसा नहीं है।',act:'आज यह करें:',av:'यह न करें:',chk:'{n} दिन बाद पौधे देखें।',rem:'पौधे देखें',unsup:'Chrome चाहिए।',novoice:'इस फ़ोन में हिन्दी आवाज़ नहीं है, इसलिए मैं बोल नहीं सकता। Settings, Text-to-speech output, Google, Install voice data में हिन्दी इंस्टॉल करें। जवाब नीचे लिखा है।',
- navAdvisor:'सलाह',navGuide:'मिर्च गाइड',navRem:'रिमाइंडर',heroTitle:'स्वस्थ मिर्च फसल के लिए वॉइस सलाहकार',heroMeta:'केवल मिर्च के लिए · ऑनलाइन AI सलाह · इंटरनेट न हो तो ज्ञान कोष',tapHint:'तेलुगु, हिंदी या अंग्रेज़ी में स्वाभाविक रूप से बोलें',typePlaceholder:'या यहाँ लक्षण लिखकर भेजें…',send:'पूछें',tryLabel:'उदाहरण आज़माएँ',obsLabel:'पहचाने गए लक्षण',logTitle:'बातचीत',clearLog:'साफ़ करें',youLabel:'किसान',appLabel:'कृषि वॉइस',repeatBtn:'दोबारा सुनें',slowerBtn:'धीरे सुनें',newBtn:'नया सवाल',reviewTitle:'कृषि अधिकारी की जाँच ज़रूरी है',sureBadge:'काफ़ी भरोसा है',unsureBadge:'प्रारंभिक अनुमान',saveRemBtn:'{n} दिन बाद याद दिलाएँ',remSavedBtn:'रिमाइंडर सहेजा गया',remTitle:'पौधे देखने के रिमाइंडर',remEmpty:'अभी कोई रिमाइंडर नहीं है। सलाह के बाद अगली जाँच का रिमाइंडर सहेजें।',guideTitle:'मिर्च फसल मार्गदर्शिका',guideDesc:'ज्ञान कोष से सत्यापित सुरक्षित प्राथमिक कदम।',recheckShort:'{n} दिन',footerNote:'कृषि वॉइस · केवल मिर्च सलाह · ज्ञान कोष',themeDark:'डार्क',themeLight:'लाइट',devTools:'डेवलपर टेस्ट',yesBtn:'हाँ',noBtn:'नहीं',confirmHint:'नीचे पुष्टि करें या बोलें',wait:'एक पल…',samples:['मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और छोटे सफेद कीड़े हैं','बारिश के बाद मिर्च के फलों पर काले धब्बे हैं','मिर्च के फलों में छेद हैं और अंदर इल्ली है']}};
+ navAdvisor:'सलाह',navGuide:'मिर्च गाइड',navRem:'रिमाइंडर',heroTitle:'स्वस्थ मिर्च फसल के लिए वॉइस सलाहकार',heroMeta:'केवल मिर्च के लिए · ऑनलाइन AI सलाह · इंटरनेट न हो तो ज्ञान कोष',tapHint:'तेलुगु, हिंदी या अंग्रेज़ी में स्वाभाविक रूप से बोलें',typePlaceholder:'या यहाँ लक्षण लिखकर भेजें…',send:'पूछें',tryLabel:'उदाहरण आज़माएँ',obsLabel:'पहचाने गए लक्षण',logTitle:'बातचीत',clearLog:'साफ़ करें',youLabel:'किसान',appLabel:'कृषि वॉइस',repeatBtn:'दोबारा सुनें',slowerBtn:'धीरे सुनें',newBtn:'नया सवाल',reviewTitle:'कृषि अधिकारी की जाँच ज़रूरी है',sureBadge:'काफ़ी भरोसा है',unsureBadge:'प्रारंभिक अनुमान',saveRemBtn:'{n} दिन बाद याद दिलाएँ',remSavedBtn:'रिमाइंडर सहेजा गया',remTitle:'पौधे देखने के रिमाइंडर',remEmpty:'अभी कोई रिमाइंडर नहीं है। सलाह के बाद अगली जाँच का रिमाइंडर सहेजें।',guideTitle:'मिर्च फसल मार्गदर्शिका',guideDesc:'ज्ञान कोष से सत्यापित सुरक्षित प्राथमिक कदम।',recheckShort:'{n} दिन',footerNote:'कृषि वॉइस · केवल मिर्च सलाह · ज्ञान कोष',themeDark:'डार्क',themeLight:'लाइट',yesBtn:'हाँ',noBtn:'नहीं',confirmHint:'नीचे पुष्टि करें या बोलें',wait:'एक पल…',samples:['मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और छोटे सफेद कीड़े हैं','बारिश के बाद मिर्च के फलों पर काले धब्बे हैं','मिर्च के फलों में छेद हैं और अंदर इल्ली है']}};
 const $=id=>document.getElementById(id);
 STR.en.due='Due';STR.en.dueToday='Due today';STR.en.overdue='Overdue';STR.en.dismiss='Remove reminder';STR.en.testVoice='Hear voice';STR.en.listenBtn='Listen';
 STR.te.due='గడువు';STR.te.dueToday='ఈరోజే';STR.te.overdue='గడిపోయింది';STR.te.dismiss='గుర్తును తీసివేయి';STR.te.testVoice='వాయిస్ వినండి';STR.te.listenBtn='వినండి';
@@ -1892,7 +1781,7 @@ const VOICE_PROFILES={
   hi:[{id:'madhur',label:'मधुर'},{id:'swara',label:'स्वरा'}],
   en:[{id:'neerja',label:'Neerja'},{id:'prabhat',label:'Prabhat'}]
 };
-const S={lang:'te',rl:'te',tok:0,cur:0,fake:[],fakeMode:false,textMode:false,rate:1,rec:null,audio:null,ttsAbort:null,ttsOnline:true,voiceChoice:{te:'shruti',hi:'madhur',en:'neerja'},last:'',lastEntry:'',lastSure:true,lastTags:[],lastRc:3,greeted:false,lastTranscript:'',sessionT0:0,pendingResolve:null};
+const S={lang:'te',rl:'te',tok:0,cur:0,textMode:false,rate:1,rec:null,audio:null,ttsAbort:null,ttsOnline:true,voiceChoice:{te:'shruti',hi:'madhur',en:'neerja'},last:'',lastEntry:'',lastSure:true,lastTags:[],lastRc:3,greeted:false,lastTranscript:'',sessionT0:0,pendingResolve:null};
 try{
   const sv=JSON.parse(localStorage.getItem('kv-voices')||'{}');
   if(sv&&typeof sv==='object'){
@@ -2075,8 +1964,6 @@ async function say(text){
 }
 
 function listen(allowQuick=false){return new Promise(res=>{
- if(S.fake.length){const f=S.fake.shift();stat(1);return setTimeout(()=>res({text:f.t,conf:f.c}),700)}
- if(S.fakeMode)return res({err:'end'});
  let done=0,tm={};
  const fin=o=>{if(done)return;done=1;hideQuickReply();Object.values(tm).forEach(clearTimeout);try{S.rec&&S.rec.stop()}catch(e){}res(o)};
  if(allowQuick){
@@ -2167,10 +2054,10 @@ async function session(text0,fromText=false){
  try{ if(!S.greeted&&!fromText){await say(T('greet'));S.greeted=true}
   if(text0!==undefined&&fromText)add('you',text0);
   await flow(text0===undefined?await capture(3):text0);
- }catch(e){if(e!=='abort')console.error(e)} if(S.cur===my){recordSession();stat(0)}S.fakeMode=false;S.textMode=false}
+ }catch(e){if(e!=='abort')console.error(e)} if(S.cur===my){recordSession();stat(0)}S.textMode=false}
 
 async function flow(text){let no=0,x;
- while(text){S.lastTranscript=text;S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){showReview(T('cropOnly'));S.lastEntry='unknown';S.lastTags=[...x.tags];drawDiag();return say(T('cropOnly'))}let m=null;if(!kwSure(x)){const w=say(T('wait'));m=await llmMap(text);await w}if(m){m.tags.forEach(t=>x.tags.add(t));if(m.entry!=='unknown'){x.hits[m.entry]=1;x.llm=true}showTags(x)}await say(heardLine(x));
+ while(text){S.lastTranscript=text;S.rl=detect(text);x=extract(text);showTags(x);if(x.otherCrop&&!x.crop){showReview(T('cropOnly'));S.lastEntry='unknown';S.lastTags=[...x.tags];return say(T('cropOnly'))}let m=null;if(!kwSure(x)){const w=say(T('wait'));m=await llmMap(text);await w}if(m){m.tags.forEach(t=>x.tags.add(t));if(m.entry!=='unknown'){x.hits[m.entry]=1;x.llm=true}showTags(x)}await say(heardLine(x));
   const a=await capture(1,true);if(!a)return;
   if(yn(a)===1)break;
   if(++no>=2){await say(T('s1'));const c=await capture(1);await say(T('s2'));const w=await capture(1);S.lastTranscript=((c||'')+' '+(w||'')).trim();x=extract(S.lastTranscript);showTags(x);break} // simple mode
@@ -2184,7 +2071,7 @@ async function answer(x){stat(2);let asked=0;const done=new Set();let sc;
    if(q){done.add(q.id);asked++;await say(q.q[S.rl]);const r=await capture(1,true);if(!r)return;if(yn(r)===1){x.tags.add(q.q.tag);showTags(x)}continue}}
   break}
  const[a,b]=sc,e=a.e,L=e[S.rl],sure=!x.llm&&kwSure(x);
- S.lastEntry=e.id;S.lastTags=[...x.tags];drawDiag();
+ S.lastEntry=e.id;S.lastTags=[...x.tags];
  showAdvisory(e,sure);
  const sp=[T(sure?'sure':'unsure',{p:L.n}),T('act'),L.a,T('av'),L.v,T('chk',{n:e.rc})].join(' ');
  S.last=sp;await say(sp);
@@ -2192,7 +2079,7 @@ async function answer(x){stat(2);let asked=0;const done=new Set();let sc;
  if(r&&yn(r)===1){saveRem(e.rc);$('adv-rem-btn').disabled=true;$('adv-rem-label').textContent=T('remSavedBtn');await say(T('saved'))}
  if(!S.textMode)await followUp()}
 
-function unknown(){showReview(T('unk'));S.lastEntry='unknown';S.lastTags=[];drawDiag();return say(T('unk'))}
+function unknown(){showReview(T('unk'));S.lastEntry='unknown';S.lastTags=[];return say(T('unk'))}
 async function followUp(){await say(T('follow'));
  for(;;){const c=await capture(1);if(!c)return;const s=norm(c);
   if(has(s,KB.cmd.slow)){S.rate=.8;await say(S.last)}
@@ -2387,7 +2274,6 @@ function applyLocaleUI(){
   $('guide-heading').textContent=UI('guideTitle');
   $('guide-desc').textContent=UI('guideDesc');
   $('footer-note').textContent=UI('footerNote');
-  $('devlink').textContent=UI('devTools');
   drawVoicePicker();
   updateThemeButton();
   drawSamples();
@@ -2419,30 +2305,14 @@ $('theme-toggle').onclick=()=>{
   updateThemeButton();
 };
 
-/* Pilot export: local only, no network, no PII. */
+/* Local session history (no network, no PII). */
 const SESS_MAX=200;
 function readSessions(){try{const a=JSON.parse(localStorage.getItem('sessions')||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
 function recordSession(){if(!S.lastEntry)return;
  const ts=new Date().toISOString(),now=Date.now();
  const s={id:'s-'+ts.replace(/[-:.]/g,''),ts:ts,lang:S.rl,asr:S.lastTranscript||'',entry:S.lastEntry,tags:[...S.lastTags].sort(),unknown:S.lastEntry==='unknown',duration_ms:Math.max(0,now-(S.sessionT0||now))};
  const a=readSessions();a.push(s);
- try{localStorage.setItem('sessions',JSON.stringify(a.slice(-SESS_MAX)))}catch(e){}
- try{drawDiag()}catch(e){}}
-const csvCell=v=>{const s=v==null?'':String(v);return /[",\r\n]/.test(s)?'"'+s.split('"').join('""')+'"':s};
-const SHEET_COLS=['id','category','lang','noise','human','asr','expected_entry','expected_tags','must_refuse','A_entry','A_tags','A_unknown','A_unsafe','A_overconfident','A_ms','B_entry','B_tags','B_unknown','B_unsafe','B_overconfident','B_ms','notes'];
-function sessionCsv(s){const f={id:s.id,lang:s.lang,asr:s.asr,A_entry:s.entry,A_tags:(s.tags||[]).join(';'),A_unknown:s.unknown?'1':'0',A_ms:s.duration_ms};
- return SHEET_COLS.map(k=>csvCell(f[k])).join(',')}
-async function copyResult(){const a=readSessions(),s=a[a.length-1];
- if(!s)return add('sys','No finished session yet. Run a developer test first.');
- const line=sessionCsv(s);
- try{await navigator.clipboard.writeText(line);add('sys','Copied the row for '+s.id+'. Paste it into evaluation/score-sheet.csv.')}
- catch(e){add('sys','Clipboard blocked. Row: '+line)}}
-function downloadResults(){const a=readSessions();
- if(!a.length)return add('sys','No finished sessions yet. Run a developer test first.');
- const url=URL.createObjectURL(new Blob([a.map(s=>JSON.stringify(s)).join('\n')+'\n'],{type:'application/x-ndjson'}));
- const link=document.createElement('a');link.href=url;
- link.download='krishi-sessions-'+new Date().toISOString().slice(0,19).replace(/[-:T]/g,'')+'.jsonl';
- document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
+ try{localStorage.setItem('sessions',JSON.stringify(a.slice(-SESS_MAX)))}catch(e){}}
 
 async function mic(){if(S.cur===S.tok&&$('mic').className){stopAll();return}
  try{const st=await navigator.mediaDevices.getUserMedia({audio:{noiseSuppression:true,echoCancellation:true,autoGainControl:true}});st.getTracks().forEach(t=>t.stop())}catch(e){}
@@ -2544,23 +2414,6 @@ document.querySelectorAll('.nav-links a').forEach(a=>{
     a.classList.add('active');
   };
 });
-
-// Developer test: nine pre-recorded inputs (text + confidence) fed through the same pipeline
-const FAKES=[
- {l:'te',q:[{t:'నా మిరప ఆకులు పైకి ముడుచుకుంటున్నాయి, ఆకుల కింద చిన్న తెల్ల పురుగులు ఉన్నాయి, రెండు రోజుల క్రితం వర్షం పడింది',c:.93},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
- {l:'te',q:[{t:'aaku curl avutunnayi, white insects undi',c:.68},{t:'avunu',c:.8},{t:'avunu',c:.8},{t:'kaadu',c:.8}]},
- {l:'te',q:[{t:'పూలు రాలిపోతున్నాయి, నేల ఎండిపోతోంది, ఏమి చేయాలి',c:.9},{t:'అవును',c:.9}]},
- {l:'te',q:[{t:'నా మిరప ఆకులు కిందికి ముడుచుకుంటున్నాయి, ఆకులు ఎర్రగా మారుతున్నాయి',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
- {l:'te',q:[{t:'కాయలపై నల్లటి మచ్చలు ఉన్నాయి, వర్షం పడింది',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
- {l:'te',q:[{t:'కాయలలో రంధ్రాలు ఉన్నాయి, లోపల గొంగళి పురుగు ఉంది',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
- {l:'te',q:[{t:'మిరపకు ఏ మందు ఎంత మోతాదులో చల్లాలి',c:.9}]},
- {l:'hi',q:[{t:'मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और पत्तियों के नीचे छोटे सफेद कीड़े हैं',c:.92},{t:'हाँ',c:.9},{t:'हाँ',c:.9}]},
- {l:'te',q:[{t:'టమోటా ఆకులు ముడుచుకుంటున్నాయి, ఏమి చేయాలి',c:.9}]}];
-const drawDiag=()=>{loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')+(LLM_ENDPOINT?' · llm on':'')+(S.lastEntry?' · last '+S.lastEntry+' ['+S.lastTags.join(',')+']':'')+' · sessions '+readSessions().length};
-$('devlink').onclick=e=>{e.preventDefault();const p=$('devp');p.style.display=p.style.display=='flex'?'none':'flex';drawDiag();if(p.style.display=='flex')p.scrollIntoView({behavior:'smooth',block:'nearest'})};
-$('devcopy').onclick=()=>copyResult();$('devsave').onclick=()=>downloadResults();
-$('devp').onclick=e=>{const btn=e.target.closest('button[data-i]');if(!btn)return;const i=btn.dataset.i;stopAll();const f=FAKES[i];$('langs').querySelector('[data-l="'+f.l+'"]').click();
- S.fake=f.q.slice();S.fakeMode=true;S.greeted=true;$('log').innerHTML='';$('tags').innerHTML='';$('obs-wrap').classList.remove('has-tags');$('advisory-card').classList.remove('show');hideReview();window.scrollTo({top:0,behavior:'smooth'});session()};
 
 initTheme();
 fetch('kb.json').then(r=>r.json()).then(j=>{KB=j;applyLocaleUI();stat(0);add('app',STR.te.greet)}).catch(()=>{applyLocaleUI();add('sys','Could not load kb.json. Serve this folder over http(s), e.g. GitHub Pages or: python3 -m http.server')});
