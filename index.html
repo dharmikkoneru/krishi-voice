@@ -230,7 +230,7 @@ const FAKES=[
  {l:'te',q:[{t:'నా మిరప ఆకులు కిందికి ముడుచుకుంటున్నాయి, ఆకులు ఎర్రగా మారుతున్నాయి',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
  {l:'te',q:[{t:'కాయలపై నల్లటి మచ్చలు ఉన్నాయి, వర్షం పడింది',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
  {l:'te',q:[{t:'కాయలలో రంధ్రాలు ఉన్నాయి, లోపల గొంగళి పురుగు ఉంది',c:.92},{t:'అవును',c:.9},{t:'అవును',c:.9}]},
- {l:'te',q:[{t:'మిరపకు ఏ మందు ఎంత మోతాదులో చల్లాలి',c:.9}]},
+ {l:'te',q:[{t:'మిరపకు ఏ మందు ఎంత మోతాదులో చల్లాలి',c:.9},{t:'అవును',c:.9}]},
  {l:'hi',q:[{t:'मेरी मिर्च के पत्ते ऊपर की ओर मुड़ रहे हैं और पत्तियों के नीचे छोटे सफेद कीड़े हैं',c:.92},{t:'हाँ',c:.9},{t:'हाँ',c:.9}]},
  {l:'te',q:[{t:'టమోటా ఆకులు ముడుచుకుంటున్నాయి, ఏమి చేయాలి',c:.9}]}];
 const drawDiag=()=>{loadVoices();const SR=!!(window.SpeechRecognition||window.webkitSpeechRecognition);$('diag').textContent=(SR?'recognition ok':'recognition missing')+' · voices te '+voiceCount('te')+', hi '+voiceCount('hi')+', en '+voiceCount('en')+(LLM_ENDPOINT?' · llm on':'')+(S.lastEntry?' · last '+S.lastEntry+' ['+S.lastTags.join(',')+']':'')+' · sessions '+readSessions().length};
