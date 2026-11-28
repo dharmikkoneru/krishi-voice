@@ -175,8 +175,10 @@ With Gemini's OpenAI-compatible endpoint use
 `gemini-3.5-flash` (`gemini-2.5-flash` is retired). Keep `max_tokens` at 2000: Gemini 3.x spends
 tokens on reasoning, and a small cap truncates the JSON.
 
-`proxy/` is the same constrained mapping for a live app, with the key server-side. It is off
-unless `<meta name="llm-endpoint">` is set, and it is not deployed. When the hybrid contributes,
+`proxy/` is the same constrained mapping for a live app, with the key server-side. It is
+deployed at `https://krishi-llm.dharmikkoneru.workers.dev` and the app uses it when
+`<meta name="llm-endpoint">` is set. Use flash-lite for the live path: `gemini-3.5-flash`
+spends hundreds of tokens on reasoning and exceeded the proxy's timeout. When the hybrid contributes,
 the app always says “may be” rather than “fairly sure” until the pilot justifies more.
 
 ## First ten
