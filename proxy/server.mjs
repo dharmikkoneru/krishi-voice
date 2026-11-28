@@ -3,14 +3,44 @@
 //   PORT=8798 LLM_API_KEY=... LLM_MODEL=... node proxy/server.mjs
 
 import { createServer } from 'node:http';
-import worker from './worker.mjs';
+import worker, { Limiter } from './worker.mjs';
 
 const port = Number(process.env.PORT || 8798);
+
+// Minimal stand-in for Durable Object storage, so the same Limiter class runs
+// locally. It lives for the process, which is enough for a loopback test.
+function localLimiter() {
+  const data = new Map();
+  const storage = {
+    async get(key) {
+      return data.get(key);
+    },
+    async put(key, value) {
+      data.set(key, value);
+    },
+    async delete(key) {
+      data.delete(key);
+    },
+    async list({ prefix = '' } = {}) {
+      return new Map([...data].filter(([key]) => key.startsWith(prefix)));
+    },
+  };
+  const instance = new Limiter({ storage }, process.env);
+  return {
+    idFromName: (name) => name,
+    get: () => ({ fetch: (url, init) => instance.fetch(new Request(url, init)) }),
+  };
+}
+
 const env = {
   LLM_API_KEY: process.env.LLM_API_KEY || '',
   LLM_BASE_URL: process.env.LLM_BASE_URL || 'https://api.openai.com/v1',
   LLM_MODEL: process.env.LLM_MODEL || 'gpt-4o-mini',
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS || '',
+  DEVICE_HOURLY: process.env.DEVICE_HOURLY || '20',
+  IP_HOURLY: process.env.IP_HOURLY || '400',
+  DAILY_CAP: process.env.DAILY_CAP || '400',
+  LIMITER: localLimiter(),
 };
 
 const server = createServer(async (req, res) => {

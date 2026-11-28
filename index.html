@@ -1802,6 +1802,9 @@ button {
 let KB;
 // Empty = keyword-only. Set to the proxy URL to enable the optional hybrid.
 const LLM_ENDPOINT=(document.querySelector('meta[name="llm-endpoint"]')?.content||'').trim();
+// Stable per-install id so the proxy budgets per phone, not per IP: a village
+// usually shares one address. No personal data, only a random local value.
+const DEVICE_ID=(()=>{try{let d=localStorage.getItem('dev');if(!d||!/^[A-Za-z0-9_-]{8,64}$/.test(d)){d=crypto.randomUUID?crypto.randomUUID():'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);localStorage.setItem('dev',d)}return d}catch(e){return ''}})();
 const LANGS={te:{bcp:'te-IN',i:0,li:1},hi:{bcp:'hi-IN',i:1,li:2},en:{bcp:'en-IN',i:2,li:0}};
 // UI strings: add a language = add a key here + LANGS + KB fields
 const STR={
@@ -1968,7 +1971,7 @@ function score(x){return KB.entries.map(e=>({e,n:e.tags.filter(t=>x.tags.has(t))
 function kwSure(x){const[a,b]=score(x);return a.n>=3&&a.n-b.n>=2}
 async function llmMap(text){if(!LLM_ENDPOINT||!text)return null;
  const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),6000);
- try{const r=await fetch(LLM_ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({transcript:text}),signal:ctl.signal,cache:'no-store'});
+ try{const r=await fetch(LLM_ENDPOINT,{method:'POST',headers:{'content-type':'application/json',...(DEVICE_ID?{'x-device-id':DEVICE_ID}:{})},body:JSON.stringify({transcript:text}),signal:ctl.signal,cache:'no-store'});
   if(!r.ok)return null;const d=await r.json();if(!d||typeof d.entry!=='string')return null;
   if(d.entry!=='unknown'&&!KB.entries.some(e=>e.id===d.entry))return null;
   const tags=Array.isArray(d.tags)?d.tags.filter(t=>t in KB.lex):[];

@@ -45,7 +45,26 @@ down, the keyword engine answers instead.
 Deployed with `cd proxy && npx wrangler deploy` (`[vars]`: `ALLOWED_ORIGINS`,
 `LLM_BASE_URL`, `LLM_MODEL`) and the key stored out of the repo with
 `npx wrangler secret put LLM_API_KEY`. The proxy allows only the Pages origin (plus localhost),
-caps the transcript at 600 characters, and rate-limits to 40 requests per hour per IP.
+caps the transcript at 600 characters, and counts every request before it reaches the model.
+
+### Limits
+
+The counters live in one Durable Object (`Limiter` in `proxy/worker.mjs`), so they are shared by
+every isolate and survive restarts. An in-memory map could do neither: it reset when an isolate
+was recycled and could not see traffic served elsewhere.
+
+| Budget | Default | Var | Why |
+| --- | --- | --- | --- |
+| Per phone, per hour | 20 | `DEVICE_HOURLY` | A farmer asks a handful of questions; this stops one phone looping. |
+| Per IP, per hour | 400 | `IP_HOURLY` | A village usually shares one NAT address, so this has to cover dozens of phones. |
+| Per UTC day, all traffic | 400 | `DAILY_CAP` | Hard ceiling on model calls, so a leaked endpoint cannot drain the key. |
+
+`index.html` sends a random per-install id in `x-device-id` (stored in `localStorage` as `dev`, no
+personal data) so the per-phone budget does not punish neighbours sharing an address. A request
+with a missing or malformed id is counted against the IP budget instead, so it cannot run
+unmetered. Over a limit the proxy answers `429` with `retry-after`, and if the counter itself is
+unreachable it answers `503 limiter_unavailable` rather than spending the key; the app falls back
+to the keyword engine either way.
 
 Model: `gemini-3.5-flash-lite`. `gemini-3.5-flash` was rejected for this: it spends several
 hundred tokens on reasoning, took 9-28 s per request and blew the worker's 8 s timeout, while
@@ -104,6 +123,7 @@ Python 3.11, with no secrets and no network beyond setup:
 ```sh
 node evaluation/run-keyword.mjs --self-check
 node proxy/check-constraints.mjs
+node proxy/check-limits.mjs
 python3 evaluation/score.py --demo
 ```
 

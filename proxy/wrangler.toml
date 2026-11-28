@@ -11,3 +11,20 @@ compatibility_date = "2026-01-01"
 ALLOWED_ORIGINS = "https://dharmikkoneru.github.io"
 LLM_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai"
 LLM_MODEL = "gemini-3.5-flash-lite"
+# Per phone, per hour. One farmer asking a handful of questions stays well under.
+DEVICE_HOURLY = "20"
+# Per IP, per hour. Deliberately generous: a village behind one NAT address
+# shares this, so it must cover dozens of phones, not one.
+IP_HOURLY = "400"
+# Hard ceiling on model calls per UTC day, whatever the traffic looks like.
+DAILY_CAP = "400"
+
+# Counters live in one Durable Object so they survive isolate restarts and are
+# shared by every isolate; an in-process Map could do neither.
+[[durable_objects.bindings]]
+name = "LIMITER"
+class_name = "Limiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Limiter"]
